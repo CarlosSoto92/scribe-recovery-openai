@@ -11,9 +11,9 @@ Cada evento es un comentario en el Issue que empieza con su nombre.
 | Evento | Quién | Contenido mínimo |
 |---|---|---|
 | `RELEASE` | CTO Sintético | Objetivo, criterio de terminado, superficie (carpetas o archivos), tier, revisor |
-| `CLAIM` | Codex | Rama, commit de `main` del que parte, superficie que aparta |
+| `CLAIM` | Codex | `SESSION_ID`, `ISSUE`, `WORKTREE_PATH`, `BRANCH`, `START_PIN`, `LOCKED_PATHS`, `OWNER`; commit de `main` del que parte |
 | `RETURN` | Codex | PR, commit exacto (`EXACT_HEAD`), qué hizo, cómo probarlo, qué falta |
-| `REVIEW` | Revisor (Hack Ops u otro asignado) | Commit revisado, `PASS` o `CORRECCIÓN` con hallazgos (bloqueante o no) |
+| `REVIEW` | Revisor independiente (Hack Ops / Cursor vía Grok; no el productor) | Commit revisado, `PASS` o `CORRECCIÓN` con hallazgos (bloqueante o no); pruebas ejecutadas vs solo inspeccionadas |
 
 Después de `REVIEW: PASS`, el CTO da el visto bueno y **Carlos hace merge**. Una corrección se resuelve en el **mismo PR**.
 
@@ -41,6 +41,17 @@ sequenceDiagram
 - ¿Necesitas algo fuera de tu superficie? **Detente** y pídelo en el Issue; no lo toques.
 - Leer y revisar no aparta nada y puede hacerse en paralelo.
 
+### Sesiones concurrentes
+
+- Un Issue/`RELEASE` **asigna trabajo**; no aísla procesos ni directorios.
+- Todo `CLAIM` de escritura **T1** declara: `SESSION_ID`, `ISSUE`, `WORKTREE_PATH`, `BRANCH`, `START_PIN`, `LOCKED_PATHS`, `OWNER`. Sin worktree separado: **máximo una** sesión escritora del mismo checkout. Sesiones **T0** pueden observar en paralelo.
+- **Una sola sesión escritora por superficie mutable.** Dos terminales no implican dos worktrees. Trabajo paralelo real: worktrees y ramas separados, superficies sin solapamiento y capacidad del nodo validada. No crear dos escritores solo porque existen dos terminales.
+- Si el Issue asignado está bloqueado, la sesión **no adopta otra misión**: registra `STOP` y aguarda reasignación expresa. Un `RELEASE` no autoriza múltiples `CLAIM` activos sobre el mismo Issue.
+- Antes de editar o hacer commit verificar: `pwd`, `git rev-parse --show-toplevel`, `git status --short`, `git branch --show-current`, `git worktree list --porcelain`. Cambios externos inesperados ⇒ `STOP`, preservar datos; **prohibido** `reset --hard` / `clean`.
+- Tras `RETURN`, el productor queda **en pausa** hasta `REVIEW` independiente. Un único responsable de correcciones en el mismo PR; **L4** hace merge.
+- El `REVIEW` independiente de código puede ejecutarlo **Cursor operado por Grokbot desde la nube** sobre el SHA exacto, en checkout aislado y **read-only** de la rama del productor. Grok firma la revisión en el PR, indica qué pruebas ejecutó Cursor y cuáles solo inspeccionó, y clasifica hallazgos. No se transfieren secretos ni se otorgan credenciales o derechos de escritura nuevos.
+- En LT-01, no imponer worktrees simultáneos si la **RAM** no lo permite: aislamiento del filesystem y concurrencia de procesos son decisiones distintas.
+
 ## 4. Niveles de riesgo
 
 | Tier | Qué cubre | Quién autoriza |
@@ -56,6 +67,7 @@ Un PASS en T1 **no** autoriza nada de T2.
 
 - La hace alguien distinto del productor, en una sesión limpia, sobre el commit exacto.
 - Un subagente del mismo productor **no cuenta** como revisión independiente.
+- **Codex** es el productor T1; **Cursor/Grok** revisan sin escritura (véase «Sesiones concurrentes»).
 - Se mide por los defectos útiles que encuentra, no por cuántos PASS da.
 
 ## 6. Cuándo detenerse (STOP)
@@ -63,6 +75,8 @@ Un PASS en T1 **no** autoriza nada de T2.
 Detente, reporta en el Issue y espera decisión si:
 
 - Vas a tocar algo fuera de tu superficie.
+- Aparecen cambios externos inesperados en tu checkout (no `reset --hard` / `clean`).
+- Tu Issue está bloqueado: no adoptes otra misión sin reasignación expresa.
 - Aparece un secreto o una credencial expuesta, o un valor de secreto fuera de 1Password.
 - La acción es T2 y no tiene el ok de Carlos.
 - No está claro quién tiene la autoridad.
