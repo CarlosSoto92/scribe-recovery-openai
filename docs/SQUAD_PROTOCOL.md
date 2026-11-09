@@ -2,7 +2,7 @@
 
 ## 1. Una misión = un Issue
 
-Cada **resultado demostrable** vive en un Issue creado con la plantilla **Misión** (nada de Issues para microtareas). Para retomar trabajo, lee el Issue de abajo hacia arriba: el último evento manda.
+Cada **resultado demostrable** vive en un Issue creado con la plantilla **Misión** (nada de Issues para microtareas). Para retomar trabajo, lee el Issue de abajo hacia arriba: el último evento válido emitido por el asiento autorizado, dentro de su alcance, determina el estado; nunca desplaza decisiones L4, prohibiciones de seguridad ni autorizaciones T2.
 
 ## 2. Cuatro eventos
 
@@ -37,7 +37,7 @@ sequenceDiagram
 ## 3. Superficies (quién aparta qué)
 
 - Un dueño por superficie. Se aparta en el `CLAIM`.
-- Por defecto: `src/` y `experiments/` son de Codex (único que ejecuta); `docs/` es de Hack Ops y del CTO. Antigravity no aparta superficie: recomienda y Codex aplica.
+- Por defecto: `src/` y `experiments/` son de Codex (único ejecutor de código del MVP); `docs/` es de Hack Ops y del CTO. Antigravity no aparta superficie del repo: opera el entorno LT01 dentro de autorizaciones L4, sin tocar el producto.
 - ¿Necesitas algo fuera de tu superficie? **Detente** y pídelo en el Issue; no lo toques.
 - Leer y revisar no aparta nada y puede hacerse en paralelo.
 

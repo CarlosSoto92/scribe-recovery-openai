@@ -4,7 +4,7 @@ Este repo es el proyecto **Scribe/Recovery** del hackathon (9 nov 2026, CDMX) y 
 
 ## La regla central
 
-**Codex es el único que ejecuta.** Codex escribe el código y opera a los agentes empleados que viven en este proyecto.
+**Codex es el único ejecutor de código del MVP.** Codex escribe el código y opera a los agentes empleados que viven en este proyecto.
 Los demás asientos (CTO Sintético, Antigravity, Hack Ops) **no escriben código de producto**: ordenan el harness de Codex (entorno, reglas, tareas y revisión) para que Codex rinda.
 
 ## Antes de empezar
@@ -19,7 +19,7 @@ Los demás asientos (CTO Sintético, Antigravity, Hack Ops) **no escriben códig
 - Trabaja en una rama `feat/<tema>` (código) o `docs/<tema>` (documentación) y abre un PR. **Nunca hagas push directo a `main`.** Solo Carlos (L4) hace merge.
 - Toca solo la superficie que apartaste en tu `CLAIM`. Si necesitas otra, detente y pídela en el Issue.
 - Sin secretos en el repo. Las llaves y contraseñas viven en **1Password** (ver sección de secretos abajo).
-- **Autoridad de ejecución única:** Codex ejecuta. Antigravity, CTO y Hack Ops diagnostican, recomiendan y revisan; cualquier excepción la autoriza Carlos (L4) por escrito en el Issue.
+- **Frontera producto / nodo:** Codex es el único ejecutor de código del MVP. Antigravity opera el entorno LT01 (diagnóstico, instalación y configuración de herramientas, preflight) dentro de autorizaciones L4, sin tocar el producto ni acciones T2 sin gate. Operar el nodo no da acceso a secretos, ni permite crear vaults o service accounts, consumir APIs, desplegar ni publicar túneles. CTO y Hack Ops recomiendan y revisan; cualquier excepción la autoriza Carlos (L4) por escrito en el Issue.
 - **T2 por perímetro:** Carlos autoriza un perímetro (proveedor, modelo, presupuesto y periodo) como `L4_DECISION` en el Issue. Dentro de ese perímetro, las llamadas a la API no requieren aprobación individual. Fuera de él (otro proveedor, deploy, exponer algo a internet, datos reales) se pide ok acción por acción.
 - Si cambias stack o arquitectura, agrega una fila en `docs/DECISIONS.md`.
 

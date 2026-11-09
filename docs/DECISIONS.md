@@ -16,3 +16,4 @@ Registro corto de decisiones reversibles del hackathon.
 | 10 | 2026-11-09 | Descartado: ampliar la superficie de Antigravity a `harness/` (choca con la decisión 6) | Carlos | Descartada |
 | 11 | 2026-11-09 | Pendiente: cómo se proyecta el demo; un túnel público es T2 | Carlos | Abierta |
 | 12 | 2026-11-09 | Dos fases: Fase 0 prototipo solo con suscripción de Codex (sin API ni secretos); Fase 1 funcional con API de OpenAI pagada por token + 1Password. 1Password queda en espera hasta Fase 1 | Carlos | Vigente |
+| 13 | 2026-11-09 | Frontera producto / nodo: Codex es el único ejecutor de código del MVP; Antigravity opera el entorno LT01 (diagnóstico, instalación, configuración, preflight) dentro de autorizaciones L4, sin producto ni T2 implícito. Reemplaza el alcance de #4, #6 y #10 solo en lo que toca a operar el nodo; esas filas siguen vigentes para el producto | Carlos (vía CTO) | Vigente |
