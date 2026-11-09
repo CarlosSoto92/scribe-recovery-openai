@@ -301,12 +301,20 @@ def propose_candidate(note, document, feedback):
     return validate(lesson, "lesson.v1")
 
 
-def transition(path, lesson_id, state, approval_ref=None, approved_by=None):
-    latest = {r["lesson_id"]: r for r in latest_lessons(read_log(path, "lesson.v1"))}
+def transition_event(events, lesson_id, state, approval_ref=None, approved_by=None):
+    """Construir y validar la misma transición para cualquier almacenamiento."""
+    latest = {r["lesson_id"]: r for r in latest_lessons(events)}
     require(lesson_id in latest, "lesson_id desconocido")
     event = deepcopy(latest[lesson_id])
     event.update(version=event["version"] + 1, state=state, approval_ref=approval_ref,
                  approved_by=approved_by, created_at=now())
+    latest_lessons(events + [event])
+    return event
+
+
+def transition(path, lesson_id, state, approval_ref=None, approved_by=None):
+    event = transition_event(read_log(path, "lesson.v1"), lesson_id, state,
+                             approval_ref, approved_by)
     append_log(path, event)
     return event
 
