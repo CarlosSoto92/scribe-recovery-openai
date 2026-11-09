@@ -4,6 +4,8 @@
 
 Cada **resultado demostrable** vive en un Issue creado con la plantilla **Misión** (nada de Issues para microtareas). Para retomar trabajo, lee el Issue de abajo hacia arriba: el último evento válido emitido por el asiento autorizado, dentro de su alcance, determina el estado; nunca desplaza decisiones L4, prohibiciones de seguridad ni autorizaciones T2.
 
+**Guía operativa reutilizable (no cambia autoridad ni tiers):** antes del CLAIM, consultar el [índice de aprendizajes del squad](playbooks/README.md), el [preflight de LT-01](playbooks/PREFLIGHT_LT01.md) y el [Codex Delivery Loop](playbooks/CODEX_DELIVERY_LOOP.md). Para otros repositorios, adaptar el método a sus reglas vigentes; nunca copiar permisos, rutas ni políticas automáticamente.
+
 ## 2. Cuatro eventos
 
 Cada evento es un comentario en el Issue que empieza con su nombre.
