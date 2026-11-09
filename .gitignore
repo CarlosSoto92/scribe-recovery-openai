@@ -1,0 +1,44 @@
+# Node / TypeScript
+node_modules/
+.next/
+dist/
+build/
+out/
+coverage/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Entorno y secretos
+.env
+.env*
+!.env.example
+*.pem
+*.key
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+*~
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Agentes
+.worktrees/
+.codex/
+.cursor/tmp/
+logs/
+*.log
