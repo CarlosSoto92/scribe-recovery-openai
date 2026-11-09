@@ -33,6 +33,7 @@ V1 sale con 1 (falla controlada `CSV_SCHEMA`); ejecutar V2 después aunque V1
 falle. V2 sale con 0 y calcula total 6 para esta fixture. Código 2 indica entrada,
 historial o lección inválida y no ejecuta la tarea. Repetir un intento con el
 mismo `run_id`, tarea y hash de entrada se rechaza; elegir una corrida nueva.
+El código 2 también ocurre por uso incorrecto del CLI (`argparse`) y no siempre imprime JSON.
 
 Para el control negativo, ejecutar V2 con un ledger nuevo: falla con código 1,
 sin lección y usando coma. No basta cambiar el número de versión para recuperar.

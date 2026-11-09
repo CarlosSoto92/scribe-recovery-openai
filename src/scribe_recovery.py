@@ -29,11 +29,11 @@ def read_ledger(path):
     path = Path(path)
     if not path.exists():
         return []
-    raw = path.read_text(encoding="utf-8")
+    raw = path.read_bytes().decode("utf-8")
     if raw and not raw.endswith("\n"):
         raise DemoError("LEDGER_INVALID: falta salto de línea final")
     events = []
-    for line_number, line in enumerate(raw.splitlines(), 1):
+    for line_number, line in enumerate(raw.split("\n")[:-1], 1):
         try:
             event = json.loads(line)
         except json.JSONDecodeError as exc:
@@ -102,7 +102,10 @@ def header_matches_fields(header, delimiter):
 
 def run_attempt(version, input_path, ledger_path, run_id):
     """Ejecutar una sola vez y devolver el evento que se agregó al ledger."""
-    if version not in ("v1", "v2") or not isinstance(run_id, str) or not run_id.strip():
+    if (
+        version not in ("v1", "v2") or not isinstance(run_id, str) or not run_id.strip()
+        or any(separator in run_id for separator in "\n\r\u2028\u2029\u0085")
+    ):
         raise DemoError("version/run_id inválido")
     input_path, ledger_path = Path(input_path), Path(ledger_path)
     if input_path.resolve() == ledger_path.resolve() or (
@@ -181,7 +184,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         event = run_attempt(args.version, args.input, args.ledger, args.run_id)
-    except (OSError, UnicodeError, DemoError) as exc:
+    except (OSError, UnicodeError, DemoError, RuntimeError) as exc:
         print(json.dumps({"outcome": "invalid", "error": str(exc)}, ensure_ascii=False))
         return 2
     print(json.dumps(event, ensure_ascii=False))

@@ -1,7 +1,9 @@
 """Regresión del mecanismo causal de Fase 0; solo archivos sintéticos temporales."""
 
+from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime, timedelta
 import hashlib
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -66,6 +68,29 @@ class RecoveryTests(unittest.TestCase):
         self.assertIsNone(second["error"])
         self.assertTrue(self.ledger.read_bytes().startswith(prefix))
         self.assertEqual(recovery.read_ledger(self.ledger), [first, second])
+
+    def test_jsonl_preserves_unicode_line_separators_in_strings(self):
+        first = self.attempt("v1")
+        first["evidence"]["note"] = "uno\u2028dos\u2029tres\u0085cuatro"
+        self.ledger.write_text(json.dumps(first, ensure_ascii=False) + "\n", encoding="utf-8")
+        prefix = self.ledger.read_bytes()
+        self.assertEqual(recovery.read_ledger(self.ledger), [first])
+        second = self.attempt("v2")
+        self.assertEqual(second["outcome"], "success")
+        self.assertTrue(self.ledger.read_bytes().startswith(prefix))
+        self.assertEqual(recovery.read_ledger(self.ledger), [first, second])
+
+    def test_run_id_rejects_line_separators_before_task_or_append(self):
+        self.attempt("v1")
+        prefix = self.ledger.read_bytes()
+        for separator in ("\n", "\r", "\u2028", "\u2029", "\u0085"):
+            for version in ("v1", "v2"):
+                with self.subTest(separator=repr(separator), version=version):
+                    with patch.object(recovery, "sum_inventory", wraps=recovery.sum_inventory) as task:
+                        with self.assertRaisesRegex(recovery.DemoError, "run_id"):
+                            self.attempt(version, "run" + separator + "id")
+                        task.assert_not_called()
+                    self.assertEqual(self.ledger.read_bytes(), prefix)
 
     def test_without_lesson_v2_really_executes_and_fails(self):
         with patch.object(recovery, "sum_inventory", wraps=recovery.sum_inventory) as task:
@@ -197,6 +222,33 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(json.loads(invalid.stdout)["outcome"], "invalid")
         negative = self.cli("v2", self.directory / "negative.jsonl")
         self.assertEqual(negative.returncode, 1, negative.stderr)
+
+    def test_cli_runtime_error_returns_invalid_without_traceback(self):
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch.object(recovery.Path, "resolve", side_effect=RuntimeError("Symlink loop")):
+            with patch.object(recovery, "sum_inventory") as task:
+                with redirect_stdout(stdout), redirect_stderr(stderr):
+                    code = recovery.main([
+                        "v1", "--input", str(self.input), "--ledger", str(self.ledger),
+                        "--run-id", "cli",
+                    ])
+                task.assert_not_called()
+        self.assertEqual(code, 2)
+        self.assertEqual(json.loads(stdout.getvalue()), {
+            "outcome": "invalid", "error": "Symlink loop",
+        })
+        self.assertEqual(stderr.getvalue(), "")
+        self.assertFalse(self.ledger.exists())
+
+    def test_cli_symlink_loop_returns_invalid_without_traceback(self):
+        original = self.input.read_bytes()
+        self.ledger.symlink_to(self.ledger.name)
+        result = self.cli("v1")
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["outcome"], "invalid")
+        self.assertEqual(result.stderr, "")
+        self.assertEqual(self.input.read_bytes(), original)
+        self.assertEqual(self.ledger.readlink(), Path(self.ledger.name))
 
     def test_demo_default_and_repeated_preserved_evidence(self):
         command = [sys.executable, str(ROOT / "experiments" / "demo.py")]
