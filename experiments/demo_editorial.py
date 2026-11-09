@@ -24,7 +24,7 @@ def execute(*arguments):
     return document
 
 
-def demonstrate(directory):
+def demonstrate(directory, show_json=False):
     note = editorial.load(FIXTURE, "research_note.v1")
     lessons, feedback_log = directory / "lessons.jsonl", directory / "feedback.jsonl"
     draft_path = directory / "draft-v1.json"
@@ -48,13 +48,12 @@ def demonstrate(directory):
     approved = execute("approve", "--lesson-id", lesson["lesson_id"], "--lessons", lessons,
                        "--approval-ref", "fixture:demo-control", "--approved-by", "fixture_simulated")
     print("6. Gate SIMULADO aprobado por fixture_simulated; referencia fixture:demo-control.")
+    print("En V0, para rule_type=required_fact, el writer determinista COPIA desde la nota "
+          "los hechos citados por evidence.fact_ids de la lección aprobada; no inventa hechos.")
     result = execute("compare", "--note", FIXTURE, "--lessons", lessons, "--session-prefix", "demo-control")
     before, after = result["B−"], result["B+"]
     metric = "retención de hechos críticos"
     print(f'7. Procesos frescos · {metric}: B−={before["check"][metric]:.1f} / B+={after["check"][metric]:.1f}')
-    print("   B−:", before["draft"]["text"])
-    print("   B+:", after["draft"]["text"])
-    print("   Lección usada:", ", ".join(result["lessons_used"]))
     checks = {
         "baseline_omits_critical_fact": before["check"][metric] == 0
             and not before["draft"]["fact_refs"] and not before["draft"]["applied_lesson_ids"],
@@ -69,7 +68,18 @@ def demonstrate(directory):
             and approved["approval_ref"] == "fixture:demo-control",
     }
     passed = all(checks.values())
-    print(editorial.encoded({"checks": checks, "passed": passed}))
+    print("\nComparación final · gate simulado")
+    for label, branch in (("B−", before), ("B+", after)):
+        for fact in note["facts"]:
+            if not fact["must_keep"]:
+                continue
+            cited = fact["fact_id"] in branch["check"]["retained_fact_ids"]
+            present = fact["text"] in branch["draft"]["text"]
+            status = "PRESENTE + cita" if cited else ("PRESENTE sin cita" if present else "OMITIDO")
+            print(f'{label}: {fact["fact_id"]} {status} · check {"PASS" if cited else "FAIL"}')
+    print("Lección usada:", ", ".join(result["lessons_used"]) or "ninguna")
+    if show_json:
+        print(editorial.encoded({"checks": checks, "passed": passed}))
     return passed
 
 
@@ -77,16 +87,17 @@ def main(argv=None):
     started = time.perf_counter()
     parser = editorial.Parser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, help="carpeta existente donde conservar una corrida nueva")
+    parser.add_argument("--json", action="store_true", help="mostrar además el JSON de checks")
     try:
         args = parser.parse_args(argv)
         if args.output_dir:
             directory = Path(tempfile.mkdtemp(prefix="scribe-editorial-", dir=args.output_dir))
             print(f"Evidencia conservada: {directory}")
-            passed = demonstrate(directory)
+            passed = demonstrate(directory, show_json=args.json)
         else:
             with tempfile.TemporaryDirectory(prefix="scribe-editorial-") as temporary:
                 print(f"Evidencia temporal: {temporary} (se limpia al terminar)")
-                passed = demonstrate(Path(temporary))
+                passed = demonstrate(Path(temporary), show_json=args.json)
     except (editorial.Invalid, OSError, UnicodeError, subprocess.SubprocessError) as exc:
         message = str(exc) if isinstance(exc, editorial.Invalid) else type(exc).__name__
         print(json.dumps({"outcome": "invalid", "error": message}, ensure_ascii=False))

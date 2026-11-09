@@ -73,6 +73,7 @@ telemetría real de Codex.
 ```bash
 python3 experiments/demo_editorial.py
 python3 experiments/demo_editorial.py --output-dir /tmp
+python3 experiments/demo_editorial.py --json
 ```
 
 La demo usa solo datos sintéticos y un gate **simulado**, atribuido a
@@ -81,13 +82,17 @@ La demo usa solo datos sintéticos y un gate **simulado**, atribuido a
 habilita la regla por scope y nota. B− y B+ corren en procesos nuevos, con la
 misma nota y checker: retención = hechos críticos presentes **y citados** / total.
 Se espera 0 frente a 1.0, sin afirmar calidad editorial general ni mejora de LLM.
+En V0, para `rule_type=required_fact`, el writer determinista **COPIA** desde la
+nota los hechos citados por `evidence.fact_ids` de la lección aprobada; no inventa
+hechos. La demo destaca el panel B−/B+; `--json` añade los checks crudos.
 
-CLI en vivo (desde la raíz; guardar los IDs que devuelve cada comando):
+**Ensayo CLI · fixture simulada**, desde la raíz: tanto el feedback como la
+aprobación son ficticios y se atribuyen a `fixture_simulated`.
 
 ```bash
 EDITORIAL_RUN=$(mktemp -d /tmp/scribe-editorial-live-XXXXXX)
 python3 src/scribe_editorial.py draft --note experiments/fixtures/synthetic_note_001.json --lessons "$EDITORIAL_RUN/lessons.jsonl" --session-id live-v1 --out "$EDITORIAL_RUN/draft.json"
-python3 src/scribe_editorial.py feedback --draft "$EDITORIAL_RUN/draft.json" --reviewer carlos --rating 2 --comment "Falta el dato sintético de 4 semanas" --target-facts f1 --feedback-log "$EDITORIAL_RUN/feedback.jsonl"
+python3 src/scribe_editorial.py feedback --draft "$EDITORIAL_RUN/draft.json" --reviewer fixture_simulated --rating 2 --comment "Falta el dato sintético de 4 semanas" --target-facts f1 --feedback-log "$EDITORIAL_RUN/feedback.jsonl"
 EDITORIAL_FEEDBACK_ID=$(python3 -c 'import json,sys; print(json.loads(open(sys.argv[1], encoding="utf-8").read().split("\n")[0])["feedback_id"])' "$EDITORIAL_RUN/feedback.jsonl")
 python3 src/scribe_editorial.py propose --feedback "$EDITORIAL_FEEDBACK_ID" --feedback-log "$EDITORIAL_RUN/feedback.jsonl" --lessons "$EDITORIAL_RUN/lessons.jsonl"
 EDITORIAL_LESSON_ID=$(python3 -c 'import json,sys; print(json.loads(open(sys.argv[1], encoding="utf-8").read().split("\n")[0])["lesson_id"])' "$EDITORIAL_RUN/lessons.jsonl")
@@ -97,11 +102,27 @@ python3 src/scribe_editorial.py compare --note experiments/fixtures/synthetic_no
 python3 src/scribe_editorial.py reject --lesson-id "$EDITORIAL_LESSON_ID" --lessons "$EDITORIAL_RUN/lessons.jsonl"
 ```
 
-El reviewer real se usa solo si esa persona dio el feedback; para ensayar,
-cambiar `--reviewer carlos` por `--reviewer fixture_simulated`. `--correction`
-es opcional. Para aprobación real, indicar `--approved-by nombre` y una
-`--approval-ref` de decisión/PR real; el CLI registra la declaración y **no
-verifica GitHub ni autentica al humano**. Las referencias `fixture:` exigen
+**Loop real de Carlos** · revisión y aprobación humanas sobre la misma nota
+sintética, en una corrida nueva. Carlos escribe su propio comentario y rating,
+revisa la candidata y ejecuta `approve` solo si la aprueba. Antes de aprobar,
+sustituye `<algo>` por el identificador de su decisión L4 real y trazable.
+
+```bash
+CARLOS_RUN=$(mktemp -d /tmp/scribe-editorial-carlos-XXXXXX)
+python3 src/scribe_editorial.py draft --note experiments/fixtures/synthetic_note_001.json --lessons "$CARLOS_RUN/lessons.jsonl" --session-id carlos-v1 --out "$CARLOS_RUN/draft.json"
+read -r -p 'Carlos, escribe tu comentario: ' CARLOS_COMMENT
+read -r -p 'Carlos, califica el borrador (1-5): ' CARLOS_RATING
+python3 src/scribe_editorial.py feedback --draft "$CARLOS_RUN/draft.json" --reviewer carlos --rating "$CARLOS_RATING" --comment "$CARLOS_COMMENT" --target-facts f1 --feedback-log "$CARLOS_RUN/feedback.jsonl"
+CARLOS_FEEDBACK_ID=$(python3 -c 'import json,sys; print(json.loads(open(sys.argv[1], encoding="utf-8").read().split("\n")[0])["feedback_id"])' "$CARLOS_RUN/feedback.jsonl")
+python3 src/scribe_editorial.py propose --feedback "$CARLOS_FEEDBACK_ID" --feedback-log "$CARLOS_RUN/feedback.jsonl" --lessons "$CARLOS_RUN/lessons.jsonl"
+CARLOS_LESSON_ID=$(python3 -c 'import json,sys; print(json.loads(open(sys.argv[1], encoding="utf-8").read().split("\n")[0])["lesson_id"])' "$CARLOS_RUN/lessons.jsonl")
+# Carlos revisa la candidata y sustituye <algo> antes de ejecutar la aprobación:
+python3 src/scribe_editorial.py approve --lesson-id "$CARLOS_LESSON_ID" --approved-by carlos --approval-ref 'decision-l4:<algo>' --lessons "$CARLOS_RUN/lessons.jsonl"
+python3 src/scribe_editorial.py compare --note experiments/fixtures/synthetic_note_001.json --lessons "$CARLOS_RUN/lessons.jsonl" --session-prefix carlos-control
+```
+
+`--correction` es opcional. El CLI registra la declaración y **no verifica
+GitHub ni autentica al humano**. Las referencias `fixture:` exigen
 `fixture_simulated`. Ninguna aprobación autoriza publicar ni llama servicios.
 
 `draft --out` crea además `<out>.note.json`; `feedback` conserva nota y borrador
