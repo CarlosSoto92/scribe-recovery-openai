@@ -37,7 +37,7 @@ git clone https://github.com/CarlosSoto92/scribe-recovery-openai.git
 cd scribe-recovery-openai
 ```
 
-Las instrucciones de instalación se agregan cuando se fije el stack. Nunca subas llaves ni secretos: usa un archivo `.env` local (ya está en `.gitignore`).
+Las instrucciones de instalación se agregan cuando se fije el stack. El prototipo (Fase 0) corre solo con la suscripción de Codex y no necesita llaves. En la fase funcional (Fase 1) las llaves se inyectan con 1Password (`op run --env-file=.env.example -- <comando>`); nunca subas llaves ni secretos.
 
 ## Squad
 

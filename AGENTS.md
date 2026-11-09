@@ -23,7 +23,13 @@ Los demás asientos (CTO Sintético, Antigravity, Hack Ops) **no escriben códig
 - **T2 por perímetro:** Carlos autoriza un perímetro (proveedor, modelo, presupuesto y periodo) como `L4_DECISION` en el Issue. Dentro de ese perímetro, las llamadas a la API no requieren aprobación individual. Fuera de él (otro proveedor, deploy, exponer algo a internet, datos reales) se pide ok acción por acción.
 - Si cambias stack o arquitectura, agrega una fila en `docs/DECISIONS.md`.
 
-## Secretos: 1Password
+## Fases del proyecto
+
+- **Fase 0, prototipo (ahora):** se construye **solo con la suscripción de Codex** de Carlos (los créditos del hackathon). El prototipo no llama a la API de OpenAI con llave propia ni necesita secretos. Si una tarea parece requerir la API, se detiene y se pide en el Issue.
+- **Fase 1, funcional (después):** el producto llama directo a la API de OpenAI y paga por token. Requiere la `L4_DECISION` de perímetro T2 (proveedor, modelo, presupuesto, periodo) y la llave inyectada con 1Password (sección siguiente).
+- El paso de Fase 0 a Fase 1 lo decide Carlos (L4). Mientras tanto, la configuración de 1Password queda lista pero en espera.
+
+## Secretos: 1Password (Fase 1)
 
 - Ninguna llave, token ni contraseña se escribe en el repo, en `.env` versionado, en logs ni en comentarios de Issues/PRs.
 - Las variables se declaran en `.env.example` como **referencias** `op://<vault>/<item>/<campo>`, nunca como valores.
@@ -36,7 +42,7 @@ Los demás asientos (CTO Sintético, Antigravity, Hack Ops) **no escriben códig
 - **Ruta canónica:** `/home/anton-lab/Work/scribe-recovery-openai` (con W mayúscula).
 - **Memoria:** 7.1 GB totales y ~2.6 GB disponibles. La RAM es el cuello de botella.
 - **Paralelismo:** máximo **1 agente empleado a la vez**. Builder → Tester → Scribe corren en secuencia, nunca en paralelo.
-- **Prohibido:** `ollama run` y modelos locales (consumen 2–4 GB). Los modelos se consumen por API en la nube.
+- **Prohibido:** `ollama run` y modelos locales (consumen 2–4 GB). Los modelos se consumen en la nube (Fase 0 vía suscripción de Codex; Fase 1 vía API).
 - **Servidores de prueba** (Next.js, FastAPI, etc.): se cierran al terminar cada prueba. No dejes demonios corriendo.
 - **Builds de Node:** `NODE_OPTIONS="--max-old-space-size=2048"`.
 - Docker está apagado; encenderlo solo si la misión lo pide.

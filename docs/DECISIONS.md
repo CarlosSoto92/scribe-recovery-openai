@@ -15,3 +15,4 @@ Registro corto de decisiones reversibles del hackathon.
 | 9 | 2026-11-09 | Agentes empleados Builder → Tester → Scribe en secuencia; máximo 1 a la vez en LT01; sin Ollama | CTO + Antigravity | Vigente |
 | 10 | 2026-11-09 | Descartado: ampliar la superficie de Antigravity a `harness/` (choca con la decisión 6) | Carlos | Descartada |
 | 11 | 2026-11-09 | Pendiente: cómo se proyecta el demo; un túnel público es T2 | Carlos | Abierta |
+| 12 | 2026-11-09 | Dos fases: Fase 0 prototipo solo con suscripción de Codex (sin API ni secretos); Fase 1 funcional con API de OpenAI pagada por token + 1Password. 1Password queda en espera hasta Fase 1 | Carlos | Vigente |
