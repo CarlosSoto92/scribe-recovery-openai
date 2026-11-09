@@ -16,7 +16,7 @@ flowchart TD
     GH -->|misión| CX
     CX -->|PR + RETURN| GH
     HO -->|REVIEW y bitácora| GH
-    AG -->|optimiza entorno| CX
+    AG -.->|diagnostica y recomienda| CX
     GH -->|merge| L4
 ```
 
@@ -24,10 +24,10 @@ flowchart TD
 |---|---|---|---|---|---|---|
 | **L4** | Carlos Soto | Decisiones finales, prioridades, merge y gates T2 | Todo | — | `L4_DECISION` en el Issue | — |
 | **CTO Sintético** | ChatGPT (nube) | Arquitectura, investigación, mandatos técnicos y evaluación con criterio C-level. Coordina a cualquier agente nuevo | Issues (`RELEASE`), `docs/DECISIONS.md` vía PR | Código de producto; merge | `RELEASE` por misión; veredicto final de cada `REVIEW` | Carlos |
-| **Codex** | OpenAI Codex CLI en LT01 | **Ejecuta.** Escribe el código y opera a los agentes empleados del proyecto | `src/` y lo que aparte en su `CLAIM` | `main` directo, secretos, acciones T2 sin gate | `CLAIM`, PR y `RETURN` | CTO Sintético |
-| **Antigravity** | Antigravity CLI en LT01 | Experto en LT01: optimiza la superficie donde corre Codex (recursos, config de Codex, herramientas, versiones) | Configuración del nodo LT01 y `experiments/env/` vía PR | Código de producto; WS01 | Diagnósticos y recomendaciones de entorno en el Issue | CTO Sintético |
+| **Codex** | OpenAI Codex CLI en LT01 | **Única autoridad de ejecución.** Escribe el código, aplica las recomendaciones de entorno y opera a sus agentes empleados (Builder, Tester, Scribe) en secuencia | `src/` y lo que aparte en su `CLAIM` | `main` directo, secretos, acciones T2 sin gate | `CLAIM`, PR y `RETURN` | CTO Sintético |
+| **Antigravity** | Antigravity CLI en LT01 | Experto en LT01: **diagnostica y recomienda** cómo optimizar la superficie donde corre Codex (recursos, config de Codex, herramientas, versiones) | Lectura del nodo y del repo; comentarios en Issues/PRs | Ejecutar cambios en LT01 o en el repo sin autorización L4 escrita; WS01 | Diagnósticos con evidencia y recomendaciones para que Codex las ejecute | CTO Sintético |
 | **Hack Ops** | Grok Bot | Operación híbrida nube + LT01: prepara repo e Issues, parte el trabajo en tareas chicas para Codex, revisa diffs y tests, bitácora, alertas de tiempo y guion del demo | Docs, plantillas e Issues vía PR; lectura de LT01 | Código de producto; cambios en LT01 sin ok de Carlos; merge | `REVIEW` técnico, bitácora, checklist del demo | Carlos y CTO Sintético |
-| **Agentes empleados** | Los que Codex opere dentro del proyecto | Lo que Codex les asigne | Solo la superficie de la misión de Codex | Fuera del lock de Codex | Trabajo dentro del PR de Codex | Codex |
+| **Agentes empleados** | Builder, Tester y Scribe, operados por Codex | Uno a la vez, en secuencia | Solo la superficie de la misión de Codex | Fuera del lock de Codex | Trabajo dentro del PR de Codex | Codex |
 
 ## Cómo entra un agente nuevo
 

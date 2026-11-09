@@ -18,6 +18,35 @@ Los demás asientos (CTO Sintético, Antigravity, Hack Ops) **no escriben códig
 - Una misión = un Issue. El estado vive en GitHub, no en el chat.
 - Trabaja en una rama `feat/<tema>` (código) o `docs/<tema>` (documentación) y abre un PR. **Nunca hagas push directo a `main`.** Solo Carlos (L4) hace merge.
 - Toca solo la superficie que apartaste en tu `CLAIM`. Si necesitas otra, detente y pídela en el Issue.
-- Sin secretos en el repo: usa `.env` local y documenta las variables en `.env.example`.
-- Todo lo que toque algo real (llaves de API, deploy, servicios externos, datos de personas) es **T2** y necesita el ok explícito de Carlos en cada acción.
+- Sin secretos en el repo. Las llaves y contraseñas viven en **1Password** (ver sección de secretos abajo).
+- **Autoridad de ejecución única:** Codex ejecuta. Antigravity, CTO y Hack Ops diagnostican, recomiendan y revisan; cualquier excepción la autoriza Carlos (L4) por escrito en el Issue.
+- **T2 por perímetro:** Carlos autoriza un perímetro (proveedor, modelo, presupuesto y periodo) como `L4_DECISION` en el Issue. Dentro de ese perímetro, las llamadas a la API no requieren aprobación individual. Fuera de él (otro proveedor, deploy, exponer algo a internet, datos reales) se pide ok acción por acción.
 - Si cambias stack o arquitectura, agrega una fila en `docs/DECISIONS.md`.
+
+## Secretos: 1Password
+
+- Ninguna llave, token ni contraseña se escribe en el repo, en `.env` versionado, en logs ni en comentarios de Issues/PRs.
+- Las variables se declaran en `.env.example` como **referencias** `op://<vault>/<item>/<campo>`, nunca como valores.
+- Para correr algo que necesita llaves: `op run --env-file=.env.example -- <comando>`. 1Password inyecta los valores solo en ese proceso.
+- Código que necesite leer secretos en tiempo de ejecución usa el **SDK de 1Password** con una service account de alcance mínimo (solo el vault del hackathon), no la cuenta personal de Carlos.
+- Crear o ampliar una service account o un vault es T2: lo autoriza Carlos.
+
+## Condiciones del nodo LT01
+
+- **Ruta canónica:** `/home/anton-lab/Work/scribe-recovery-openai` (con W mayúscula).
+- **Memoria:** 7.1 GB totales y ~2.6 GB disponibles. La RAM es el cuello de botella.
+- **Paralelismo:** máximo **1 agente empleado a la vez**. Builder → Tester → Scribe corren en secuencia, nunca en paralelo.
+- **Prohibido:** `ollama run` y modelos locales (consumen 2–4 GB). Los modelos se consumen por API en la nube.
+- **Servidores de prueba** (Next.js, FastAPI, etc.): se cierran al terminar cada prueba. No dejes demonios corriendo.
+- **Builds de Node:** `NODE_OPTIONS="--max-old-space-size=2048"`.
+- Docker está apagado; encenderlo solo si la misión lo pide.
+
+## Agentes empleados de Codex
+
+Codex opera tres roles, **en secuencia** y sin infraestructura multiagente pesada:
+
+1. **Builder:** implementa la misión.
+2. **Tester:** corre y escribe pruebas; reporta fallas.
+3. **Scribe:** registra errores, causas y lecciones del ciclo (es el corazón del producto).
+
+Una misión = un resultado demostrable. No abras Issues para microtareas.

@@ -2,7 +2,7 @@
 
 ## 1. Una misión = un Issue
 
-Cada tarea vive en un Issue creado con la plantilla **Misión**. Para retomar trabajo, lee el Issue de abajo hacia arriba: el último evento manda.
+Cada **resultado demostrable** vive en un Issue creado con la plantilla **Misión** (nada de Issues para microtareas). Para retomar trabajo, lee el Issue de abajo hacia arriba: el último evento manda.
 
 ## 2. Cuatro eventos
 
@@ -37,7 +37,7 @@ sequenceDiagram
 ## 3. Superficies (quién aparta qué)
 
 - Un dueño por superficie. Se aparta en el `CLAIM`.
-- Por defecto: `src/` es de Codex, `experiments/env/` es de Antigravity, `docs/` es de Hack Ops y del CTO.
+- Por defecto: `src/` y `experiments/` son de Codex (único que ejecuta); `docs/` es de Hack Ops y del CTO. Antigravity no aparta superficie: recomienda y Codex aplica.
 - ¿Necesitas algo fuera de tu superficie? **Detente** y pídelo en el Issue; no lo toques.
 - Leer y revisar no aparta nada y puede hacerse en paralelo.
 
@@ -47,7 +47,8 @@ sequenceDiagram
 |---|---|---|
 | **T0** | Leer, investigar, evaluar | Nadie; libre |
 | **T1** | Código o docs en este repo por PR | La misión + merge de Carlos |
-| **T2** | Llaves de API, deploy, servicios externos, datos reales | **Carlos, acción por acción** |
+| **T2 en perímetro** | Llamadas a la API dentro de un perímetro autorizado (proveedor, modelo, presupuesto, periodo) | Carlos, **una vez**, como `L4_DECISION` en el Issue |
+| **T2 fuera de perímetro** | Deploy, exponer algo a internet (p. ej. túneles), otro proveedor, datos reales, crear service accounts o vaults | **Carlos, acción por acción** |
 
 Un PASS en T1 **no** autoriza nada de T2.
 
@@ -62,7 +63,7 @@ Un PASS en T1 **no** autoriza nada de T2.
 Detente, reporta en el Issue y espera decisión si:
 
 - Vas a tocar algo fuera de tu superficie.
-- Aparece un secreto o una credencial expuesta.
+- Aparece un secreto o una credencial expuesta, o un valor de secreto fuera de 1Password.
 - La acción es T2 y no tiene el ok de Carlos.
 - No está claro quién tiene la autoridad.
 
@@ -75,4 +76,16 @@ EXACT_HEAD:
 QUÉ HICE:
 CÓMO PROBARLO:
 QUÉ FALTA / RIESGOS:
+```
+
+## 8. Perímetro T2 (plantilla de `L4_DECISION`)
+
+```text
+L4_DECISION · PERÍMETRO T2
+PROVEEDOR:      (p. ej. OpenAI)
+MODELOS:        (p. ej. los que fije el RELEASE)
+PRESUPUESTO:    (tope en USD)
+PERIODO:        (p. ej. 2026-11-09 12:00–17:00 CDMX)
+SECRETO:        op://<vault>/<item>/<campo> (1Password)
+FUERA DE ALCANCE: deploy, túneles, otros proveedores, datos reales
 ```
