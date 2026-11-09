@@ -67,3 +67,55 @@ consumo de suscripción Codex no está disponible y no se estima. El rol Scribe
 del desarrollo registra las causas/lecciones del ciclo de implementación por
 separado del ledger sintético del **producto**; estos eventos de demo no son
 telemetría real de Codex.
+
+## Misión 2 · Loop editorial V0 con gate humano
+
+```bash
+python3 experiments/demo_editorial.py
+python3 experiments/demo_editorial.py --output-dir /tmp
+```
+
+La demo usa solo datos sintéticos y un gate **simulado**, atribuido a
+`fixture_simulated`, nunca a Carlos. V1 omite deliberadamente los hechos
+`must_keep`; proposed/rejected no cambian el texto. Solo approved con referencia
+habilita la regla por scope y nota. B− y B+ corren en procesos nuevos, con la
+misma nota y checker: retención = hechos críticos presentes **y citados** / total.
+Se espera 0 frente a 1.0, sin afirmar calidad editorial general ni mejora de LLM.
+
+CLI en vivo (desde la raíz; guardar los IDs que devuelve cada comando):
+
+```bash
+EDITORIAL_RUN=$(mktemp -d /tmp/scribe-editorial-live-XXXXXX)
+python3 src/scribe_editorial.py draft --note experiments/fixtures/synthetic_note_001.json --lessons "$EDITORIAL_RUN/lessons.jsonl" --session-id live-v1 --out "$EDITORIAL_RUN/draft.json"
+python3 src/scribe_editorial.py feedback --draft "$EDITORIAL_RUN/draft.json" --reviewer carlos --rating 2 --comment "Falta el dato sintético de 4 semanas" --target-facts f1 --feedback-log "$EDITORIAL_RUN/feedback.jsonl"
+EDITORIAL_FEEDBACK_ID=$(python3 -c 'import json,sys; print(json.loads(open(sys.argv[1], encoding="utf-8").read().split("\n")[0])["feedback_id"])' "$EDITORIAL_RUN/feedback.jsonl")
+python3 src/scribe_editorial.py propose --feedback "$EDITORIAL_FEEDBACK_ID" --feedback-log "$EDITORIAL_RUN/feedback.jsonl" --lessons "$EDITORIAL_RUN/lessons.jsonl"
+EDITORIAL_LESSON_ID=$(python3 -c 'import json,sys; print(json.loads(open(sys.argv[1], encoding="utf-8").read().split("\n")[0])["lesson_id"])' "$EDITORIAL_RUN/lessons.jsonl")
+python3 src/scribe_editorial.py approve --lesson-id "$EDITORIAL_LESSON_ID" --approval-ref fixture:demo-control --approved-by fixture_simulated --lessons "$EDITORIAL_RUN/lessons.jsonl"
+python3 src/scribe_editorial.py compare --note experiments/fixtures/synthetic_note_001.json --lessons "$EDITORIAL_RUN/lessons.jsonl" --session-prefix live-control
+# Para retirar la lección (agrega una versión rejected):
+python3 src/scribe_editorial.py reject --lesson-id "$EDITORIAL_LESSON_ID" --lessons "$EDITORIAL_RUN/lessons.jsonl"
+```
+
+El reviewer real se usa solo si esa persona dio el feedback; para ensayar,
+cambiar `--reviewer carlos` por `--reviewer fixture_simulated`. `--correction`
+es opcional. Para aprobación real, indicar `--approved-by nombre` y una
+`--approval-ref` de decisión/PR real; el CLI registra la declaración y **no
+verifica GitHub ni autentica al humano**. Las referencias `fixture:` exigen
+`fixture_simulated`. Ninguna aprobación autoriza publicar ni llama servicios.
+
+`draft --out` crea además `<out>.note.json`; `feedback` conserva nota y borrador
+en `<feedback-log>.context/`. Mantener estos archivos junto al log permite a
+`propose` verificar IDs y hechos sin añadir campos a los schemas. `--feedback`
+admite ID o ruta a un feedback JSON ya registrado en ese log; no acepta
+feedback sin provenance. Sin `--out`, draft imprime JSON; sin `--feedback-log`,
+el intake usa `./feedback.jsonl`. No se sobrescriben salidas existentes.
+
+JSONL UTF-8, separado solo por LF, validado completo antes del append; no se
+repara ni trunca. La aprobación agrega una versión y B+ registra `lesson_id@vN`;
+la versión vigente rejected impide reutilizar aprobaciones anteriores. Un
+snapshot aprobado importado también debe satisfacer el contrato y gate.
+Un escritor secuencial, sin garantías transaccionales entre log y auxiliares;
+no usar secretos, prompts internos ni datos reales. La etiqueta synthetic no
+es un detector de información sensible. Salidas: 0 éxito, 1 chequeo/demo FAIL,
+2 entrada/estado inválido con JSON `outcome=invalid`, sin traceback.
