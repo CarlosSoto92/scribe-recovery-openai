@@ -37,15 +37,19 @@ git clone https://github.com/CarlosSoto92/scribe-recovery-openai.git
 cd scribe-recovery-openai
 ```
 
-Las instrucciones de instalación se agregan cuando se fije el stack. Nunca subas llaves ni secretos: usa un archivo `.env` local (ya está en `.gitignore`).
+Las instrucciones de instalación se agregan cuando se fije el stack. El prototipo (Fase 0) corre solo con la suscripción de Codex y no necesita llaves. En la fase funcional (Fase 1) las llaves se inyectan con 1Password (`op run --env-file=.env.example -- <comando>`); nunca subas llaves ni secretos.
 
-## Equipo
+## Squad
 
-- **Carlos Soto Santis**: decisiones finales y producto.
-- **CTO Sintético**: arquitectura, mandatos técnicos y evaluación.
-- **Codex (OpenAI)**: implementación.
-- **Antigravity**: conocimiento del entorno LT-01.
-- **Hack Ops**: operaciones y coordinación del hackathon.
+Este repo también es el experimento de cómo opera un squad de agentes. **Codex ejecuta; el resto ordena su harness.**
+
+- **Carlos (L4):** decide y hace merge.
+- **CTO Sintético (ChatGPT Cloud):** dirección técnica, investigación y coordinación de agentes.
+- **Codex:** ejecuta y opera a los agentes empleados del proyecto.
+- **Antigravity:** experto en el nodo LT01; optimiza la superficie donde corre Codex.
+- **Hack Ops (Grok Bot):** operación híbrida nube + LT01, revisión, bitácora y demo.
+
+Si eres un agente: empieza por [`AGENTS.md`](AGENTS.md), luego [`docs/SQUAD.md`](docs/SQUAD.md) y [`docs/SQUAD_PROTOCOL.md`](docs/SQUAD_PROTOCOL.md).
 
 ## Licencia
 

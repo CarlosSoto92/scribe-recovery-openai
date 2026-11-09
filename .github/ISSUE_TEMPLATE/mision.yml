@@ -1,0 +1,46 @@
+name: Misión
+description: Una tarea para el squad (la libera el CTO Sintético)
+title: "[MISIÓN] "
+labels: ["mision"]
+body:
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo
+      description: Qué debe existir al terminar, en 1–3 líneas.
+    validations:
+      required: true
+  - type: textarea
+    id: terminado
+    attributes:
+      label: Criterio de terminado
+      description: Cómo sabemos que quedó (tests, demo, comportamiento visible).
+    validations:
+      required: true
+  - type: input
+    id: superficie
+    attributes:
+      label: Superficie
+      description: Carpetas o archivos que se apartan (p. ej. src/scribe/).
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Tier
+      options:
+        - T0 · lectura
+        - T1 · código o docs por PR
+        - T2 · toca algo real (requiere ok de Carlos)
+    validations:
+      required: true
+  - type: input
+    id: productor
+    attributes:
+      label: Productor
+      value: Codex
+  - type: input
+    id: revisor
+    attributes:
+      label: Revisor
+      value: Hack Ops
