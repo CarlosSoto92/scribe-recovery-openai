@@ -11,7 +11,7 @@ flowchart TB
     HO["Hack Ops · Grok Bot<br/>docs, Issues, revisión, bitácora, demo<br/>coordina Cursor · GitHub: antonda2025-lab"]
     CR["Cursor · revisor externo<br/>read-only · SHA exacto"]
     AG["Antigravity · LT01<br/>opera el entorno del nodo<br/>sin producto ni T2 implícito"]
-    CX["Codex · LT01<br/>T1 productor · único ejecutor MVP<br/>GitHub: Quark-lab-diimenet"]
+    CX["Codex · LT01<br/>T1 productor · único ejecutor MVP<br/>GitHub: cuenta de laboratorio del nodo"]
     subgraph EMP["Agentes empleados · uno a la vez"]
         B["Builder"] --> T["Tester"] --> S["Scribe"]
     end

@@ -144,3 +144,11 @@ es un detector de información sensible. Salidas: 0 éxito, 1 chequeo/demo FAIL,
 M2d: `python3 experiments/demo_codex_writer.py --dry-run` ejecuta el control offline; `python3 experiments/demo_codex_writer.py` usa Codex real (solo operador). Skills, eventos y salidas quedan en `/tmp`; gate fixture simulado, checker literal, N=1 por rama, sin inferencia estadística ni prueba automática de lectura de la skill.
 
 Web V0: `python3 experiments/webapp.py --db /tmp/scribe-web.db` (puerto 8765, `--port` opcional; **127.0.0.1 only**, DB fuera del repo; Ctrl+C para cerrar).
+
+## Demo estática (GitHub Pages)
+
+```bash
+python3 experiments/export_static_demo.py
+```
+
+Escribe `docs/demo/index.html` a partir del mismo flujo y fixtures que la mini web.

@@ -122,7 +122,7 @@ class CodexWriterTests(unittest.TestCase):
         self.assertEqual([call.args[0] for call in run.call_args_list], [["codex", "--version"]])
         self.assertFalse(result["B−"]["passed"])
         self.assertTrue(result["B+"]["passed"])
-        for excerpt in ("DRY-RUN", "B−: f1 OMITIDO · check FAIL",
+        for excerpt in ("DRY-RUN", "B−: f1 SIN MATCH LITERAL · check FAIL",
                         "B+: f1 PRESENTE + cita · check PASS", "N=1", "fixture_simulated"):
             self.assertIn(excerpt, output.getvalue())
         manifest_path = next(self.directory.glob("workspace-*/run.json"))
@@ -150,7 +150,7 @@ class CodexWriterTests(unittest.TestCase):
                                 capture_output=True, encoding="utf-8", timeout=20,
                                 env=dict(os.environ, PATH="/nonexistent"))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("B−: f1 OMITIDO · check FAIL", result.stdout)
+        self.assertIn("B−: f1 SIN MATCH LITERAL · check FAIL", result.stdout)
         self.assertIn("B+: f1 PRESENTE + cita · check PASS", result.stdout)
         self.assertEqual(snapshot(), before)
         # Limpiar solo la corrida aislada que este test creó.

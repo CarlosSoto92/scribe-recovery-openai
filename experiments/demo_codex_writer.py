@@ -222,7 +222,7 @@ def demonstrate(directory, dry_run=False):
             if fact["must_keep"]:
                 cited = fact["fact_id"] in result["check"]["retained_fact_ids"]
                 status = ("PRESENTE + cita" if cited else
-                          "PRESENTE sin cita" if fact["text"] in text else "OMITIDO")
+                          "PRESENTE sin cita" if fact["text"] in text else "SIN MATCH LITERAL")
                 print(f'{label}: {fact["fact_id"]} {status} · check {"PASS" if result["passed"] else "FAIL"}')
     print("Checker literal + cita exacta; paráfrasis pueden fallar. Skill materializada ≠ uso probado.")
     print("N=1: sin inferencia estadística ni evaluación de calidad editorial general.")
