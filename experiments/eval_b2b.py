@@ -2,6 +2,7 @@
 
 `--writer stub` usa el writer determinista y regenera el JSON y docs/EVAL.md.
 `--replay DIR` puntúa salidas grabadas y falla con código 2 si un hash no coincide.
+Un replay con pares completos y C3 actualiza el marcador sin cambiar el stub.
 
 No llama a un modelo. El 0 % → 100 % del stub prueba el mecanismo, no un LLM.
 """
@@ -282,6 +283,41 @@ def build_report():
     }
 
 
+def recorded_markdown(recorded):
+    if not recorded.get("runs") or recorded["status"] != "grabado":
+        return [f"**{recorded['status']}.**", "", recorded["note"]]
+    signs = recorded["sign_test"]
+    lines = [
+        f"**{recorded['label']}**. CLI exacto: {recorded['codex_version']}. "
+        f"N = {recorded['n']} corridas; cada repetición cuenta como un ensayo.",
+        "",
+        f"Fecha UTC: {recorded['date_utc']}. Operador: {recorded['operator']}. "
+        f"Fuente: `experiments/recorded/{recorded['source']}/`.",
+        "",
+        "| Condición | Conformes | Tasa | Wilson 95 % |",
+        "| --- | --- | --- | --- |",
+    ]
+    for key in ("B-", "B+", "C3"):
+        rate = recorded[key]
+        lines.append(f"| {key} | {rate['fraction']} | {rate['rate_display']} | {rate['wilson95']['display']} |")
+    lines += [
+        "",
+        f"Signos bilaterales, pares por (doc_type, case, rep): {signs['improved']} mejoran, "
+        f"{signs['worsened']} empeoran y {signs['ties']} empatan. "
+        f"Los empates se excluyen: n = {signs['n']}, p bilateral = {signs['p_two_sided']}.",
+        "",
+        recorded["control_note"],
+        "",
+        recorded["comparison"],
+        "",
+        "| Tipo | B- | B+ |",
+        "| --- | --- | --- |",
+    ]
+    for row in recorded["by_type"]:
+        lines.append(f"| {row['label']} | {row['B-']['fraction']} | {row['B+']['fraction']} |")
+    return lines + ["", *recorded["observations"], "", recorded["note"]]
+
+
 def render_markdown(report):
     held = report["held_out"]
     lines = [
@@ -315,10 +351,11 @@ def render_markdown(report):
         "python3 -m unittest discover -s experiments",
         "python3 experiments/eval_b2b.py --writer stub",
         "python3 experiments/record_codex_runs.py --dry-run --controls",
+        "python3 experiments/eval_b2b.py --replay experiments/recorded/codex-20261110",
         "```",
         "",
-        "La tercera orden no llama a Codex. La grabación real es del operador, "
-        "con ok de Carlos, y todavía no está hecha.",
+        "La tercera orden solo muestra un plan. El replay puntúa las salidas ya grabadas "
+        "sin red y actualiza este informe y el JSON. Regenerar el stub conserva las corridas reales.",
         "",
         "## Resultados del writer de demostración",
         "",
@@ -390,11 +427,7 @@ def render_markdown(report):
         "",
         "## Modelo real",
         "",
-        f"**{PENDING}.**",
-        "",
-        "No hay carpeta `experiments/recorded/codex-<fecha>/` con salidas y un manifiesto válido. "
-        "Cuando el operador las grabe, `python3 experiments/eval_b2b.py --replay <directorio>` "
-        "las puntúa sin red. Hasta entonces este informe no muestra cifras de Codex.",
+        *recorded_markdown(report["codex_recorded"]),
         "",
         "## Límites honestos",
         "",
@@ -409,15 +442,87 @@ def render_markdown(report):
     return "\n".join(lines)
 
 
-def write_stub():
+def write_report(report):
     import json
-    report = build_report()
     text = json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     markdown = render_markdown(report)
     RESULTS.parent.mkdir(parents=True, exist_ok=True)
     RESULTS.write_text(text, encoding="utf-8")
     EVAL_MD.write_text(markdown, encoding="utf-8")
     return report
+
+
+def write_stub():
+    import json
+    report = build_report()
+    if RESULTS.is_file():
+        recorded = json.loads(RESULTS.read_text(encoding="utf-8")).get("codex_recorded", {})
+        if recorded.get("runs") and recorded.get("status") == "grabado":
+            report["codex_recorded"] = recorded
+    return write_report(report)
+
+
+def summarize_recorded(replayed):
+    """Cuenta ensayos, sin colapsar repeticiones ni emparejar por posición."""
+    runs = replayed["runs"]
+    grouped = {key: [run for run in runs if run["condition"] == key]
+               for key in ("B-", "B+", "C3")}
+
+    def rate(rows, key):
+        return rate_block([{"conditions": {key: row}} for row in rows], key) if rows else None
+
+    pairs = {}
+    for run in runs:
+        if run["condition"] in ("B-", "B+"):
+            pairs.setdefault((run["doc_type"], run["case"], run["rep"]), {})[run["condition"]] = run
+    paired = bool(pairs) and all(set(pair) == {"B-", "B+"} for pair in pairs.values())
+    signs = None
+    if paired:
+        improved = sum(pair["B+"]["compliant"] and not pair["B-"]["compliant"] for pair in pairs.values())
+        worsened = sum(pair["B-"]["compliant"] and not pair["B+"]["compliant"] for pair in pairs.values())
+        signs = {**sign_test(improved, worsened), "ties": len(pairs) - improved - worsened}
+    by_type = []
+    for kind in b2b.DOC_TYPES:
+        rows = {key: [run for run in grouped[key] if run["doc_type"] == kind] for key in ("B-", "B+")}
+        if rows["B-"] and rows["B+"]:
+            by_type.append({"doc_type": kind, "label": b2b.DOC_LABEL[kind],
+                            **{key: rate(rows[key], key) for key in rows}})
+    version = replayed["codex_version"].removeprefix("codex-cli ")
+    label_version = version.removesuffix(".0")
+    summary = {
+        "status": "grabado" if paired and grouped["C3"] else "incompleto",
+        "label": f"Codex (codex-cli {label_version}, suscripción ChatGPT)",
+        **{key: replayed[key] for key in ("source", "codex_version", "date_utc", "operator", "runs")},
+        "n": len(runs),
+        **{key: rate(rows, key) for key, rows in grouped.items()},
+        "sign_test": signs,
+        "by_type": by_type,
+        "control_note": "C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; "
+                        "no es el control de texto idéntico al stub ni demuestra ausencia de regresión.",
+        "note": "Muestra pequeña: una versión del CLI, un día y un operador. "
+                "Generación no determinista; las repeticiones de una misma nota no son del todo independientes. "
+                "El checker es un regex y no mide calidad editorial general.",
+        "observations": [],
+    }
+    if paired:
+        stub = build_report()["held_out"]
+        worse = Decimal(summary["B+"]["rate"]) < Decimal(stub["B+"]["rate"])
+        summary["worse_than_stub"] = worse
+        summary["comparison"] = (
+            f"Stub determinista: {stub['B-']['fraction']} → {stub['B+']['fraction']}; "
+            f"Codex: {summary['B-']['fraction']} → {summary['B+']['fraction']}. "
+            + ("En esta grabación Codex sale peor que el writer determinista con lección. " if worse else
+               "Codex alcanza la tasa del writer determinista con lección en esta grabación. ")
+            + "El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo."
+        )
+    for row in by_type:
+        if Decimal(row["B+"]["rate"]) < Decimal(row["B-"]["rate"]):
+            summary["observations"].append(
+                f"En {row['doc_type']}, B+ sale peor que B-: "
+                f"{row['B-']['fraction']} → {row['B+']['fraction']}. "
+                "El checker es un regex; estos números no identifican la causa."
+            )
+    return summary
 
 
 def _utc(value):
@@ -448,10 +553,22 @@ def replay(directory):
         raise b2b.ed.Invalid("el manifiesto conserva una ruta de usuario")
     packs = library()
     scored = []
+    seen = set()
     for run in manifest["runs"]:
         for key in ("doc_type", "case", "condition", "rep", "file", "note_sha256", "skill_sha256", "output_sha256"):
             if key not in run:
                 raise b2b.ed.Invalid("corrida incompleta")
+        identity = (run["doc_type"], run["case"], run["rep"], run["condition"])
+        if identity in seen:
+            raise b2b.ed.Invalid("ensayo duplicado en el manifiesto")
+        seen.add(identity)
+        condition, kind, skill = run["condition"], run["doc_type"], run.get("skill_doc_type")
+        if condition not in ("B-", "B+", "C3") or (
+            (condition == "B-" and skill is not None)
+            or (condition == "B+" and skill != kind)
+            or (condition == "C3" and (not skill or skill == kind))
+        ):
+            raise b2b.ed.Invalid("condición y tipo de skill incompatibles")
         path = directory / run["file"]
         if not path.is_file() or path.parent.resolve() != directory.resolve():
             raise b2b.ed.Invalid("falta la salida grabada")
@@ -481,7 +598,7 @@ def replay(directory):
             "total": check["total"],
             "failures": check["failures"],
         })
-    return {
+    report = {
         "schema_version": "eval_b2b_replay.v1",
         "source": directory.name,
         "codex_version": manifest["codex_version"],
@@ -490,6 +607,8 @@ def replay(directory):
         "runs": scored,
         "note": "Puntuación offline de salidas grabadas. La generación no es determinista.",
     }
+    report["codex_recorded"] = summarize_recorded(report)
+    return report
 
 
 def json_command(manifest):
@@ -508,6 +627,10 @@ def main(argv=None):
             raise b2b.ed.Invalid("elige --writer stub o --replay")
         if args.replay:
             report = replay(args.replay)
+            if report["codex_recorded"]["status"] == "grabado":
+                scoreboard = build_report()
+                scoreboard["codex_recorded"] = report["codex_recorded"]
+                write_report(scoreboard)
             print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
             return 0
         report = write_stub()

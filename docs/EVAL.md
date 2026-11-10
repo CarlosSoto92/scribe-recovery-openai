@@ -18,9 +18,10 @@ El intervalo es de Wilson al 95 %. La prueba de signos es exacta y bilateral; lo
 python3 -m unittest discover -s experiments
 python3 experiments/eval_b2b.py --writer stub
 python3 experiments/record_codex_runs.py --dry-run --controls
+python3 experiments/eval_b2b.py --replay experiments/recorded/codex-20261110
 ```
 
-La tercera orden no llama a Codex. La grabación real es del operador, con ok de Carlos, y todavía no está hecha.
+La tercera orden solo muestra un plan. El replay puntúa las salidas ya grabadas sin red y actualiza este informe y el JSON. Regenerar el stub conserva las corridas reales.
 
 ## Resultados del writer de demostración
 
@@ -354,9 +355,33 @@ Con la lección approved, los 15 casos retenidos cumplen. Eso lo hace el writer 
 
 ## Modelo real
 
-**pendiente: corridas de Codex por grabar.**
+**Codex (codex-cli 0.167, suscripción ChatGPT)**. CLI exacto: 0.167.0. N = 65 corridas; cada repetición cuenta como un ensayo.
 
-No hay carpeta `experiments/recorded/codex-<fecha>/` con salidas y un manifiesto válido. Cuando el operador las grabe, `python3 experiments/eval_b2b.py --replay <directorio>` las puntúa sin red. Hasta entonces este informe no muestra cifras de Codex.
+Fecha UTC: 2026-11-10T12:58:24.523613Z. Operador: Hack Ops. Fuente: `experiments/recorded/codex-20261110/`.
+
+| Condición | Conformes | Tasa | Wilson 95 % |
+| --- | --- | --- | --- |
+| B- | 10/30 | 33.3 % | 19.2 % – 51.2 % |
+| B+ | 19/30 | 63.3 % | 45.5 % – 78.1 % |
+| C3 | 2/5 | 40.0 % | 11.8 % – 76.9 % |
+
+Signos bilaterales, pares por (doc_type, case, rep): 11 mejoran, 2 empeoran y 17 empatan. Los empates se excluyen: n = 13, p bilateral = 0.0224609375.
+
+C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.
+
+Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.
+
+| Tipo | B- | B+ |
+| --- | --- | --- |
+| Cotización | 1/6 | 6/6 |
+| Propuesta técnica | 0/6 | 5/6 |
+| Ficha técnica | 1/6 | 0/6 |
+| Reporte a cliente | 6/6 | 6/6 |
+| Respuesta de soporte | 2/6 | 2/6 |
+
+En ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
+
+Muestra pequeña: una versión del CLI, un día y un operador. Generación no determinista; las repeticiones de una misma nota no son del todo independientes. El checker es un regex y no mide calidad editorial general.
 
 ## Límites honestos
 

@@ -1,0 +1,15 @@
+Propuesta técnica ficticia para revisión humana
+
+Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+Dirigida a: Cliente Demo 03
+
+La presente propuesta describe una válvula de demostración y su actuador. La tubería queda fuera del alcance.
+
+Los datos técnicos consignados son:
+
+- Par de operación: 40 N·m (Ref. FT-330).
+- Ciclos de prueba: 5000 (Ref. FT-331).
+
+No se incluyen precios ni plazos; el documento se limita a describir el equipo.
+
+Este documento utiliza datos ficticios y se prepara únicamente para mostrar una corrección interna. No constituye una oferta, un dictamen ni una promesa hacia terceros, ni corresponde a una empresa, persona, pedido u operación reales.

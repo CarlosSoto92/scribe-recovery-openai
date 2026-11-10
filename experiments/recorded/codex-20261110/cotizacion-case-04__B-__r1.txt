@@ -1,0 +1,31 @@
+# COTIZACIÓN FICTICIA
+**Borrador para revisión humana**
+
+**Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)**  
+RFC: FICT000101AAA  
+Ciudad Ejemplo del Bajío (dirección ficticia)  
+Correo: ventas@valvulas-ejemplo.example  
+Teléfono: +52 000 000 0000
+
+**Cliente:** Cliente Demo 04  
+**Correo:** compras@cliente-demo-04.example
+
+Este documento se preparó únicamente para mostrar una corrección interna. Los datos son ficticios y no corresponden a una operación real. No constituye una oferta, un dictamen ni una promesa hacia un tercero.
+
+## Conceptos e importes
+
+| Concepto | Cantidad | Importe indicado (MXN) |
+|---|---:|---:|
+| Actuador neumático de demostración | 2 | 14,900.00 |
+| Kit de montaje de demostración | 2 | 1,060.00 |
+| **Total** | | **15,960.00** |
+
+Los importes se reproducen conforme a la nota proporcionada; esta no especifica precios unitarios ni tratamiento de impuestos.
+
+## Condiciones comerciales
+
+- **Vigencia:** 15 días naturales.
+- **Pago:** 50 % anticipo, 50 % contra entrega.
+- **Entrega:** estimada en la planta del cliente ficticio, sin almacenaje ni obra civil. No se especifica plazo de entrega.
+
+**Uso exclusivo para revisión humana. No atribuir a una empresa, persona o pedido reales.**

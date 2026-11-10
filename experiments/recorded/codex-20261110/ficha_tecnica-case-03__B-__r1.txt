@@ -1,0 +1,31 @@
+# Ficha técnica
+## Sello mecánico serie DEMO-06
+
+**Documento ficticio para revisión humana**
+
+**Elaborado por:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**RFC:** FICT000101AAA  
+**Ubicación:** Ciudad Ejemplo del Bajío (dirección ficticia)  
+**Correo:** ventas@valvulas-ejemplo.example  
+**Teléfono:** +52 000 000 0000
+
+**Cliente:** Cliente Demo 03  
+**Correo:** compras@cliente-demo-03.example
+
+### Características técnicas
+
+| Concepto | Dato |
+|---|---|
+| Equipo | Sello mecánico serie DEMO-06 |
+| Aplicación | Agua limpia en un circuito de demostración |
+| Conexión | Brida de demostración |
+| Presión de trabajo | 6 bar (87 psi) |
+| Temperatura máxima | 40 °C |
+
+La descripción de la conexión no constituye un certificado ni una referencia a una norma.
+
+### Alcance del documento
+
+Este documento fue preparado por Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) únicamente para mostrar una corrección interna. El ejemplo permite repetir la misma corrección en documentos distintos, sin datos de una operación real.
+
+Todos los datos son ficticios, incluidos la empresa, el cliente, el equipo, la ubicación y los valores técnicos. Este documento no es una oferta, un dictamen ni una promesa hacia terceros, y no debe atribuirse a una empresa, persona o pedido reales.

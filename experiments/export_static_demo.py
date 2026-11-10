@@ -172,6 +172,34 @@ def esc(value):
     return html.escape(str(value), quote=True)
 
 
+def recorded_html(recorded):
+    if not recorded.get("runs") or recorded["status"] != "grabado":
+        return f"""<p data-figure="{esc(recorded['status'])}"><strong>{esc(recorded['status'])}</strong></p>
+      <p>{esc(recorded['note'])}</p>
+      <p>Grabado, N = pendiente. No hay intervalo porque no hay corridas.</p>"""
+    signs = recorded["sign_test"]
+    rows = []
+    for key, label in (("B-", "Sin lección (B-)"), ("B+", "Con lección (B+)"), ("C3", "Control C3")):
+        rate = recorded[key]
+        rows.append(
+            f'<p>{label}: <strong data-figure="{esc(rate["fraction"])}">{esc(rate["fraction"])}</strong> '
+            f'(<span data-figure="{esc(rate["rate_display"])}">{esc(rate["rate_display"])}</span>, '
+            f'Wilson 95 % <span data-figure="{esc(rate["wilson95"]["display"])}">{esc(rate["wilson95"]["display"])}</span>).</p>'
+        )
+    return f"""<p><strong data-figure="{esc(recorded['label'])}">{esc(recorded['label'])}</strong></p>
+      <p>N = {esc(recorded['n'])} corridas; cada repetición cuenta como un ensayo.</p>
+      <p>CLI exacto: {esc(recorded['codex_version'])}. Fecha UTC: {esc(recorded['date_utc'])}.
+      Operador: {esc(recorded['operator'])}. Fuente: {esc(recorded['source'])}.</p>
+      {''.join(rows)}
+      <p>Prueba de signos bilateral, pares por (doc_type, case, rep):
+      {esc(signs['improved'])} mejoran, {esc(signs['worsened'])} empeoran, {esc(signs['ties'])} empatan.
+      Sin los empates: n = {esc(signs['n'])}, p bilateral = {esc(signs['p_two_sided'])}.</p>
+      <p>{esc(recorded['control_note'])}</p>
+      <p>{esc(recorded['comparison'])}</p>
+      {''.join('<p>' + esc(note) + '</p>' for note in recorded['observations'])}
+      <p>{esc(recorded['note'])}</p>"""
+
+
 def render_corrige(report):
     """Página estática. Los números salen del JSON de la evaluación."""
     company = report["demo"]["company"]
@@ -404,10 +432,8 @@ pre {{ white-space: pre-wrap; overflow-wrap: anywhere; font: 16px/1.45 ui-monosp
   </section>
   <section id="modelo-real">
     <h2>Con un modelo real</h2>
-    <div class="pending">
-      <p data-figure="{esc(report["codex_recorded"]["status"])}"><strong>{esc(report["codex_recorded"]["status"])}</strong></p>
-      <p>{esc(report["codex_recorded"]["note"])}</p>
-      <p>Grabado, N = pendiente. No hay intervalo porque no hay corridas.</p>
+    <div class="note">
+      {recorded_html(report["codex_recorded"])}
       <p><a href="../EVAL.md">Ver la metodología</a> · <a href="../LIMITATIONS.md">Ver los límites</a></p>
     </div>
   </section>

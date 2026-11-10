@@ -52,8 +52,8 @@ class EvalTests(unittest.TestCase):
         for name in ("C1", "C2", "C3", "C4"):
             self.assertTrue(report["controls"][name]["pass"], name)
         self.assertEqual(report["train_case_1"]["B-"]["n"], 5)
-        self.assertEqual(report["codex_recorded"]["status"], ev.PENDING)
-        self.assertIsNone(report["codex_recorded"]["runs"])
+        self.assertEqual(report["codex_recorded"]["status"], "grabado")
+        self.assertEqual(len(report["codex_recorded"]["runs"]), 65)
         quote = next(row for row in report["cases"] if row["note_id"] == "b2b-cotizacion-02")
         self.assertNotIn(b2b.CLAUSE_VIGENCIA, quote["conditions"]["B-"]["text"])
         self.assertIn(b2b.CLAUSE_PAGO, quote["conditions"]["B+"]["text"])
@@ -71,11 +71,89 @@ class EvalTests(unittest.TestCase):
         self.assertIn(report["held_out"]["B-"]["fraction"], markdown)
         self.assertIn(report["held_out"]["B+"]["wilson95"]["display"], markdown)
         self.assertIn(report["held_out"]["sign_test"]["p_two_sided"], markdown)
-        self.assertIn(ev.PENDING, markdown)
+        recorded = report["codex_recorded"]
+        self.assertNotIn(ev.PENDING, markdown)
+        self.assertIn(recorded["label"], markdown)
+        for key in ("B-", "B+", "C3"):
+            for value in (recorded[key]["fraction"], recorded[key]["rate_display"], recorded[key]["wilson95"]["display"]):
+                self.assertIn(value, markdown)
+        self.assertIn(recorded["sign_test"]["p_two_sided"], markdown)
         self.assertIn("prueba de mecanismo", markdown)
         held = next(row for row in report["cases"] if row["held_out"])
         self.assertIn(held["conditions"]["B-"]["failures"][0], markdown)
         self.assertIn(held["conditions"]["B-"]["text"].splitlines()[0], markdown)
+
+    def test_recorded_counts_each_rep_and_matches_exact_statistics(self):
+        directory = ROOT / "experiments" / "recorded" / "codex-20261110"
+        manifest = json.loads((directory / "MANIFEST.json").read_text(encoding="utf-8"))
+        recorded = ev.replay(directory)["codex_recorded"]
+        saved = json.loads(RESULTS.read_text(encoding="utf-8"))["codex_recorded"]
+        self.assertEqual(recorded, saved)
+        self.assertEqual(recorded["label"], "Codex (codex-cli 0.167, suscripción ChatGPT)")
+        self.assertEqual(recorded["source"], directory.name)
+        self.assertEqual(recorded["n"], 65)
+        self.assertEqual(recorded["codex_version"], "0.167.0")
+        for field in ("operator", "date_utc", "codex_version"):
+            self.assertEqual(recorded[field], manifest[field])
+        for key, k, n, rate, display in (
+            ("B-", 10, 30, "33.3 %", "19.2 % – 51.2 %"),
+            ("B+", 19, 30, "63.3 %", "45.5 % – 78.1 %"),
+            ("C3", 2, 5, "40.0 %", "11.8 % – 76.9 %"),
+        ):
+            rows = [{"conditions": {key: run}} for run in recorded["runs"] if run["condition"] == key]
+            self.assertEqual(recorded[key], ev.rate_block(rows, key))
+            self.assertEqual(recorded[key]["fraction"], f"{k}/{n}")
+            self.assertEqual(recorded[key]["rate_display"], rate)
+            self.assertEqual(recorded[key]["wilson95"], ev.interval(k, n))
+            self.assertEqual(recorded[key]["wilson95"]["display"], display)
+        self.assertEqual(recorded["sign_test"], {**ev.sign_test(11, 2), "ties": 17})
+        self.assertEqual(recorded["sign_test"]["p_two_sided"], "0.0224609375")
+        self.assertTrue(recorded["worse_than_stub"])
+        self.assertIn("Codex sale peor", recorded["comparison"])
+        ficha = next(row for row in recorded["by_type"] if row["doc_type"] == "ficha_tecnica")
+        self.assertEqual((ficha["B-"]["fraction"], ficha["B+"]["fraction"]), ("1/6", "0/6"))
+        self.assertIn("skill de OTRO tipo", recorded["control_note"])
+
+    def test_sign_pairs_use_doc_type_case_and_rep_not_run_order(self):
+        # En el orden dado, emparejar por posición convertiría los dos empates en cambios.
+        rows = []
+        for kind, case, rep, condition, ok in (
+            ("cotizacion", 2, 1, "B-", False),
+            ("cotizacion", 2, 2, "B-", True),
+            ("cotizacion", 3, 1, "B-", True),
+            ("propuesta_tecnica", 2, 1, "B-", False),
+            ("cotizacion", 2, 2, "B+", True),
+            ("propuesta_tecnica", 2, 1, "B+", True),
+            ("cotizacion", 3, 1, "B+", False),
+            ("cotizacion", 2, 1, "B+", False),
+        ):
+            rows.append({"doc_type": kind, "case": case, "rep": rep, "condition": condition,
+                         "compliant": ok, "met": int(ok), "total": 1})
+        replayed = {"runs": rows, "codex_version": "test", "source": "test",
+                    "date_utc": "2026-11-10T15:00:00Z", "operator": "test"}
+        self.assertEqual(ev.summarize_recorded(replayed)["sign_test"], {**ev.sign_test(1, 1), "ties": 2})
+        replayed["runs"] = rows[:-1]
+        self.assertIsNone(ev.summarize_recorded(replayed)["sign_test"])
+        self.assertEqual(ev.summarize_recorded(replayed)["status"], "incompleto")
+
+    def test_replay_cli_persists_statistics_and_stub_preserves_them(self):
+        results, markdown = self.directory / "eval.json", self.directory / "EVAL.md"
+        with patch.object(ev, "RESULTS", results), patch.object(ev, "EVAL_MD", markdown), redirect_stdout(StringIO()) as output:
+            self.assertEqual(ev.main(["--replay", str(ROOT / "experiments/recorded/codex-20261110")]), 0)
+            printed = json.loads(output.getvalue())
+            persisted = json.loads(results.read_text(encoding="utf-8"))
+            self.assertEqual(printed["codex_recorded"], persisted["codex_recorded"])
+            before = (results.read_bytes(), markdown.read_bytes())
+            ev.write_stub()
+            self.assertEqual(before, (results.read_bytes(), markdown.read_bytes()))
+
+    def test_stub_without_recorded_runs_still_renders_pending(self):
+        with patch.object(ev, "RESULTS", self.directory / "eval.json"), \
+                patch.object(ev, "EVAL_MD", self.directory / "EVAL.md"):
+            report = ev.write_stub()
+            self.assertEqual(report["codex_recorded"]["status"], ev.PENDING)
+            self.assertIsNone(report["codex_recorded"]["runs"])
+            self.assertIn(ev.PENDING, ev.render_markdown(report))
 
     def test_replay_checks_hashes_and_scores_without_a_model(self):
         note_path = rec.fixture_path("cotizacion", 2)
@@ -98,10 +176,23 @@ class EvalTests(unittest.TestCase):
         scored = ev.replay(folder)
         self.assertTrue(scored["runs"][0]["compliant"])
         self.assertEqual(scored["codex_version"], "no-ejecutado")
+        self.assertEqual(scored["codex_recorded"]["status"], "incompleto")
+        before = (RESULTS.read_bytes(), EVAL.read_bytes())
+        with redirect_stdout(StringIO()):
+            self.assertEqual(ev.main(["--replay", str(folder)]), 0)
+        self.assertEqual(before, (RESULTS.read_bytes(), EVAL.read_bytes()))
+        manifest["runs"].append(dict(manifest["runs"][0]))
+        (folder / "MANIFEST.json").write_text(json.dumps(manifest), encoding="utf-8")
+        with self.assertRaisesRegex(ed.Invalid, "duplicado"):
+            ev.replay(folder)
+        manifest["runs"].pop()
         manifest["runs"][0]["skill_sha256"] = "0" * 64
         (folder / "MANIFEST.json").write_text(json.dumps(manifest), encoding="utf-8")
         with self.assertRaises(ed.Invalid):
             ev.replay(folder)
+        with redirect_stdout(StringIO()):
+            self.assertEqual(ev.main(["--replay", str(folder)]), 2)
+        self.assertEqual(before, (RESULTS.read_bytes(), EVAL.read_bytes()))
         example = json.loads((ROOT / "experiments" / "recorded" / "MANIFEST.example.json").read_text(encoding="utf-8"))
         self.assertTrue(example["example_only"])
         self.assertEqual(example["runs"], [])

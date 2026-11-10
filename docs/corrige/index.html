@@ -455,10 +455,19 @@ Pago: 50 % anticipo, 50 % contra entrega
   </section>
   <section id="modelo-real">
     <h2>Con un modelo real</h2>
-    <div class="pending">
-      <p data-figure="pendiente: corridas de Codex por grabar"><strong>pendiente: corridas de Codex por grabar</strong></p>
-      <p>No hay salidas de Codex en este resultado. No se inventan cifras de un modelo.</p>
-      <p>Grabado, N = pendiente. No hay intervalo porque no hay corridas.</p>
+    <div class="note">
+      <p><strong data-figure="Codex (codex-cli 0.167, suscripción ChatGPT)">Codex (codex-cli 0.167, suscripción ChatGPT)</strong></p>
+      <p>N = 65 corridas; cada repetición cuenta como un ensayo.</p>
+      <p>CLI exacto: 0.167.0. Fecha UTC: 2026-11-10T12:58:24.523613Z.
+      Operador: Hack Ops. Fuente: codex-20261110.</p>
+      <p>Sin lección (B-): <strong data-figure="10/30">10/30</strong> (<span data-figure="33.3 %">33.3 %</span>, Wilson 95 % <span data-figure="19.2 % – 51.2 %">19.2 % – 51.2 %</span>).</p><p>Con lección (B+): <strong data-figure="19/30">19/30</strong> (<span data-figure="63.3 %">63.3 %</span>, Wilson 95 % <span data-figure="45.5 % – 78.1 %">45.5 % – 78.1 %</span>).</p><p>Control C3: <strong data-figure="2/5">2/5</strong> (<span data-figure="40.0 %">40.0 %</span>, Wilson 95 % <span data-figure="11.8 % – 76.9 %">11.8 % – 76.9 %</span>).</p>
+      <p>Prueba de signos bilateral, pares por (doc_type, case, rep):
+      11 mejoran, 2 empeoran, 17 empatan.
+      Sin los empates: n = 13, p bilateral = 0.0224609375.</p>
+      <p>C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.</p>
+      <p>Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.</p>
+      <p>En ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.</p>
+      <p>Muestra pequeña: una versión del CLI, un día y un operador. Generación no determinista; las repeticiones de una misma nota no son del todo independientes. El checker es un regex y no mide calidad editorial general.</p>
       <p><a href="../EVAL.md">Ver la metodología</a> · <a href="../LIMITATIONS.md">Ver los límites</a></p>
     </div>
   </section>

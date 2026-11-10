@@ -1,0 +1,16 @@
+REPORTE DE VISITA DE DEMOSTRACIÓN
+Documento ficticio para revisión humana
+
+Empresa: Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+Cliente: Cliente Demo 02
+Correo del cliente: compras@cliente-demo-02.example
+
+Este documento se preparó únicamente para mostrar una corrección interna. Los datos son 100 % ficticios y no corresponden a una operación real. No constituye una oferta, un dictamen ni una promesa hacia terceros.
+
+Durante la visita de demostración al cliente ficticio se revisó el equipo instalado y se dejó constancia de lo observado.
+
+La válvula de demostración cierra; presenta un goteo en el empaque que conviene observar.
+
+Siguiente paso: Mesa Técnica Demo · 2026-11-23
+
+El ejemplo utiliza clientes, equipos y ciudades inventados para repetir la misma corrección en distintos documentos. No debe atribuirse a una empresa, persona o pedido reales.

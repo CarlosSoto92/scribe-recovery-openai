@@ -1,0 +1,28 @@
+# Propuesta técnica
+## Bomba para circuito de demostración
+
+**Documento ficticio para revisión humana**
+
+**Emisor:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**Destinatario:** Cliente Demo 02
+
+### Objeto y alcance
+
+Describir una bomba de menor caudal para un circuito de demostración. El tablero queda fuera del alcance.
+
+### Características técnicas
+
+| Parámetro | Valor | Referencia de origen |
+|---|---|---|
+| Caudal nominal | 45 m³/h | FT-210 |
+| Presión de descarga | 6 bar | FT-211 |
+
+### Condiciones
+
+Este documento solo describe el equipo. No incluye precios ni plazos.
+
+### Aviso sobre el carácter ficticio
+
+Este texto fue preparado únicamente para mostrar una corrección interna. Los datos de la empresa, el cliente, el equipo y las cifras son ficticios y no corresponden a una operación real.
+
+No constituye una oferta, un dictamen ni una promesa hacia terceros. No debe atribuirse a una empresa, persona o pedido reales.

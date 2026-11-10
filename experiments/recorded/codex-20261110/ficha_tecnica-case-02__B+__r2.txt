@@ -1,0 +1,26 @@
+# Ficha técnica — Válvula de globo serie DEMO-16
+
+**Empresa:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**Cliente:** Cliente Demo 02
+
+## Descripción del equipo
+
+Válvula de globo serie DEMO-16, para agua limpia en un circuito de demostración.
+
+## Características técnicas
+
+| Característica | Dato |
+|---|---|
+| Conexión | Brida de demostración |
+| Presión de trabajo | 16 bar (232 psi) |
+| Temperatura máxima | 120 °C |
+
+El dato de conexión no constituye un certificado ni una referencia normativa.
+
+## Alcance del documento
+
+Documento ficticio preparado por Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA), únicamente para mostrar una corrección interna y reproducirla en distintos documentos. Los datos corresponden a un ejemplo de demostración, sin relación con una operación real.
+
+Este documento no constituye una oferta, un dictamen ni una promesa hacia terceros. No debe atribuirse a una empresa, persona o pedido reales.
+
+**Para revisión humana.**

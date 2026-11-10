@@ -1,6 +1,6 @@
 # Límites
 
-El paso de 0 % a 100 % con el writer de demostración prueba el mecanismo y los controles. No prueba la calidad de un modelo. No hay, en este commit, corridas de Codex ni cifras de un LLM.
+El paso de 0 % a 100 % con el writer de demostración prueba el mecanismo y los controles. No prueba la calidad de un modelo. Ya hay 65 corridas de Codex (codex-cli 0.167, suscripción ChatGPT) en `experiments/recorded/codex-20261110/`. Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.
 
 ## 1. Los ejemplos los escribimos nosotros
 
@@ -14,13 +14,17 @@ Normaliza mayúsculas, espacios y el tipo de guion. No entiende paráfrasis. Un 
 
 Son convenciones de una casa ficticia. El experimento mide si el writer sigue una lección inyectada, no si conoce el mundo. El valor del ciclo está en la gobernanza: proponer, aprobar, versionar y retirar, y en poder medir ese ciclo.
 
-## 4. Quince casos es poco
+## 4. La muestra es pequeña
 
-La tasa usa 15 documentos que no participaron en crear la lección. El intervalo de Wilson sale ancho. No se infiere nada sobre empresas reales. Si más adelante hay repeticiones de un modelo, no serán del todo independientes.
+El stub usa 15 documentos que no participaron en crear la lección. Codex usa 30 ensayos B− y 30 B+ (cada repetición cuenta), más 5 controles C3. Las repeticiones de una misma nota no son del todo independientes. Los intervalos de Wilson son anchos; la prueba de signos excluye empates y empareja por (doc_type, case, rep). No se infiere nada sobre empresas reales.
+
+C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.
+
+En ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
 
 ## 5. Un modelo, una versión, una fecha
 
-Cuando existan corridas de Codex, serán las de una versión del CLI, un día y un operador. La generación no es determinista. Hoy esa carpeta no existe y el informe no rellena el hueco.
+Las corridas registran codex-cli 0.167.0, suscripción ChatGPT, fecha UTC 2026-11-10T12:58:24.523613Z y operador Hack Ops. Son una versión del CLI, un día y un operador. La generación no es determinista. El replay reproduce la puntuación de esas salidas, no su generación ni una garantía para futuras versiones.
 
 ## 6. Una lección por tipo
 
@@ -32,7 +36,7 @@ Los fixtures usan `fixture_simulated` y una referencia `fixture:`. La página pi
 
 ## 8. Las notas se tratan como datos
 
-No hay una prueba de seguridad contra instrucciones escondidas en el texto de la nota. El prompt de grabación, cuando se use, dice que la nota no se ejecuta. Eso no está medido.
+No hay una prueba de seguridad contra instrucciones escondidas en el texto de la nota. El prompt usado en la grabación dice que la nota no se ejecuta. Eso no está medido.
 
 ## Qué no afirma este repo
 

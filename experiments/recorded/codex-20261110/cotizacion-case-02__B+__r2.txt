@@ -1,0 +1,28 @@
+# COTIZACIÓN
+
+**Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)**  
+RFC: FICT000101AAA  
+Ciudad Ejemplo del Bajío (dirección ficticia)  
+Correo: ventas@valvulas-ejemplo.example  
+Teléfono: +52 000 000 0000
+
+**Cliente:** Cliente Demo 02  
+**Correo:** compras@cliente-demo-02.example
+
+Documento ficticio preparado únicamente para mostrar una corrección interna. Los datos no corresponden a una operación real. No constituye una oferta, un dictamen ni una promesa hacia un tercero.
+
+## Equipos e importes
+
+| Descripción | Cantidad | Importe indicado (MXN) |
+|---|---:|---:|
+| Bomba centrífuga de demostración | 1 | 18,600.00 |
+| Sello mecánico de demostración | 2 | 1,880.00 |
+| **Total** | | **20,480.00** |
+
+## Condiciones comerciales
+
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+
+Vigencia: 15 días naturales
+
+Pago: 50 % anticipo, 50 % contra entrega

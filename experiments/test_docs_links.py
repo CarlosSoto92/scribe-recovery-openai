@@ -1,6 +1,7 @@
 """Enlaces internos, números del README y nombres que no deben colarse."""
 
 from pathlib import Path
+import json
 import re
 import subprocess
 import unittest
@@ -73,12 +74,35 @@ class DocsTests(unittest.TestCase):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         section = readme.split("## Resultados", 1)[1].split("## ", 1)[0]
         raw = RESULTS.read_text(encoding="utf-8")
+        report = json.loads(raw)
         for number in re.findall(r"\d+(?:[.,]\d+)?", section):
             self.assertIn(number, raw, number)
-        for phrase in ("0/15", "15/15", "0.0 %", "100.0 %", "0.0 % – 20.4 %", "79.6 % – 100.0 %",
-                       "pendiente: corridas de Codex por grabar"):
+        phrases = []
+        for block, keys in ((report["held_out"], ("B-", "B+")), (report["codex_recorded"], ("B-", "B+", "C3"))):
+            for key in keys:
+                phrases += [block[key]["fraction"], block[key]["rate_display"], block[key]["wilson95"]["display"]]
+        for phrase in phrases:
             self.assertIn(phrase, section)
             self.assertIn(phrase, raw)
+        self.assertEqual(report["held_out"]["B-"]["fraction"], "0/15")
+        self.assertEqual(report["held_out"]["B+"]["fraction"], "15/15")
+        recorded = report["codex_recorded"]
+        for phrase in (recorded["label"], recorded["operator"], recorded["date_utc"],
+                       recorded["sign_test"]["p_two_sided"], recorded["comparison"], *recorded["observations"]):
+            self.assertIn(phrase, section)
+        self.assertIn(f"N = {recorded['n']}", section)
+
+    def test_docs_acknowledge_recorded_runs_and_their_limits(self):
+        report = json.loads(RESULTS.read_text(encoding="utf-8"))
+        recorded = report["codex_recorded"]
+        for name in ("README.md", "docs/EVAL.md", "docs/ARCHITECTURE.md", "docs/LIMITATIONS.md"):
+            text = (ROOT / name).read_text(encoding="utf-8")
+            for phrase in (recorded["source"], recorded["date_utc"], recorded["operator"], "regex"):
+                self.assertIn(phrase, text, name)
+            self.assertRegex(text, r"no (?:es )?determinista", name)
+            for stale in ("pendiente: corridas de Codex por grabar", "no grabado aún", "no hay salidas grabadas",
+                          "no está hecha", "Hoy esa carpeta no existe"):
+                self.assertNotIn(stale, text, name)
 
     def test_new_lines_keep_private_names_inside_the_frontier_notice(self):
         problems = []

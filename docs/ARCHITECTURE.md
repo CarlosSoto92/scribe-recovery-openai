@@ -14,7 +14,7 @@ flowchart LR
   N["doc_note.v1"] --> W{Writer}
   L["lesson.v2 approved del mismo doc_type"] --> W
   W -->|stub determinista| T[Texto]
-  W -->|Codex, no grabado aún| T
+  W -->|Codex, 65 corridas grabadas| T
   T --> C[Checker por rule_type]
   C --> R[Cumple o lista de fallos]
   H[Persona] -->|proposed a approved, o retira| L
@@ -30,7 +30,9 @@ flowchart LR
 
 ## Qué no lo es
 
-Una corrida de `codex exec`. El script `experiments/record_codex_runs.py` la deja lista para el operador y no se ejecuta en los tests. Hoy no hay salidas grabadas. El marcador dice `pendiente: corridas de Codex por grabar`.
+Una generación de `codex exec` no es determinista. El script `experiments/record_codex_runs.py` es del operador y no se ejecuta en los tests. Ya hay salidas grabadas en `experiments/recorded/codex-20261110/`, con un manifiesto y hashes. `experiments/eval_b2b.py --replay` las puntúa offline y persiste `codex_recorded` en el JSON y el informe. `--writer stub` conserva ese bloque; el replay no modifica las grabaciones.
+
+Codex (codex-cli 0.167, suscripción ChatGPT): N = 65, fecha UTC 2026-11-10T12:58:24.523613Z, operador Hack Ops. Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo. La muestra es pequeña y usa un checker regex, una versión, un día y un operador; no demuestra calidad general.
 
 ## Nota `doc_note.v1`
 
@@ -72,4 +74,4 @@ La regresión pide tres cosas: conservar los hechos que no son críticos, no agr
 
 `experiments/export_static_demo.py` lee `experiments/results/eval_b2b.json` y escribe `docs/corrige/index.html`. HTML, CSS y JS van en el mismo archivo. No hay peticiones de red. La demo anterior queda en `docs/demo/` y `docs/index.html` sigue apuntando ahí.
 
-Los interruptores de la página (aprobar, ver sin/con lección, retirar) cambian lo que se muestra. No escriben el ledger. El marcador grande de la evaluación es el del JSON. El de Codex no inventa un número.
+Los interruptores de la página (aprobar, ver sin/con lección, retirar) cambian lo que se muestra. No escriben el ledger. Los marcadores del stub y de Codex salen del JSON. Los interruptores solo simulan el mecanismo del stub; las cifras grabadas de Codex no cambian con ellos.

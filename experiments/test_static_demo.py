@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import base64
+import json
 import re
 import subprocess
 import sys
@@ -41,7 +42,10 @@ class StaticDemoTests(unittest.TestCase):
         self.assertIn("FICTICIA", self.html)
         self.assertIn("Datos 100 % ficticios", self.html)
         self.assertIn("Writer de demostración (determinista)", self.html)
-        self.assertIn("pendiente: corridas de Codex por grabar", self.html)
+        recorded = json.loads(self.results)["codex_recorded"]
+        self.assertIn(recorded["label"], self.html)
+        self.assertNotIn("pendiente: corridas de Codex por grabar", self.html)
+        self.assertNotIn("No hay intervalo porque no hay corridas", self.html)
         self.assertIn("Sin tu aprobación, la IA no la usa.", self.html)
         self.assertEqual(self.html.count('<article class="lesson"'), 5)
         self.assertIn("Convertir en lección", self.html)
@@ -104,6 +108,32 @@ class StaticDemoTests(unittest.TestCase):
             self.assertIn(token, self.results)
         self.assertIn("Vigencia: 15 días naturales", self.html)
         self.assertIn("Pago: 50 % anticipo, 50 % contra entrega", self.html)
+
+    def test_real_model_score_comes_from_recorded_json(self):
+        report = json.loads(self.results)
+        recorded = report["codex_recorded"]
+        section = self.html.split('<section id="modelo-real">', 1)[1].split('</section>', 1)[0]
+        for key in ("B-", "B+", "C3"):
+            rate = recorded[key]
+            for value in (rate["fraction"], rate["rate_display"], rate["wilson95"]["display"]):
+                self.assertIn(value, section)
+        signs = recorded["sign_test"]
+        for key, label in (("improved", "mejoran"), ("worsened", "empeoran"), ("ties", "empatan")):
+            self.assertIn(f"{signs[key]} {label}", section)
+        for value in (f"N = {recorded['n']}", f"n = {signs['n']}", signs["p_two_sided"],
+                      recorded["label"], recorded["date_utc"], recorded["operator"], recorded["source"],
+                      recorded["control_note"], recorded["comparison"], recorded["note"], *recorded["observations"]):
+            self.assertIn(value, section)
+        self.assertEqual(report["held_out"]["B-"]["fraction"], "0/15")
+        self.assertEqual(report["held_out"]["B+"]["fraction"], "15/15")
+
+    def test_pending_real_model_still_uses_the_original_text(self):
+        pending = {"status": "pendiente: corridas de Codex por grabar", "runs": None,
+                   "note": "No hay salidas de Codex en este resultado. No se inventan cifras de un modelo."}
+        html = exporter.recorded_html(pending)
+        self.assertIn(pending["status"], html)
+        self.assertIn(pending["note"], html)
+        self.assertIn("Grabado, N = pendiente. No hay intervalo porque no hay corridas.", html)
 
     def test_cli_regenerates_without_touching_the_old_demo(self):
         before = LEGACY.read_bytes()

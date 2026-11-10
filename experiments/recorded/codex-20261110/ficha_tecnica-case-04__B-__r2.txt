@@ -1,0 +1,31 @@
+FICHA TÉCNICA
+Actuador serie DEMO-25
+
+DOCUMENTO FICTICIO — PARA REVISIÓN HUMANA
+
+Empresa: Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC: FICT000101AAA
+Ubicación: Ciudad Ejemplo del Bajío (dirección ficticia)
+Correo: ventas@valvulas-ejemplo.example
+Teléfono: +52 000 000 0000
+
+Cliente: Cliente Demo 04
+Correo: compras@cliente-demo-04.example
+
+DESCRIPCIÓN DEL EQUIPO
+
+Actuador serie DEMO-25, para agua limpia en un circuito de demostración.
+
+CARACTERÍSTICAS TÉCNICAS
+
+- Conexión: brida de demostración.
+- Presión de trabajo: 25 bar (363 psi)
+- Temperatura máxima: 150 °C
+
+ALCANCE Y LIMITACIONES
+
+Este documento utiliza datos ficticios y se preparó únicamente para mostrar una corrección interna. No corresponde a una operación real ni debe atribuirse a una empresa, persona o pedido reales.
+
+La conexión indicada es un dato de demostración; no constituye un certificado ni una referencia a una norma.
+
+Este documento no es una oferta, un dictamen ni una promesa hacia un tercero.
