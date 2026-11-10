@@ -39,5 +39,5 @@ Las fechas indican cuándo se consultó cada página, no una garantía de que su
 ## Límites de esta referencia
 
 - La recomendación inicial cubre solo Codex CLI, Docs MCP y evaluación/evidencia de recuperación; no es un catálogo exhaustivo de OpenAI.
-- PR #1 sigue abierto en el `START_PIN` de Issue #3. Por ello, los enlaces desde `README.md` y `AGENTS.md` están **DEFERRED** hasta que ese PR se fusione y se comprueben el HEAD fresco y los conflictos.
+- PR #1 ya está fusionado en `main`. Este índice vive en `docs/openai/`. El README y `AGENTS.md` del repo enlazan aquí; Docs MCP sigue documentado como **POR_VALIDAR_EN_LT01** (T2 HOLD: no se conecta en este PR).
 - Docs MCP está documentado como propuesta. Su configuración, conexión y prueba de humo siguen en **HOLD T2** según Issue #3; esta carpeta no autoriza ni afirma que se haya conectado.

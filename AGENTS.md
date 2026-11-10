@@ -2,6 +2,10 @@
 
 Este repo es el proyecto **Scribe/Recovery** del hackathon (9 nov 2026, CDMX) y también el experimento de cómo opera un squad de agentes de IA.
 
+## Referencia OpenAI
+
+Antes de afirmar comportamiento de Codex o APIs OpenAI, consulta [`docs/openai/README.md`](docs/openai/README.md) (OFICIAL vs RECOMENDACIÓN vs VALIDADO_EN_LT01).
+
 ## La regla central
 
 **Codex es el único ejecutor de código del MVP.** Codex escribe el código y opera a los agentes empleados que viven en este proyecto.
