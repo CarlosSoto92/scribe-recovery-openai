@@ -15,10 +15,33 @@ def strip_code(text):
     return re.sub(r"```.*?```", "", text, flags=re.S)
 
 
+def _diff_base():
+    """Ancestro común remoto, con refs directas como respaldo."""
+    result = subprocess.run(
+        ["git", "merge-base", "HEAD", "origin/main"],
+        cwd=ROOT, capture_output=True, text=True, check=False,
+    )
+    if result.returncode == 0 and result.stdout.strip():
+        return result.stdout.strip()
+    for ref in ("origin/main", "main"):
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+            cwd=ROOT, capture_output=True, text=True, check=False,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return ref
+    raise AssertionError(
+        "No hay base Git usable para added_lines(): falló merge-base HEAD "
+        "origin/main y no se pudo resolver origin/main ni main como commit. "
+        f"Último error de Git: {result.stderr.strip()}"
+    )
+
+
 def added_lines():
     """Líneas nuevas, salvo los tests que nombran la lista para poder vigilarla."""
     diff = subprocess.run(
-        ["git", "diff", "main", "--unified=0", "--", ".", ":(exclude)*.png"],
+        ["git", "-c", "diff.mnemonicprefix=false", "-c", "diff.noprefix=false",
+         "diff", _diff_base(), "--unified=0", "--", ".", ":(exclude)*.png"],
         cwd=ROOT, capture_output=True, text=True, check=True,
     ).stdout
     current = ""
