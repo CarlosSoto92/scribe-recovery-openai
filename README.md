@@ -1,109 +1,109 @@
 # Scribe/Recovery
 
-> **Proyecto creado en el RSI Hackathon Kavak × OpenAI × Primero AI · 9 noviembre 2026, CDMX.**  
-> Repo público MIT · demo estática en GitHub Pages · N=1 / fixtures sintéticos.
+Corrige una vez. La IA lo recuerda… si tú lo apruebas.
 
-Los agentes de IA fallan de formas que se repiten. **Scribe** registra la falla o la corrección de forma estructurada; **Recovery** solo aplica lecciones en estado `approved` (gate humano). El agente siguiente retiene hechos críticos medibles — sin reentrenar.
+MIT · [demo](docs/corrige/index.html) · [cómo probarlo](#para-expertos)
 
-## Demo pública
+## En 30 segundos
 
-**[Abrir la demo en GitHub Pages →](https://carlossoto92.github.io/scribe-recovery-openai/demo/)**
+Cada semana el mismo documento sale con el mismo error. Alguien lo corrige a mano. A la semana siguiente, otra vez.
 
-Recorrido de 5 pasos generado desde el mismo código y fixtures: nota → borrador V1 → corrección → lección aprobada → comparación B− vs B+ (diff visual).
+Scribe guarda esa corrección como una lección. Recovery solo la usa si una persona la aprueba. El documento siguiente, del mismo tipo, ya sale con el arreglo. No hace falta reentrenar.
 
-## Hipótesis
+Tú decides qué aprende la IA. Puedes aprobar la lección y puedes retirarla.
 
-Si una corrección humana se guarda como lección y **solo entra con aprobación**, V2 mejora de forma medible frente a un baseline sin lección (B− vs B+).
+[Ver el caso de las cotizaciones](docs/corrige/index.html)
 
-## Loop (V0)
+![Cotización ficticia de la semana 2, ya con vigencia y pago](docs/assets/corrige-escritorio.png)
+
+La empresa, los clientes y las cifras son inventados. En cada hoja dice FICTICIA.
+
+## Resultados
+
+Lo que se mide es si el documento trae lo que la casa pidió (una vigencia, una referencia, un folio). No es una nota de “qué tan bien escribe”.
+
+Estos números son del **writer de demostración (determinista)**: el fallo y el arreglo están escritos a propósito, para ver el mecanismo. No son de un modelo.
+
+| | Sin lección | Con lección |
+| --- | --- | --- |
+| Documentos que cumplen, de 15 casos nuevos | 0/15 | 15/15 |
+| Porcentaje | 0.0 % | 100.0 % |
+| Intervalo de Wilson 95 % | 0.0 % – 20.4 % | 79.6 % – 100.0 % |
+
+Esos 15 son las semanas 2, 3 y 4 de cada tipo. La semana 1 no entra: ahí nació la lección. 15 mejoran y 0 empeoran.
+
+Con un modelo real: **pendiente: corridas de Codex por grabar.** En este repo no hay cifras de Codex.
+
+El detalle está en [docs/EVAL.md](docs/EVAL.md). Los límites, en [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+## Para expertos
+
+Una lección tiene versión, estado y alcance. El alcance nuevo (`lesson.v2`) es el **tipo de documento**, no una nota concreta. La de la semana 1 vale para las semanas siguientes del mismo tipo, y no para otro tipo. `lesson.v1` sigue igual.
 
 ```mermaid
 flowchart LR
-  A[Corrección humana] --> B[Lección proposed]
-  B --> C{Gate humano}
-  C -->|approved| D[Agente siguiente]
-  C -->|rejected| E[No se aplica]
-  D --> F[Retención medible B+ > B−]
+  N[Nota] --> W{Writer}
+  L[Lección approved] --> W
+  W -->|demostración, determinista| T[Texto]
+  W -->|Codex, pendiente| T
+  T --> C[Checker]
+  H[Persona] -->|aprueba o retira| L
 ```
 
-## Qué hay en este repo
+Estados: propuesta, aprobada, rechazada o retirada. Solo la aprobada entra al writer. Propuesta, rechazada y retirada dejan el texto como si no hubiera lección. Una lección de otro tipo tampoco lo cambia.
 
-| Pieza | Estado |
-| --- | --- |
-| Misión 1 · demo CSV V1→Scribe→V2 | en `main` |
-| Loop editorial + gate humano | en `main` |
-| Codex writer con lección como skill (N=1) | en `main` |
-| Mini web local (`experiments/webapp.py`) | en `main` · solo `127.0.0.1` |
-| Diff visual B−/B+ | en `main` |
-| Demo estática Pages | `docs/demo/` |
+La evaluación usa 20 notas sintéticas (5 tipos × 4 casos). Mide los 15 casos que no sirvieron para crear la lección. Compara sin lección y con lección, más cuatro controles: propuesta, rechazada, tipo equivocado y documento sin lección propia. La estadística es un conteo, un intervalo de Wilson al 95 % y una prueba exacta de signos. En el stub, la p bilateral de 15 mejoras y 0 empeoras es 0.00006103515625. Describe al writer de demostración, no a un modelo.
 
-## Cómo correrlo local
+### Cómo reproducir
 
 ```bash
-git clone https://github.com/CarlosSoto92/scribe-recovery-openai.git
-cd scribe-recovery-openai
-
-# Misión 1 (CSV)
-python3 experiments/demo.py
-
-# Loop editorial determinista (sin red)
-python3 experiments/demo_editorial.py
-
-# Writer Codex en modo dry-run (textos enlatados)
-python3 experiments/demo_codex_writer.py --dry-run
-
-# Mini web interactiva (loop completo en el navegador)
-python3 experiments/webapp.py
-# → http://127.0.0.1:8765
-
-# Regenerar la demo estática de Pages
-python3 experiments/export_static_demo.py
-
-# Tests
 python3 -m unittest discover -s experiments
+python3 experiments/eval_b2b.py --writer stub
+python3 experiments/export_static_demo.py
 ```
 
-Fase 0 / demos deterministas **no necesitan** API key. Si en el futuro se usa la API, las llaves van por 1Password (`op://…` en `.env.example`); nunca en el repo.
+No piden red ni API key. El tercer comando regenera `docs/corrige/index.html` y no toca la demo anterior en `docs/demo/`.
 
-## Cómo se usó Codex (harness)
+La grabación con Codex no está hecha. El plan, sin llamarlo, es `python3 experiments/record_codex_runs.py --dry-run --controls`. La corrida real la hace el operador en su máquina, con su ok, y después se puntúa con `python3 experiments/eval_b2b.py --replay <directorio>`.
 
-Durante el hackathon Codex escribió el producto en modo **non-interactive** (`codex exec`) con:
+### Límites, en corto
 
-- sandbox de escritura en el worktree (sin red ni commit desde el sandbox)
-- **un escritor / un worktree** por misión
-- push y merge hechos por el operador humano
-- revisión independiente (otro agente) que encontró fallas reales (p. ej. `approval_ref` vacío, CSRF)
+Los textos los escribimos nosotros. El checker es un regex: una paráfrasis correcta puede fallar y una copia literal puede pasar. Las reglas no se adivinan: miden si se sigue la lección, no si el modelo “sabe”. Quince casos es poco. La aprobación de estos ejemplos es simulada. Más detalle en [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
-Esto documenta el método; no expone prompts internos ni playbooks privados.
+### Feedback que buscamos
 
-## Límites honestos
+1. ¿La regla que medimos es una corrección que tú repetirías en un documento real?
+2. ¿El checker castiga paráfrasis que para ti estarían bien?
+3. ¿Qué debería pasar si dos lecciones se pisan?
+4. ¿Quince casos te alcanzan para creerle a un modelo, o solo al mecanismo?
+5. ¿Qué faltaría para que esto te sirviera en una operación de verdad?
 
-- **N=1** en la corrida Codex en vivo del hackathon (sin inferencia estadística).
-- Fixtures **sintéticos**; el gate de la demo usa `fixture_simulated`.
-- El checker es **literal + cita**; una paráfrasis puede fallar.
-- **Nada se publica solo** a LinkedIn u otra red: la publicación la hace una persona.
-- Frontera de IP: este repo público contiene el **mecanismo** y datos sintéticos. No incluye System Card, prompts internos, datos de clientes ni protocolos privados.
+Se responde con el issue [Feedback de experto](.github/ISSUE_TEMPLATE/feedback-experto.yml). Discussions queda **próximamente**: lo habilita Carlos. Cómo escribir, y qué no enviar: [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Squad
+Arquitectura: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-Experimento de operación de un squad de agentes:
+## Cómo se construyó
 
-- **Carlos (L4):** decide y hace merge.
-- **CTO Sintético:** dirección técnica.
-- **Codex:** ejecutor del producto (T1).
-- **Antigravity:** entorno del nodo.
-- **Hack Ops (Grok Bot):** operación híbrida, demos y bitácora.
+Proyecto del RSI Hackathon Kavak × OpenAI × Primero AI, 9 noviembre 2026, CDMX. Repo público MIT.
 
-Si eres un agente: empieza por [`AGENTS.md`](AGENTS.md), luego [`docs/SQUAD.md`](docs/SQUAD.md) y [`docs/SQUAD_PROTOCOL.md`](docs/SQUAD_PROTOCOL.md).
+Codex escribió el producto en `codex exec`, un escritor por misión, sin red ni commit desde el sandbox. El operador hizo push y merge. Otro agente revisó y encontró fallas reales. Este párrafo cuenta el método; no trae prompts internos.
+
+Los asientos y el protocolo, para quien opera el repo: [AGENTS.md](AGENTS.md), [docs/SQUAD.md](docs/SQUAD.md), [docs/SQUAD_PROTOCOL.md](docs/SQUAD_PROTOCOL.md).
+
+La demo anterior del hackathon sigue en [docs/demo/](docs/demo/index.html). Su URL pública no cambia.
 
 ## Retrospectiva
 
-Qué se logró, qué no, y qué se improvisó el día del hackathon: [`docs/RETRO.md`](docs/RETRO.md).
+Qué se logró, qué no, y qué se improvisó: [docs/RETRO.md](docs/RETRO.md).
 
 ## Referencia OpenAI
 
-Guías oficiales y del proyecto para Codex / Scribe: [`docs/openai/`](docs/openai/README.md). Docs MCP está documentado ahí como POR_VALIDAR (no conectado en el hackathon).
+Guías del proyecto para Codex y para la evidencia: [docs/openai/README.md](docs/openai/README.md). Docs MCP sigue documentado ahí como no conectado.
 
 ## Licencia
 
 [MIT](LICENSE) · Copyright (c) 2026 Carlos Soto Santis
+
+## Frontera de IP
+
+Este repo público contiene el mecanismo y datos sintéticos. No incluye System Card, prompts internos, datos de clientes ni protocolos privados.
