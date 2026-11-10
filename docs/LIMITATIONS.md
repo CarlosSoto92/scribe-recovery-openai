@@ -6,9 +6,9 @@ El paso de 0 % a 100 % con el writer de demostración prueba el mecanismo y los 
 
 Las veinte notas son sintéticas. La empresa, los clientes, los folios y las cifras son inventados. Elegimos reglas que se pueden comprobar con un texto. Eso sesga el diseño hacia lo verificable.
 
-## 2. El checker es un regex
+## 2. Dos revisores basados en regex
 
-Normaliza mayúsculas, espacios y el tipo de guion. No entiende paráfrasis. Un texto que dice lo mismo con otras palabras puede salir no conforme. Un texto que copia la frase sin entenderla puede salir conforme.
+El revisor estricto es primario y mantiene sus resultados. El revisor tolerante admite etiquetas en markdown o tablas, el folio de la nota en cualquier parte y negaciones simples inmediatas. No relaja cifras ni unidades; la cita debe estar en la misma línea, viñeta o fila que el valor. Ambos normalizan mayúsculas, espacios y guiones; no entienden paráfrasis generales. Una copia literal puede salir conforme. El replay guarda ambos resultados y clasifica cada fallo estricto: «falso negativo del checker» si pasa el tolerante, o «fallo del modelo» si persiste. Esta última clasificación es provisional y requiere confirmación visual de Carlos; pasar el tolerante no demuestra calidad editorial.
 
 ## 3. La regla no se adivina
 
@@ -20,7 +20,7 @@ El stub usa 15 documentos que no participaron en crear la lección. Codex usa 30
 
 C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.
 
-En ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
+Con el revisor estricto, en ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
 
 ## 5. Un modelo, una versión, una fecha
 

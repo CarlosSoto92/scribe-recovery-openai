@@ -114,6 +114,51 @@ class EvalTests(unittest.TestCase):
         self.assertEqual((ficha["B-"]["fraction"], ficha["B+"]["fraction"]), ("1/6", "0/6"))
         self.assertIn("skill de OTRO tipo", recorded["control_note"])
 
+    def test_tolerant_scores_and_classification_are_derived_from_each_recording(self):
+        directory = ROOT / "experiments/recorded/codex-20261110"
+        with patch("record_codex_runs.subprocess.run", side_effect=AssertionError("no modelo")):
+            recorded = ev.replay(directory)["codex_recorded"]
+        tolerant = recorded["tolerant"]
+        self.assertEqual(tolerant["sign_test"], {**ev.sign_test(6, 0), "ties": 24})
+        for key, fraction in (("B-", "24/30"), ("B+", "30/30"), ("C3", "4/5")):
+            rows = [run for run in recorded["runs"] if run["condition"] == key]
+            expected = ev.rate_block([{"conditions": {key: run["tolerant"]}} for run in rows], key)
+            self.assertEqual(tolerant[key], expected)
+            self.assertEqual(tolerant[key]["fraction"], fraction)
+            for block in (recorded, tolerant):
+                rate = block[key]
+                self.assertEqual(rate["wilson95"], ev.interval(rate["k"], rate["n"]))
+        for row in tolerant["by_type"]:
+            for key in ("B-", "B+", "C3"):
+                rows = [run for run in recorded["runs"] if run["condition"] == key and run["doc_type"] == row["doc_type"]]
+                self.assertEqual(row[key], ev.rate_block([{"conditions": {key: run["tolerant"]}} for run in rows], key))
+        failures = recorded["failure_classification"]
+        self.assertEqual(len(failures), sum(not run["compliant"] for run in recorded["runs"]))
+        self.assertEqual(recorded["classification_counts"]["B+"], {"falso negativo del checker": 11, "fallo del modelo": 0})
+        for run in recorded["runs"]:
+            note = b2b.load_note(rec.fixture_path(run["doc_type"], run["case"]))
+            text = (directory / run["file"]).read_text(encoding="utf-8")
+            self.assertEqual(run["tolerant"], b2b.check_document_tolerant(note, text))
+            strict = b2b.check_document(note, text)
+            self.assertEqual({key: run[key] for key in strict}, strict)
+            classification = None if run["compliant"] else (
+                "falso negativo del checker" if run["tolerant"]["compliant"] else "fallo del modelo")
+            self.assertEqual(run["classification"], classification)
+            if classification:
+                row = next(row for row in failures if row["file"] == run["file"])
+                self.assertEqual(row["classification"], classification)
+                self.assertEqual(row["tolerant_failures"], run["tolerant"]["failures"])
+        markdown = ev.recorded_markdown(recorded)
+        rendered = "\n".join(markdown)
+        for block in (recorded, tolerant):
+            for key in ("B-", "B+", "C3"):
+                for value in (block[key]["fraction"], block[key]["rate_display"], block[key]["wilson95"]["display"]):
+                    self.assertIn(value, rendered)
+            self.assertIn(block["sign_test"]["p_two_sided"], rendered)
+        for row in failures:
+            self.assertIn(row["file"], rendered)
+            self.assertIn(row["classification"], rendered)
+
     def test_sign_pairs_use_doc_type_case_and_rep_not_run_order(self):
         # En el orden dado, emparejar por posición convertiría los dos empates en cambios.
         rows = []

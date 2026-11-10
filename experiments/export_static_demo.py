@@ -177,25 +177,51 @@ def recorded_html(recorded):
         return f"""<p data-figure="{esc(recorded['status'])}"><strong>{esc(recorded['status'])}</strong></p>
       <p>{esc(recorded['note'])}</p>
       <p>Grabado, N = pendiente. No hay intervalo porque no hay corridas.</p>"""
-    signs = recorded["sign_test"]
     rows = []
-    for key, label in (("B-", "Sin lección (B-)"), ("B+", "Con lección (B+)"), ("C3", "Control C3")):
-        rate = recorded[key]
-        rows.append(
-            f'<p>{label}: <strong data-figure="{esc(rate["fraction"])}">{esc(rate["fraction"])}</strong> '
-            f'(<span data-figure="{esc(rate["rate_display"])}">{esc(rate["rate_display"])}</span>, '
-            f'Wilson 95 % <span data-figure="{esc(rate["wilson95"]["display"])}">{esc(rate["wilson95"]["display"])}</span>).</p>'
-        )
+    for key in ("B-", "B+", "C3"):
+        cells = []
+        for label, block in (("Revisor estricto (primario)", recorded), ("Revisor tolerante", recorded["tolerant"])):
+            rate = block[key]
+            cells.append(f'<td data-label="{label}">' + "; ".join(
+                f'<span data-figure="{esc(value)}">{esc(value)}</span>'
+                for value in (rate["fraction"], rate["rate_display"], rate["wilson95"]["display"])) + "</td>")
+        rows.append(f"<tr><th>{esc(key)}</th>{''.join(cells)}</tr>")
+    signs_html = []
+    for label, block in (("Revisor estricto (primario)", recorded), ("Revisor tolerante", recorded["tolerant"])):
+        signs = block["sign_test"]
+        signs_html.append(f"<p>{label}: {esc(signs['improved'])} mejoran, {esc(signs['worsened'])} empeoran, "
+                          f"{esc(signs['ties'])} empatan. Sin empates: n = {esc(signs['n'])}, "
+                          f"p bilateral = {esc(signs['p_two_sided'])}.</p>")
+    types = []
+    for strict, tolerant in zip(recorded["by_type"], recorded["tolerant"]["by_type"]):
+        for label, row in (("Revisor estricto (primario)", strict), ("Revisor tolerante", tolerant)):
+            cells = ["; ".join((row[key]["fraction"], row[key]["rate_display"], row[key]["wilson95"]["display"]))
+                     for key in ("B-", "B+", "C3")]
+            types.append(f"<tr><th>{esc(row['label'])} · {label}</th>" +
+                         "".join(f'<td data-label="{key}: fracción; tasa; Wilson 95 %">{esc(cell)}</td>'
+                                 for key, cell in zip(("B-", "B+", "C3"), cells)) + "</tr>")
+    counts = recorded["classification_counts"]
+    classifications = "".join(
+        f"<li>{esc(key)}: {esc(row['falso negativo del checker'])} falso negativo del checker; "
+        f"{esc(row['fallo del modelo'])} fallo del modelo.</li>" for key, row in counts.items())
     return f"""<p><strong data-figure="{esc(recorded['label'])}">{esc(recorded['label'])}</strong></p>
       <p>N = {esc(recorded['n'])} corridas; cada repetición cuenta como un ensayo.</p>
       <p>CLI exacto: {esc(recorded['codex_version'])}. Fecha UTC: {esc(recorded['date_utc'])}.
       Operador: {esc(recorded['operator'])}. Fuente: {esc(recorded['source'])}.</p>
-      {''.join(rows)}
-      <p>Prueba de signos bilateral, pares por (doc_type, case, rep):
-      {esc(signs['improved'])} mejoran, {esc(signs['worsened'])} empeoran, {esc(signs['ties'])} empatan.
-      Sin los empates: n = {esc(signs['n'])}, p bilateral = {esc(signs['p_two_sided'])}.</p>
+      <p>El revisor tolerante acepta markdown, tablas y folios sin prefijo. Conserva cifras, unidades,
+      citas junto al valor y rechaza promesas afirmativas. Ambos son regex; no miden calidad editorial.</p>
+      <table><thead><tr><th>Condición</th><th>Revisor estricto (primario): fracción; tasa; Wilson 95 %</th>
+      <th>Revisor tolerante: fracción; tasa; Wilson 95 %</th></tr></thead><tbody>{''.join(rows)}</tbody></table>
+      <p>Prueba de signos bilateral, pares por (doc_type, case, rep):</p>{''.join(signs_html)}
       <p>{esc(recorded['control_note'])}</p>
       <p>{esc(recorded['comparison'])}</p>
+      <p>{esc(recorded['tolerant_comparison'])}</p>
+      <ul>{classifications}</ul><p>Fallo del modelo: clasificación provisional; Carlos lo confirmará a ojo.
+      Los fallos restantes y cada reclasificación están en <a href="../EVAL.md">la evaluación completa</a>.</p>
+      <details><summary>Resultados por tipo con ambos revisores</summary>
+      <table><thead><tr><th>Tipo y revisor</th><th>B-: fracción; tasa; Wilson 95 %</th>
+      <th>B+: fracción; tasa; Wilson 95 %</th><th>C3: fracción; tasa; Wilson 95 %</th></tr></thead>
+      <tbody>{''.join(types)}</tbody></table></details>
       {''.join('<p>' + esc(note) + '</p>' for note in recorded['observations'])}
       <p>{esc(recorded['note'])}</p>"""
 

@@ -124,8 +124,31 @@ class StaticDemoTests(unittest.TestCase):
                       recorded["label"], recorded["date_utc"], recorded["operator"], recorded["source"],
                       recorded["control_note"], recorded["comparison"], recorded["note"], *recorded["observations"]):
             self.assertIn(value, section)
+        for key, fraction in (("B-", "10/30"), ("B+", "19/30"), ("C3", "2/5")):
+            self.assertEqual(recorded[key]["fraction"], fraction)
+        for label in ("revisor estricto", "revisor tolerante"):
+            self.assertIn(label, section.lower())
+        for block in (recorded, recorded["tolerant"]):
+            for key in ("B-", "B+", "C3"):
+                rate = block[key]
+                for value in (rate["fraction"], rate["rate_display"], rate["wilson95"]["display"]):
+                    self.assertIn(value, section)
+            self.assertIn(block["sign_test"]["p_two_sided"], section)
+            for row in block["by_type"]:
+                for key in ("B-", "B+", "C3"):
+                    self.assertIn(row[key]["fraction"], section)
+        self.assertIn(recorded["tolerant_comparison"], section)
         self.assertEqual(report["held_out"]["B-"]["fraction"], "0/15")
         self.assertEqual(report["held_out"]["B+"]["fraction"], "15/15")
+
+    def test_tolerant_demo_values_follow_supplied_json_instead_of_constants(self):
+        recorded = json.loads(self.results)["codex_recorded"]
+        recorded["tolerant"]["B+"] = {"fraction": "7/17", "rate_display": "41.1 %",
+                                         "wilson95": {"display": "test interval"}}
+        recorded["tolerant"]["sign_test"]["p_two_sided"] = "test probability"
+        page = exporter.recorded_html(recorded)
+        for value in ("7/17", "41.1 %", "test interval", "test probability"):
+            self.assertIn(value, page)
 
     def test_pending_real_model_still_uses_the_original_text(self):
         pending = {"status": "pendiente: corridas de Codex por grabar", "runs": None,

@@ -423,6 +423,84 @@ def check_document(note, text):
     }
 
 
+def _plain_markdown(text):
+    """Quita delimitadores de presentación, conservando cifras y puntuación."""
+    for marker in ("**", "__", "`", "*", "_"):
+        text = re.sub(re.escape(marker) + r"(.+?)" + re.escape(marker), r"\1", text)
+    return text
+
+
+def _fact_segments(text):
+    """Una línea, fila o viñeta con sus continuaciones indentadas por segmento."""
+    segments = []
+    bullet = False
+    for raw in text.splitlines():
+        line = _plain_markdown(raw).strip()
+        if not line:
+            bullet = False
+            continue
+        if line.startswith("|") and line.endswith("|"):
+            cells = [cell.strip() for cell in line.strip("|").split("|")]
+            line = cells[0].rstrip(":") + ": " + " ".join(cells[1:])
+            bullet = False
+        elif re.match(r"(?:[-+*]|\d+[.)])\s+", line):
+            bullet = True
+        elif bullet and raw[:1].isspace():
+            segments[-1] += " " + line
+            continue
+        else:
+            bullet = False
+        segments.append(line)
+    return [normalize(segment) for segment in segments]
+
+
+def _contains_exact(segment, expected):
+    return re.search(r"(?<!\w)" + re.escape(normalize(expected)) + r"(?!\w)", segment) is not None
+
+
+def _affirmative_forbidden(text, phrase):
+    # No inferimos alcance semántico: solo las negaciones inmediatas enumeradas.
+    negation = r"no\s+" if phrase == "garantizamos" else r"(?:no hay|sin)\s+"
+    folded = loose(_plain_markdown(text))
+    for match in re.finditer(r"\b" + re.escape(loose(phrase)) + r"\b", folded):
+        if not re.search(r"\b" + negation + r"$", folded[:match.start()]):
+            return True
+    return False
+
+
+def check_document_tolerant(note, text):
+    """Mismos requisitos que el estricto; admite forma markdown y negación simple.
+
+    Las unidades y cifras se conservan literalmente. Las referencias se buscan
+    solo en el segmento del valor, nunca en el resto del documento.
+    """
+    result = check_document(note, text)
+    segments = _fact_segments(text)
+    rule = result["rule_type"]
+    critical = _critical(note)
+    for fact, requirement in zip(critical, result["requirements"]):
+        folios = re.findall(r"SOP-\d{4}", fact["text"])
+        if rule == "forbidden_claim" and folios:
+            requirement["ok"] = all(_contains_exact(normalize(text), folio) for folio in folios)
+        else:
+            requirement["ok"] = any(
+                _contains_exact(segment, fact["text"])
+                and (rule != "cite_source" or _contains_exact(segment, f"(Ref. {fact['source_ref']})"))
+                for segment in segments
+            )
+    for requirement in result["requirements"][len(critical):]:
+        if requirement["id"].startswith("forbidden:"):
+            phrase = requirement["id"].split(":", 1)[1]
+            requirement["ok"] = not _affirmative_forbidden(text, phrase)
+        elif requirement["id"] == "folio":
+            expected = [folio for fact in critical for folio in re.findall(r"SOP-\d{4}", fact["text"])]
+            requirement["ok"] = bool(expected) and all(_contains_exact(normalize(text), folio) for folio in expected)
+    result["met"] = sum(item["ok"] for item in result["requirements"])
+    result["failures"] = [item["detail"] for item in result["requirements"] if not item["ok"]]
+    result["compliant"] = bool(result["total"]) and result["met"] == result["total"]
+    return result
+
+
 def regression(note, reference, candidate):
     """Hechos no críticos, cero frases prohibidas nuevas y longitud ±25 %."""
     validate_note(note)

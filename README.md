@@ -36,19 +36,38 @@ Esos 15 son las semanas 2, 3 y 4 de cada tipo. La semana 1 no entra: ahí nació
 
 CLI exacto: 0.167.0. Fecha UTC: 2026-11-10T12:58:24.523613Z. Operador: Hack Ops. Fuente: `codex-20261110`.
 
-| Codex grabado | Conformes | Tasa | Wilson 95 % |
-| --- | --- | --- | --- |
-| B- | 10/30 | 33.3 % | 19.2 % – 51.2 % |
-| B+ | 19/30 | 63.3 % | 45.5 % – 78.1 % |
-| C3 | 2/5 | 40.0 % | 11.8 % – 76.9 % |
+El **revisor estricto** es el primario y conserva sus cifras. El **revisor tolerante** acepta markdown, tablas y el folio sin prefijo; sigue exigiendo las cifras y unidades de la nota, la cita junto al valor y la ausencia de promesas afirmativas.
 
-Signos bilaterales: 11 mejoran, 2 empeoran, 17 empatan; los empates no entran. n = 13, p bilateral = 0.0224609375.
+| Condición | Revisor estricto (primario) | Tasa | Wilson 95 % | Revisor tolerante | Tasa | Wilson 95 % |
+| --- | --- | --- | --- | --- | --- | --- |
+| B- | 10/30 | 33.3 % | 19.2 % – 51.2 % | 24/30 | 80.0 % | 62.7 % – 90.5 % |
+| B+ | 19/30 | 63.3 % | 45.5 % – 78.1 % | 30/30 | 100.0 % | 88.6 % – 100.0 % |
+| C3 | 2/5 | 40.0 % | 11.8 % – 76.9 % | 4/5 | 80.0 % | 37.6 % – 96.4 % |
+
+Signos bilaterales, pares por (doc_type, case, rep); los empates no entran.
+
+| Revisor | Mejoran | Empeoran | Empatan | n sin empates | p bilateral |
+| --- | --- | --- | --- | --- | --- |
+| Revisor estricto (primario) | 11 | 2 | 17 | 13 | 0.0224609375 |
+| Revisor tolerante | 6 | 0 | 24 | 6 | 0.03125 |
 
 C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.
 
 Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.
 
-En ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
+B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo (provisional; Carlos lo confirmará a ojo).
+
+| Tipo | B- estricto | B- tolerante | B+ estricto | B+ tolerante | C3 estricto | C3 tolerante |
+| --- | --- | --- | --- | --- | --- | --- |
+| Cotización | 1/6 | 6/6 | 6/6 | 6/6 | 0/1 | 1/1 |
+| Propuesta técnica | 0/6 | 0/6 | 5/6 | 6/6 | 0/1 | 0/1 |
+| Ficha técnica | 1/6 | 6/6 | 0/6 | 6/6 | 0/1 | 1/1 |
+| Reporte a cliente | 6/6 | 6/6 | 6/6 | 6/6 | 1/1 | 1/1 |
+| Respuesta de soporte | 2/6 | 6/6 | 2/6 | 6/6 | 1/1 | 1/1 |
+
+Revisor estricto (primario): en ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
+
+Los fallos que persisten con el tolerante son las propuestas técnicas B− y una propuesta técnica C3: faltan referencias junto a las cifras. Cada fallo estricto está clasificado en el JSON y en la evaluación completa. «Fallo del modelo» es provisional; Carlos lo confirmará a ojo.
 
 Muestra pequeña: una versión del CLI, un día y un operador. Generación no determinista; las repeticiones de una misma nota no son del todo independientes. El checker es un regex y no mide calidad editorial general.
 
@@ -87,7 +106,7 @@ Las corridas de Codex ya están grabadas. El replay verifica sus hashes, calcula
 
 ### Límites, en corto
 
-Las notas sintéticas y el stub los escribimos nosotros; las salidas grabadas las generó Codex. El checker es un regex: una paráfrasis correcta puede fallar y una copia literal puede pasar. Las reglas no se adivinan: miden si se sigue la lección, no si el modelo “sabe”. La muestra es pequeña y las repeticiones de una nota no son del todo independientes. Solo se grabó una versión, un día y un operador; la generación no es determinista. La aprobación de estos ejemplos es simulada. Más detalle en [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+Las notas sintéticas y el stub los escribimos nosotros; las salidas grabadas las generó Codex. Cada checker es un regex: el estricto busca literales; el tolerante admite formas acotadas y negaciones simples inmediatas. Una paráfrasis correcta aún puede fallar y una copia literal puede pasar. Las reglas no se adivinan: miden si se sigue la lección, no si el modelo “sabe”. La muestra es pequeña y las repeticiones de una nota no son del todo independientes. Solo se grabó una versión, un día y un operador; la generación no es determinista. La aprobación de estos ejemplos es simulada. Más detalle en [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ### Feedback que buscamos
 

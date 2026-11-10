@@ -286,7 +286,7 @@ def build_report():
 def recorded_markdown(recorded):
     if not recorded.get("runs") or recorded["status"] != "grabado":
         return [f"**{recorded['status']}.**", "", recorded["note"]]
-    signs = recorded["sign_test"]
+    tolerant = recorded["tolerant"]
     lines = [
         f"**{recorded['label']}**. CLI exacto: {recorded['codex_version']}. "
         f"N = {recorded['n']} corridas; cada repetición cuenta como un ensayo.",
@@ -294,28 +294,39 @@ def recorded_markdown(recorded):
         f"Fecha UTC: {recorded['date_utc']}. Operador: {recorded['operator']}. "
         f"Fuente: `experiments/recorded/{recorded['source']}/`.",
         "",
-        "| Condición | Conformes | Tasa | Wilson 95 % |",
-        "| --- | --- | --- | --- |",
+        "El revisor estricto sigue siendo primario. El revisor tolerante admite markdown, "
+        "tablas y folios sin prefijo; conserva cifras, unidades y cita junto al valor. "
+        "Solo excluye negaciones simples inmediatas de las frases prohibidas.",
+        "",
+        "| Condición | Revisor estricto (primario) | Tasa | Wilson 95 % | Revisor tolerante | Tasa | Wilson 95 % |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for key in ("B-", "B+", "C3"):
-        rate = recorded[key]
-        lines.append(f"| {key} | {rate['fraction']} | {rate['rate_display']} | {rate['wilson95']['display']} |")
-    lines += [
-        "",
-        f"Signos bilaterales, pares por (doc_type, case, rep): {signs['improved']} mejoran, "
-        f"{signs['worsened']} empeoran y {signs['ties']} empatan. "
-        f"Los empates se excluyen: n = {signs['n']}, p bilateral = {signs['p_two_sided']}.",
-        "",
-        recorded["control_note"],
-        "",
-        recorded["comparison"],
-        "",
-        "| Tipo | B- | B+ |",
-        "| --- | --- | --- |",
-    ]
-    for row in recorded["by_type"]:
-        lines.append(f"| {row['label']} | {row['B-']['fraction']} | {row['B+']['fraction']} |")
-    return lines + ["", *recorded["observations"], "", recorded["note"]]
+        strict, relaxed = recorded[key], tolerant[key]
+        lines.append(f"| {key} | {strict['fraction']} | {strict['rate_display']} | {strict['wilson95']['display']} | "
+                     f"{relaxed['fraction']} | {relaxed['rate_display']} | {relaxed['wilson95']['display']} |")
+    lines += ["", "| Prueba de signos bilateral | Mejoran | Empeoran | Empatan | n sin empates | p bilateral |",
+              "| --- | --- | --- | --- | --- | --- |"]
+    for label, block in (("Revisor estricto (primario)", recorded), ("Revisor tolerante", tolerant)):
+        signs = block["sign_test"]
+        lines.append(f"| {label} | {signs['improved']} | {signs['worsened']} | {signs['ties']} | {signs['n']} | {signs['p_two_sided']} |")
+    lines += ["", "Pares por (doc_type, case, rep); se excluyen los empates.", "", recorded["control_note"],
+              "", recorded["comparison"], "", recorded["tolerant_comparison"], "",
+              "| Tipo | Revisor | B-: fracción; tasa; Wilson 95 % | B+: fracción; tasa; Wilson 95 % | C3: fracción; tasa; Wilson 95 % |",
+              "| --- | --- | --- | --- | --- |"]
+    for strict, relaxed in zip(recorded["by_type"], tolerant["by_type"]):
+        for label, row in (("revisor estricto (primario)", strict), ("revisor tolerante", relaxed)):
+            cells = [f"{row[key]['fraction']}; {row[key]['rate_display']}; {row[key]['wilson95']['display']}"
+                     if row.get(key) else "—" for key in ("B-", "B+", "C3")]
+            lines.append(f"| {row['label']} | {label} | " + " | ".join(cells) + " |")
+    lines += ["", *recorded["observations"], "", "### Clasificación de cada fallo estricto", "",
+              "«Fallo del modelo» es provisional; Carlos lo confirmará a ojo. "
+              "Los fallos que persisten están en las corridas listadas abajo y en el JSON.", "",
+              "| Corrida | Clasificación | Fallos que persisten con el tolerante |", "| --- | --- | --- |"]
+    for row in recorded["failure_classification"]:
+        remaining = "; ".join(row["tolerant_failures"]) or "Ninguno"
+        lines.append(f"| {row['file']} | {row['classification']} | {remaining} |")
+    return lines + ["", recorded["note"]]
 
 
 def render_markdown(report):
@@ -432,8 +443,9 @@ def render_markdown(report):
         "## Límites honestos",
         "",
         "El stub es una prueba de mecanismo y de los controles, no evidencia de calidad de un LLM. "
-        "Los fixtures son sintéticos y los escribimos nosotros. El checker es un regex: "
-        "una paráfrasis correcta puede salir no conforme, y una copia literal puede salir conforme. "
+        "Los fixtures son sintéticos y los escribimos nosotros. Cada checker es un regex: "
+        "el estricto penaliza formatos equivalentes; el tolerante acepta formas acotadas, no paráfrasis generales. "
+        "Una copia literal puede salir conforme. Las clasificaciones requieren revisión humana. "
         "Las reglas son convenciones de la casa, no conocimiento del mundo. "
         "n = 15 es pequeño. La aprobación humana de estas lecciones es simulada (`fixture:`). "
         "El detalle está en `docs/LIMITATIONS.md`.",
@@ -462,9 +474,8 @@ def write_stub():
     return write_report(report)
 
 
-def summarize_recorded(replayed):
+def recorded_scores(runs):
     """Cuenta ensayos, sin colapsar repeticiones ni emparejar por posición."""
-    runs = replayed["runs"]
     grouped = {key: [run for run in runs if run["condition"] == key]
                for key in ("B-", "B+", "C3")}
 
@@ -483,20 +494,27 @@ def summarize_recorded(replayed):
         signs = {**sign_test(improved, worsened), "ties": len(pairs) - improved - worsened}
     by_type = []
     for kind in b2b.DOC_TYPES:
-        rows = {key: [run for run in grouped[key] if run["doc_type"] == kind] for key in ("B-", "B+")}
+        rows = {key: [run for run in grouped[key] if run["doc_type"] == kind] for key in ("B-", "B+", "C3")}
         if rows["B-"] and rows["B+"]:
             by_type.append({"doc_type": kind, "label": b2b.DOC_LABEL[kind],
                             **{key: rate(rows[key], key) for key in rows}})
+    return {**{key: rate(rows, key) for key, rows in grouped.items()},
+            "sign_test": signs, "by_type": by_type,
+            "status": "grabado" if paired and grouped["C3"] else "incompleto"}
+
+
+def summarize_recorded(replayed):
+    runs = replayed["runs"]
+    scores = recorded_scores(runs)
+    paired = scores["sign_test"] is not None
+    by_type = scores["by_type"]
     version = replayed["codex_version"].removeprefix("codex-cli ")
     label_version = version.removesuffix(".0")
     summary = {
-        "status": "grabado" if paired and grouped["C3"] else "incompleto",
+        **scores,
         "label": f"Codex (codex-cli {label_version}, suscripción ChatGPT)",
         **{key: replayed[key] for key in ("source", "codex_version", "date_utc", "operator", "runs")},
         "n": len(runs),
-        **{key: rate(rows, key) for key, rows in grouped.items()},
-        "sign_test": signs,
-        "by_type": by_type,
         "control_note": "C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; "
                         "no es el control de texto idéntico al stub ni demuestra ausencia de regresión.",
         "note": "Muestra pequeña: una versión del CLI, un día y un operador. "
@@ -518,10 +536,32 @@ def summarize_recorded(replayed):
     for row in by_type:
         if Decimal(row["B+"]["rate"]) < Decimal(row["B-"]["rate"]):
             summary["observations"].append(
-                f"En {row['doc_type']}, B+ sale peor que B-: "
+                f"Revisor estricto (primario): en {row['doc_type']}, B+ sale peor que B-: "
                 f"{row['B-']['fraction']} → {row['B+']['fraction']}. "
                 "El checker es un regex; estos números no identifican la causa."
             )
+    if all("tolerant" in run for run in runs):
+        summary["primary_reviewer"] = "revisor estricto"
+        summary["tolerant"] = recorded_scores([{**run, **run["tolerant"]} for run in runs])
+        summary["tolerant"]["label"] = "revisor tolerante"
+        summary["failure_classification"] = [
+            {**{key: run[key] for key in ("file", "doc_type", "case", "rep", "condition", "classification", "failures")},
+             "tolerant_failures": run["tolerant"]["failures"]}
+            for run in runs if not run["compliant"]
+        ]
+        summary["classification_counts"] = {
+            condition: {label: sum(run.get("classification") == label for run in runs if run["condition"] == condition)
+                        for label in ("falso negativo del checker", "fallo del modelo")}
+            for condition in ("B-", "B+", "C3")
+        }
+        plus = summary["tolerant"]["B+"]
+        counts = summary["classification_counts"]["B+"]
+        summary["tolerant_comparison"] = (
+            f"B+ con revisor estricto: {summary['B+']['fraction']}; con revisor tolerante: {plus['fraction']}. "
+            f"El tolerante {'mejora la tasa' if Decimal(plus['rate']) > Decimal(summary['B+']['rate']) else 'no mejora la tasa'}. "
+            f"De los fallos B+ estrictos, {counts['falso negativo del checker']} son falso negativo del checker "
+            f"y {counts['fallo del modelo']} siguen como fallo del modelo (provisional; Carlos lo confirmará a ojo)."
+        )
     return summary
 
 
@@ -587,16 +627,18 @@ def replay(directory):
         note = b2b.load_note(note_path)
         text = raw.decode("utf-8")
         check = b2b.check_document(note, text)
+        tolerant = b2b.check_document_tolerant(note, text)
+        classification = None if check["compliant"] else (
+            "falso negativo del checker" if tolerant["compliant"] else "fallo del modelo")
         scored.append({
             "file": run["file"],
             "doc_type": run["doc_type"],
             "case": run["case"],
             "condition": run["condition"],
             "rep": run["rep"],
-            "compliant": check["compliant"],
-            "met": check["met"],
-            "total": check["total"],
-            "failures": check["failures"],
+            **check,
+            "tolerant": tolerant,
+            "classification": classification,
         })
     report = {
         "schema_version": "eval_b2b_replay.v1",

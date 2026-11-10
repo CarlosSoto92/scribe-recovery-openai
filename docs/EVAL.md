@@ -359,30 +359,85 @@ Con la lección approved, los 15 casos retenidos cumplen. Eso lo hace el writer 
 
 Fecha UTC: 2026-11-10T12:58:24.523613Z. Operador: Hack Ops. Fuente: `experiments/recorded/codex-20261110/`.
 
-| Condición | Conformes | Tasa | Wilson 95 % |
-| --- | --- | --- | --- |
-| B- | 10/30 | 33.3 % | 19.2 % – 51.2 % |
-| B+ | 19/30 | 63.3 % | 45.5 % – 78.1 % |
-| C3 | 2/5 | 40.0 % | 11.8 % – 76.9 % |
+El revisor estricto sigue siendo primario. El revisor tolerante admite markdown, tablas y folios sin prefijo; conserva cifras, unidades y cita junto al valor. Solo excluye negaciones simples inmediatas de las frases prohibidas.
 
-Signos bilaterales, pares por (doc_type, case, rep): 11 mejoran, 2 empeoran y 17 empatan. Los empates se excluyen: n = 13, p bilateral = 0.0224609375.
+| Condición | Revisor estricto (primario) | Tasa | Wilson 95 % | Revisor tolerante | Tasa | Wilson 95 % |
+| --- | --- | --- | --- | --- | --- | --- |
+| B- | 10/30 | 33.3 % | 19.2 % – 51.2 % | 24/30 | 80.0 % | 62.7 % – 90.5 % |
+| B+ | 19/30 | 63.3 % | 45.5 % – 78.1 % | 30/30 | 100.0 % | 88.6 % – 100.0 % |
+| C3 | 2/5 | 40.0 % | 11.8 % – 76.9 % | 4/5 | 80.0 % | 37.6 % – 96.4 % |
+
+| Prueba de signos bilateral | Mejoran | Empeoran | Empatan | n sin empates | p bilateral |
+| --- | --- | --- | --- | --- | --- |
+| Revisor estricto (primario) | 11 | 2 | 17 | 13 | 0.0224609375 |
+| Revisor tolerante | 6 | 0 | 24 | 6 | 0.03125 |
+
+Pares por (doc_type, case, rep); se excluyen los empates.
 
 C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.
 
 Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.
 
-| Tipo | B- | B+ |
-| --- | --- | --- |
-| Cotización | 1/6 | 6/6 |
-| Propuesta técnica | 0/6 | 5/6 |
-| Ficha técnica | 1/6 | 0/6 |
-| Reporte a cliente | 6/6 | 6/6 |
-| Respuesta de soporte | 2/6 | 2/6 |
+B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo (provisional; Carlos lo confirmará a ojo).
 
-En ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
+| Tipo | Revisor | B-: fracción; tasa; Wilson 95 % | B+: fracción; tasa; Wilson 95 % | C3: fracción; tasa; Wilson 95 % |
+| --- | --- | --- | --- | --- |
+| Cotización | revisor estricto (primario) | 1/6; 16.7 %; 3.0 % – 56.4 % | 6/6; 100.0 %; 61.0 % – 100.0 % | 0/1; 0.0 %; 0.0 % – 79.3 % |
+| Cotización | revisor tolerante | 6/6; 100.0 %; 61.0 % – 100.0 % | 6/6; 100.0 %; 61.0 % – 100.0 % | 1/1; 100.0 %; 20.7 % – 100.0 % |
+| Propuesta técnica | revisor estricto (primario) | 0/6; 0.0 %; 0.0 % – 39.0 % | 5/6; 83.3 %; 43.6 % – 97.0 % | 0/1; 0.0 %; 0.0 % – 79.3 % |
+| Propuesta técnica | revisor tolerante | 0/6; 0.0 %; 0.0 % – 39.0 % | 6/6; 100.0 %; 61.0 % – 100.0 % | 0/1; 0.0 %; 0.0 % – 79.3 % |
+| Ficha técnica | revisor estricto (primario) | 1/6; 16.7 %; 3.0 % – 56.4 % | 0/6; 0.0 %; 0.0 % – 39.0 % | 0/1; 0.0 %; 0.0 % – 79.3 % |
+| Ficha técnica | revisor tolerante | 6/6; 100.0 %; 61.0 % – 100.0 % | 6/6; 100.0 %; 61.0 % – 100.0 % | 1/1; 100.0 %; 20.7 % – 100.0 % |
+| Reporte a cliente | revisor estricto (primario) | 6/6; 100.0 %; 61.0 % – 100.0 % | 6/6; 100.0 %; 61.0 % – 100.0 % | 1/1; 100.0 %; 20.7 % – 100.0 % |
+| Reporte a cliente | revisor tolerante | 6/6; 100.0 %; 61.0 % – 100.0 % | 6/6; 100.0 %; 61.0 % – 100.0 % | 1/1; 100.0 %; 20.7 % – 100.0 % |
+| Respuesta de soporte | revisor estricto (primario) | 2/6; 33.3 %; 9.7 % – 70.0 % | 2/6; 33.3 %; 9.7 % – 70.0 % | 1/1; 100.0 %; 20.7 % – 100.0 % |
+| Respuesta de soporte | revisor tolerante | 6/6; 100.0 %; 61.0 % – 100.0 % | 6/6; 100.0 %; 61.0 % – 100.0 % | 1/1; 100.0 %; 20.7 % – 100.0 % |
+
+Revisor estricto (primario): en ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
+
+### Clasificación de cada fallo estricto
+
+«Fallo del modelo» es provisional; Carlos lo confirmará a ojo. Los fallos que persisten están en las corridas listadas abajo y en el JSON.
+
+| Corrida | Clasificación | Fallos que persisten con el tolerante |
+| --- | --- | --- |
+| cotizacion-case-02__B-__r1.txt | falso negativo del checker | Ninguno |
+| cotizacion-case-02__B-__r2.txt | falso negativo del checker | Ninguno |
+| cotizacion-case-03__B-__r1.txt | falso negativo del checker | Ninguno |
+| cotizacion-case-04__B-__r1.txt | falso negativo del checker | Ninguno |
+| cotizacion-case-04__B-__r2.txt | falso negativo del checker | Ninguno |
+| propuesta_tecnica-case-02__B-__r1.txt | fallo del modelo | Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».; Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar». |
+| propuesta_tecnica-case-02__B-__r2.txt | fallo del modelo | Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».; Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar». |
+| propuesta_tecnica-case-02__B+__r2.txt | falso negativo del checker | Ninguno |
+| propuesta_tecnica-case-03__B-__r1.txt | fallo del modelo | Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».; Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000». |
+| propuesta_tecnica-case-03__B-__r2.txt | fallo del modelo | Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».; Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000». |
+| propuesta_tecnica-case-04__B-__r1.txt | fallo del modelo | Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».; Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m». |
+| propuesta_tecnica-case-04__B-__r2.txt | fallo del modelo | Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».; Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m». |
+| ficha_tecnica-case-02__B-__r1.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-02__B-__r2.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-02__B+__r1.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-02__B+__r2.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-03__B-__r1.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-03__B-__r2.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-03__B+__r1.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-03__B+__r2.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-04__B-__r1.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-04__B+__r1.txt | falso negativo del checker | Ninguno |
+| ficha_tecnica-case-04__B+__r2.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-02__B-__r1.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-03__B-__r2.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-03__B+__r1.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-03__B+__r2.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-04__B-__r1.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-04__B-__r2.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-04__B+__r1.txt | falso negativo del checker | Ninguno |
+| respuesta_soporte-case-04__B+__r2.txt | falso negativo del checker | Ninguno |
+| cotizacion-case-02__C3__r1.txt | falso negativo del checker | Ninguno |
+| propuesta_tecnica-case-02__C3__r1.txt | fallo del modelo | Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».; Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar». |
+| ficha_tecnica-case-02__C3__r1.txt | falso negativo del checker | Ninguno |
 
 Muestra pequeña: una versión del CLI, un día y un operador. Generación no determinista; las repeticiones de una misma nota no son del todo independientes. El checker es un regex y no mide calidad editorial general.
 
 ## Límites honestos
 
-El stub es una prueba de mecanismo y de los controles, no evidencia de calidad de un LLM. Los fixtures son sintéticos y los escribimos nosotros. El checker es un regex: una paráfrasis correcta puede salir no conforme, y una copia literal puede salir conforme. Las reglas son convenciones de la casa, no conocimiento del mundo. n = 15 es pequeño. La aprobación humana de estas lecciones es simulada (`fixture:`). El detalle está en `docs/LIMITATIONS.md`.
+El stub es una prueba de mecanismo y de los controles, no evidencia de calidad de un LLM. Los fixtures son sintéticos y los escribimos nosotros. Cada checker es un regex: el estricto penaliza formatos equivalentes; el tolerante acepta formas acotadas, no paráfrasis generales. Una copia literal puede salir conforme. Las clasificaciones requieren revisión humana. Las reglas son convenciones de la casa, no conocimiento del mundo. n = 15 es pequeño. La aprobación humana de estas lecciones es simulada (`fixture:`). El detalle está en `docs/LIMITATIONS.md`.

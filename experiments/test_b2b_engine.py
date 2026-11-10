@@ -195,6 +195,96 @@ class B2BEngineTests(unittest.TestCase):
         forbidden = [item for item in b2b.check_document(support, weak)["requirements"] if not item["ok"]]
         self.assertTrue(any("prohibida" in item["detail"] for item in forbidden))
 
+    def critical_text(self, note, form="plain"):
+        lines = []
+        for fact in note["facts"]:
+            if not fact["must_keep"]:
+                continue
+            label, value = fact["text"].split(": ", 1)
+            suffix = f" (Ref. {fact['source_ref']})" if note["doc_type"] == "propuesta_tecnica" else ""
+            if form == "table":
+                lines.append(f"| **{label}** | {value}{suffix} |")
+            elif form == "bullet":
+                lines.append(f"- **{label}:** {value}{suffix}.")
+            else:
+                lines.append(f"{label}: {value}{suffix}")
+        return "\n".join(lines)
+
+    def test_tolerant_accepts_markdown_and_tables_without_changing_strict(self):
+        for kind in b2b.DOC_TYPES:
+            for note in self.held(kind):
+                canonical = self.critical_text(note)
+                strict = b2b.check_document(note, canonical)
+                self.assertTrue(strict["compliant"])
+                self.assertEqual(b2b.check_document_tolerant(note, canonical), strict)
+                for form in ("table", "bullet"):
+                    with self.subTest(note=note["note_id"], form=form):
+                        text = self.critical_text(note, form)
+                        tolerant = b2b.check_document_tolerant(note, text)
+                        self.assertTrue(tolerant["compliant"], tolerant)
+                        self.assertEqual(set(tolerant), set(strict))
+                        self.assertEqual(tolerant["total"], strict["total"])
+                        self.assertFalse(b2b.check_document(note, text)["compliant"])
+                self.assertEqual(b2b.check_document(note, canonical), strict)
+
+    def test_tolerant_requires_both_pressure_units_and_celsius_with_exact_numbers(self):
+        note = self.held("ficha_tecnica")[0]
+        text = self.critical_text(note, "table")
+        self.assertIn("16 bar (232 psi)", text)
+        self.assertIn("120 °C", text)
+        for old, new in ((" (232 psi)", ""), ("16 bar ", ""), (" °C", ""),
+                         ("16 bar", "15 bar"), ("232 psi", "231 psi"),
+                         ("120 °C", "121 °C"), ("120 °C", "120 °F"),
+                         ("16 bar", "116 bar"), ("120 °C", "120 °C0")):
+            with self.subTest(new=new):
+                check = b2b.check_document_tolerant(note, text.replace(old, new))
+                self.assertFalse(check["compliant"], check)
+                self.assertTrue(check["failures"])
+
+    def test_tolerant_citation_stays_with_its_own_value(self):
+        note = self.held("propuesta_tecnica")[0]
+        for form in ("table", "bullet"):
+            text = self.critical_text(note, form)
+            self.assertTrue(b2b.check_document_tolerant(note, text)["compliant"])
+            for ref in ("FT-210", "FT-211"):
+                for replacement in ("", " (Ref. FT-999)"):
+                    self.assertFalse(b2b.check_document_tolerant(
+                        note, text.replace(f" (Ref. {ref})", replacement))["compliant"])
+                far = text.replace(f" (Ref. {ref})", "") + f"\n\nRéférences: (Ref. {ref})"
+                self.assertFalse(b2b.check_document_tolerant(note, far)["compliant"])
+            swapped = text.replace("FT-210", "TEMP").replace("FT-211", "FT-210").replace("TEMP", "FT-211")
+            self.assertFalse(b2b.check_document_tolerant(note, swapped)["compliant"])
+        text = self.critical_text(note, "bullet").replace(" (Ref. FT-210)", "\n  (Ref. FT-210)")
+        self.assertTrue(b2b.check_document_tolerant(note, text)["compliant"])
+        self.assertFalse(b2b.check_document_tolerant(note, text.replace("  (Ref. FT-210)", "- (Ref. FT-210)"))["compliant"])
+        self.assertFalse(b2b.check_document_tolerant(note, text.replace("45 m³/h", "46 m³/h"))["compliant"])
+
+    def test_tolerant_support_folio_anywhere_but_exact_and_required(self):
+        note = self.held("respuesta_soporte")[0]
+        for text in ("Asunto: Seguimiento SOP-1904", "# Folio SOP-1904", "Atendemos su folio SOP-1904."):
+            self.assertTrue(b2b.check_document_tolerant(note, text)["compliant"])
+            self.assertFalse(b2b.check_document(note, text)["compliant"])
+        for text in ("Asunto: Seguimiento", "Folio SOP-1905", "Folio SOP-19040", "Folio XSOP-1904"):
+            self.assertFalse(b2b.check_document_tolerant(note, text)["compliant"])
+
+    def test_tolerant_excludes_only_simple_immediate_negations(self):
+        note = self.held("respuesta_soporte")[0]
+        folio = "Asunto: SOP-1904\n"
+        for phrase in ("no garantizamos", "sin garantizar", "no hay solución definitiva", "sin solución definitiva",
+                       "**No garantizamos** resultados. Sin solución definitiva."):
+            with self.subTest(phrase=phrase):
+                self.assertTrue(b2b.check_document_tolerant(note, folio + phrase)["compliant"])
+        for phrase in ("garantizamos", "solución definitiva", "sin duda garantizamos", "no siempre garantizamos",
+                       "no, garantizamos", "no hay una solución definitiva", "no garantizamos. Garantizamos.",
+                       "sin solución definitiva. Una solución definitiva.", "no garantizamos una solución definitiva",
+                       "Ofrecemos una solución\ndefinitiva."):
+            with self.subTest(phrase=phrase):
+                check = b2b.check_document_tolerant(note, folio + phrase)
+                self.assertFalse(check["compliant"], check)
+        canonical = self.critical_text(note) + "\nNo garantizamos. No hay solución definitiva."
+        self.assertFalse(b2b.check_document(note, canonical)["compliant"])
+        self.assertTrue(b2b.check_document_tolerant(note, canonical)["compliant"])
+
     def test_blocklist_and_real_domains_stay_out_of_fixtures(self):
         for path, _note in self.loaded:
             raw = path.read_text(encoding="utf-8").casefold()

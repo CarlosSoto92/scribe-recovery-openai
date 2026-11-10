@@ -2017,6 +2017,20 @@
             "low": "0.0300533697"
           }
         },
+        "C3": {
+          "fraction": "0/1",
+          "k": 0,
+          "n": 1,
+          "rate": "0.0000000000",
+          "rate_display": "0.0 %",
+          "requirements_display": "0.0 %",
+          "requirements_mean": "0.0000000000",
+          "wilson95": {
+            "display": "0.0 % – 79.3 %",
+            "high": "0.7934506856",
+            "low": "0.0000000000"
+          }
+        },
         "doc_type": "cotizacion",
         "label": "Cotización"
       },
@@ -2046,6 +2060,20 @@
           "wilson95": {
             "display": "0.0 % – 39.0 %",
             "high": "0.3903342879",
+            "low": "0.0000000000"
+          }
+        },
+        "C3": {
+          "fraction": "0/1",
+          "k": 0,
+          "n": 1,
+          "rate": "0.0000000000",
+          "rate_display": "0.0 %",
+          "requirements_display": "0.0 %",
+          "requirements_mean": "0.0000000000",
+          "wilson95": {
+            "display": "0.0 % – 79.3 %",
+            "high": "0.7934506856",
             "low": "0.0000000000"
           }
         },
@@ -2081,6 +2109,20 @@
             "low": "0.0300533697"
           }
         },
+        "C3": {
+          "fraction": "0/1",
+          "k": 0,
+          "n": 1,
+          "rate": "0.0000000000",
+          "rate_display": "0.0 %",
+          "requirements_display": "0.0 %",
+          "requirements_mean": "0.0000000000",
+          "wilson95": {
+            "display": "0.0 % – 79.3 %",
+            "high": "0.7934506856",
+            "low": "0.0000000000"
+          }
+        },
         "doc_type": "ficha_tecnica",
         "label": "Ficha técnica"
       },
@@ -2111,6 +2153,20 @@
             "display": "61.0 % – 100.0 %",
             "high": "1.0000000000",
             "low": "0.6096657121"
+          }
+        },
+        "C3": {
+          "fraction": "1/1",
+          "k": 1,
+          "n": 1,
+          "rate": "1.0000000000",
+          "rate_display": "100.0 %",
+          "requirements_display": "100.0 %",
+          "requirements_mean": "1.0000000000",
+          "wilson95": {
+            "display": "20.7 % – 100.0 %",
+            "high": "1.0000000000",
+            "low": "0.2065493144"
           }
         },
         "doc_type": "reporte_cliente",
@@ -2145,24 +2201,511 @@
             "low": "0.0967714111"
           }
         },
+        "C3": {
+          "fraction": "1/1",
+          "k": 1,
+          "n": 1,
+          "rate": "1.0000000000",
+          "rate_display": "100.0 %",
+          "requirements_display": "100.0 %",
+          "requirements_mean": "1.0000000000",
+          "wilson95": {
+            "display": "20.7 % – 100.0 %",
+            "high": "1.0000000000",
+            "low": "0.2065493144"
+          }
+        },
         "doc_type": "respuesta_soporte",
         "label": "Respuesta de soporte"
       }
     ],
+    "classification_counts": {
+      "B+": {
+        "fallo del modelo": 0,
+        "falso negativo del checker": 11
+      },
+      "B-": {
+        "fallo del modelo": 6,
+        "falso negativo del checker": 14
+      },
+      "C3": {
+        "fallo del modelo": 1,
+        "falso negativo del checker": 2
+      }
+    },
     "codex_version": "0.167.0",
     "comparison": "Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.",
     "control_note": "C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.",
     "date_utc": "2026-11-10T12:58:24.523613Z",
+    "failure_classification": [
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "cotizacion",
+        "failures": [
+          "Falta el texto de la nota «Vigencia: 15 días naturales».",
+          "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega»."
+        ],
+        "file": "cotizacion-case-02__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "cotizacion",
+        "failures": [
+          "Falta el texto de la nota «Vigencia: 15 días naturales».",
+          "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega»."
+        ],
+        "file": "cotizacion-case-02__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "cotizacion",
+        "failures": [
+          "Falta el texto de la nota «Vigencia: 15 días naturales».",
+          "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega»."
+        ],
+        "file": "cotizacion-case-03__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "cotizacion",
+        "failures": [
+          "Falta el texto de la nota «Vigencia: 15 días naturales».",
+          "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega»."
+        ],
+        "file": "cotizacion-case-04__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "cotizacion",
+        "failures": [
+          "Falta el texto de la nota «Vigencia: 15 días naturales».",
+          "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega»."
+        ],
+        "file": "cotizacion-case-04__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "fallo del modelo",
+        "condition": "B-",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+          "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+        ],
+        "file": "propuesta_tecnica-case-02__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": [
+          "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+          "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+        ]
+      },
+      {
+        "case": 2,
+        "classification": "fallo del modelo",
+        "condition": "B-",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+          "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+        ],
+        "file": "propuesta_tecnica-case-02__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": [
+          "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+          "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+        ]
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+          "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+        ],
+        "file": "propuesta_tecnica-case-02__B+__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "fallo del modelo",
+        "condition": "B-",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+          "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000»."
+        ],
+        "file": "propuesta_tecnica-case-03__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": [
+          "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+          "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000»."
+        ]
+      },
+      {
+        "case": 3,
+        "classification": "fallo del modelo",
+        "condition": "B-",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+          "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000»."
+        ],
+        "file": "propuesta_tecnica-case-03__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": [
+          "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+          "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000»."
+        ]
+      },
+      {
+        "case": 4,
+        "classification": "fallo del modelo",
+        "condition": "B-",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+          "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m»."
+        ],
+        "file": "propuesta_tecnica-case-04__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": [
+          "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+          "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m»."
+        ]
+      },
+      {
+        "case": 4,
+        "classification": "fallo del modelo",
+        "condition": "B-",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+          "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m»."
+        ],
+        "file": "propuesta_tecnica-case-04__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": [
+          "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+          "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m»."
+        ]
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 120 °C»."
+        ],
+        "file": "ficha_tecnica-case-02__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 120 °C»."
+        ],
+        "file": "ficha_tecnica-case-02__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 120 °C»."
+        ],
+        "file": "ficha_tecnica-case-02__B+__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 120 °C»."
+        ],
+        "file": "ficha_tecnica-case-02__B+__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 40 °C»."
+        ],
+        "file": "ficha_tecnica-case-03__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 40 °C»."
+        ],
+        "file": "ficha_tecnica-case-03__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 40 °C»."
+        ],
+        "file": "ficha_tecnica-case-03__B+__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 40 °C»."
+        ],
+        "file": "ficha_tecnica-case-03__B+__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 150 °C»."
+        ],
+        "file": "ficha_tecnica-case-04__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 150 °C»."
+        ],
+        "file": "ficha_tecnica-case-04__B+__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 150 °C»."
+        ],
+        "file": "ficha_tecnica-case-04__B+__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-1904»."
+        ],
+        "file": "respuesta_soporte-case-02__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-2033»."
+        ],
+        "file": "respuesta_soporte-case-03__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-2033»."
+        ],
+        "file": "respuesta_soporte-case-03__B+__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 3,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-2033»."
+        ],
+        "file": "respuesta_soporte-case-03__B+__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-2180»."
+        ],
+        "file": "respuesta_soporte-case-04__B-__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B-",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-2180»."
+        ],
+        "file": "respuesta_soporte-case-04__B-__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-2180»."
+        ],
+        "file": "respuesta_soporte-case-04__B+__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 4,
+        "classification": "falso negativo del checker",
+        "condition": "B+",
+        "doc_type": "respuesta_soporte",
+        "failures": [
+          "Falta el texto de la nota «Folio de soporte: SOP-2180»."
+        ],
+        "file": "respuesta_soporte-case-04__B+__r2.txt",
+        "rep": 2,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "C3",
+        "doc_type": "cotizacion",
+        "failures": [
+          "Falta el texto de la nota «Vigencia: 15 días naturales».",
+          "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega»."
+        ],
+        "file": "cotizacion-case-02__C3__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      },
+      {
+        "case": 2,
+        "classification": "fallo del modelo",
+        "condition": "C3",
+        "doc_type": "propuesta_tecnica",
+        "failures": [
+          "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+          "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+        ],
+        "file": "propuesta_tecnica-case-02__C3__r1.txt",
+        "rep": 1,
+        "tolerant_failures": [
+          "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+          "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+        ]
+      },
+      {
+        "case": 2,
+        "classification": "falso negativo del checker",
+        "condition": "C3",
+        "doc_type": "ficha_tecnica",
+        "failures": [
+          "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+          "Falta el texto de la nota «Temperatura máxima: 120 °C»."
+        ],
+        "file": "ficha_tecnica-case-02__C3__r1.txt",
+        "rep": 1,
+        "tolerant_failures": []
+      }
+    ],
     "label": "Codex (codex-cli 0.167, suscripción ChatGPT)",
     "n": 65,
     "note": "Muestra pequeña: una versión del CLI, un día y un operador. Generación no determinista; las repeticiones de una misma nota no son del todo independientes. El checker es un regex y no mide calidad editorial general.",
     "observations": [
-      "En ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa."
+      "Revisor estricto (primario): en ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa."
     ],
     "operator": "Hack Ops",
+    "primary_reviewer": "revisor estricto",
     "runs": [
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "cotizacion",
@@ -2173,10 +2716,44 @@
         "file": "cotizacion-case-02__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": false
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "cotizacion",
@@ -2187,10 +2764,44 @@
         "file": "cotizacion-case-02__B-__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": false
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "cotizacion",
@@ -2198,10 +2809,44 @@
         "file": "cotizacion-case-02__B+__r1.txt",
         "met": 2,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": true
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "cotizacion",
@@ -2209,10 +2854,44 @@
         "file": "cotizacion-case-02__B+__r2.txt",
         "met": 2,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": true
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "cotizacion",
@@ -2223,10 +2902,44 @@
         "file": "cotizacion-case-03__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": false
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "cotizacion",
@@ -2234,10 +2947,44 @@
         "file": "cotizacion-case-03__B-__r2.txt",
         "met": 2,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": true
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "cotizacion",
@@ -2245,10 +2992,44 @@
         "file": "cotizacion-case-03__B+__r1.txt",
         "met": 2,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": true
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "cotizacion",
@@ -2256,10 +3037,44 @@
         "file": "cotizacion-case-03__B+__r2.txt",
         "met": 2,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": true
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "cotizacion",
@@ -2270,10 +3085,44 @@
         "file": "cotizacion-case-04__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": false
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "cotizacion",
@@ -2284,10 +3133,44 @@
         "file": "cotizacion-case-04__B-__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": false
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "cotizacion",
@@ -2295,10 +3178,44 @@
         "file": "cotizacion-case-04__B+__r1.txt",
         "met": 2,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": true
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "cotizacion",
@@ -2306,10 +3223,44 @@
         "file": "cotizacion-case-04__B+__r2.txt",
         "met": 2,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": true
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "fallo del modelo",
         "compliant": false,
         "condition": "B-",
         "doc_type": "propuesta_tecnica",
@@ -2320,10 +3271,47 @@
         "file": "propuesta_tecnica-case-02__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": false,
+          "doc_type": "propuesta_tecnica",
+          "failures": [
+            "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+          ],
+          "met": 0,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+              "id": "cifra-1",
+              "ok": false
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+              "id": "cifra-2",
+              "ok": false
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "fallo del modelo",
         "compliant": false,
         "condition": "B-",
         "doc_type": "propuesta_tecnica",
@@ -2334,10 +3322,47 @@
         "file": "propuesta_tecnica-case-02__B-__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": false,
+          "doc_type": "propuesta_tecnica",
+          "failures": [
+            "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+          ],
+          "met": 0,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+              "id": "cifra-1",
+              "ok": false
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+              "id": "cifra-2",
+              "ok": false
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "propuesta_tecnica",
@@ -2345,10 +3370,44 @@
         "file": "propuesta_tecnica-case-02__B+__r1.txt",
         "met": 2,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "id": "cifra-1",
+            "ok": true
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+            "id": "cifra-2",
+            "ok": true
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "propuesta_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+              "id": "cifra-1",
+              "ok": true
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+              "id": "cifra-2",
+              "ok": true
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "propuesta_tecnica",
@@ -2359,10 +3418,44 @@
         "file": "propuesta_tecnica-case-02__B+__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "propuesta_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+              "id": "cifra-1",
+              "ok": true
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+              "id": "cifra-2",
+              "ok": true
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": "fallo del modelo",
         "compliant": false,
         "condition": "B-",
         "doc_type": "propuesta_tecnica",
@@ -2373,10 +3466,47 @@
         "file": "propuesta_tecnica-case-03__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": false,
+          "doc_type": "propuesta_tecnica",
+          "failures": [
+            "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+            "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000»."
+          ],
+          "met": 0,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+              "id": "cifra-1",
+              "ok": false
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+              "id": "cifra-2",
+              "ok": false
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": "fallo del modelo",
         "compliant": false,
         "condition": "B-",
         "doc_type": "propuesta_tecnica",
@@ -2387,10 +3517,47 @@
         "file": "propuesta_tecnica-case-03__B-__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": false,
+          "doc_type": "propuesta_tecnica",
+          "failures": [
+            "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+            "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000»."
+          ],
+          "met": 0,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+              "id": "cifra-1",
+              "ok": false
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+              "id": "cifra-2",
+              "ok": false
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "propuesta_tecnica",
@@ -2398,10 +3565,44 @@
         "file": "propuesta_tecnica-case-03__B+__r1.txt",
         "met": 2,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+            "id": "cifra-1",
+            "ok": true
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+            "id": "cifra-2",
+            "ok": true
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "propuesta_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+              "id": "cifra-1",
+              "ok": true
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+              "id": "cifra-2",
+              "ok": true
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "propuesta_tecnica",
@@ -2409,10 +3610,44 @@
         "file": "propuesta_tecnica-case-03__B+__r2.txt",
         "met": 2,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+            "id": "cifra-1",
+            "ok": true
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+            "id": "cifra-2",
+            "ok": true
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "propuesta_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-330) junto a «Par de operación: 40 N·m».",
+              "id": "cifra-1",
+              "ok": true
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-331) junto a «Ciclos de prueba: 5000».",
+              "id": "cifra-2",
+              "ok": true
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": "fallo del modelo",
         "compliant": false,
         "condition": "B-",
         "doc_type": "propuesta_tecnica",
@@ -2423,10 +3658,47 @@
         "file": "propuesta_tecnica-case-04__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": false,
+          "doc_type": "propuesta_tecnica",
+          "failures": [
+            "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+            "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m»."
+          ],
+          "met": 0,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+              "id": "cifra-1",
+              "ok": false
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+              "id": "cifra-2",
+              "ok": false
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": "fallo del modelo",
         "compliant": false,
         "condition": "B-",
         "doc_type": "propuesta_tecnica",
@@ -2437,10 +3709,47 @@
         "file": "propuesta_tecnica-case-04__B-__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": false,
+          "doc_type": "propuesta_tecnica",
+          "failures": [
+            "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+            "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m»."
+          ],
+          "met": 0,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+              "id": "cifra-1",
+              "ok": false
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+              "id": "cifra-2",
+              "ok": false
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "propuesta_tecnica",
@@ -2448,10 +3757,44 @@
         "file": "propuesta_tecnica-case-04__B+__r1.txt",
         "met": 2,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+            "id": "cifra-1",
+            "ok": true
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+            "id": "cifra-2",
+            "ok": true
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "propuesta_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+              "id": "cifra-1",
+              "ok": true
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+              "id": "cifra-2",
+              "ok": true
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "propuesta_tecnica",
@@ -2459,10 +3802,44 @@
         "file": "propuesta_tecnica-case-04__B+__r2.txt",
         "met": 2,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+            "id": "cifra-1",
+            "ok": true
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+            "id": "cifra-2",
+            "ok": true
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "propuesta_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-440) junto a «Eficiencia hidráulica: 72 %».",
+              "id": "cifra-1",
+              "ok": true
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-441) junto a «NPSH requerido: 3.2 m».",
+              "id": "cifra-2",
+              "ok": true
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "ficha_tecnica",
@@ -2473,10 +3850,44 @@
         "file": "ficha_tecnica-case-02__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "ficha_tecnica",
@@ -2487,10 +3898,44 @@
         "file": "ficha_tecnica-case-02__B-__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "ficha_tecnica",
@@ -2501,10 +3946,44 @@
         "file": "ficha_tecnica-case-02__B+__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "ficha_tecnica",
@@ -2515,10 +3994,44 @@
         "file": "ficha_tecnica-case-02__B+__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "ficha_tecnica",
@@ -2529,10 +4042,44 @@
         "file": "ficha_tecnica-case-03__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "ficha_tecnica",
@@ -2543,10 +4090,44 @@
         "file": "ficha_tecnica-case-03__B-__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "ficha_tecnica",
@@ -2557,10 +4138,44 @@
         "file": "ficha_tecnica-case-03__B+__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "ficha_tecnica",
@@ -2571,10 +4186,44 @@
         "file": "ficha_tecnica-case-03__B+__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 6 bar (87 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 40 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "ficha_tecnica",
@@ -2585,10 +4234,44 @@
         "file": "ficha_tecnica-case-04__B-__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "ficha_tecnica",
@@ -2596,10 +4279,44 @@
         "file": "ficha_tecnica-case-04__B-__r2.txt",
         "met": 2,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+            "id": "presion",
+            "ok": true
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+            "id": "temperatura",
+            "ok": true
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "ficha_tecnica",
@@ -2610,10 +4327,44 @@
         "file": "ficha_tecnica-case-04__B+__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "ficha_tecnica",
@@ -2624,10 +4375,44 @@
         "file": "ficha_tecnica-case-04__B+__r2.txt",
         "met": 0,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 25 bar (363 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 150 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "reporte_cliente",
@@ -2635,10 +4420,34 @@
         "file": "reporte_cliente-case-02__B-__r1.txt",
         "met": 1,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "reporte_cliente",
@@ -2646,10 +4455,34 @@
         "file": "reporte_cliente-case-02__B-__r2.txt",
         "met": 1,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "reporte_cliente",
@@ -2657,10 +4490,34 @@
         "file": "reporte_cliente-case-02__B+__r1.txt",
         "met": 1,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "reporte_cliente",
@@ -2668,10 +4525,34 @@
         "file": "reporte_cliente-case-02__B+__r2.txt",
         "met": 1,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "reporte_cliente",
@@ -2679,10 +4560,34 @@
         "file": "reporte_cliente-case-03__B-__r1.txt",
         "met": 1,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "reporte_cliente",
@@ -2690,10 +4595,34 @@
         "file": "reporte_cliente-case-03__B-__r2.txt",
         "met": 1,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "reporte_cliente",
@@ -2701,10 +4630,34 @@
         "file": "reporte_cliente-case-03__B+__r1.txt",
         "met": 1,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "reporte_cliente",
@@ -2712,10 +4665,34 @@
         "file": "reporte_cliente-case-03__B+__r2.txt",
         "met": 1,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Coordinación Demo · 2026-11-30».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "reporte_cliente",
@@ -2723,10 +4700,34 @@
         "file": "reporte_cliente-case-04__B-__r1.txt",
         "met": 1,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "reporte_cliente",
@@ -2734,10 +4735,34 @@
         "file": "reporte_cliente-case-04__B-__r2.txt",
         "met": 1,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "reporte_cliente",
@@ -2745,10 +4770,34 @@
         "file": "reporte_cliente-case-04__B+__r1.txt",
         "met": 1,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 4,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "reporte_cliente",
@@ -2756,10 +4805,34 @@
         "file": "reporte_cliente-case-04__B+__r2.txt",
         "met": 1,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-12-07».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "respuesta_soporte",
@@ -2769,10 +4842,64 @@
         "file": "respuesta_soporte-case-02__B-__r1.txt",
         "met": 3,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "respuesta_soporte",
@@ -2780,10 +4907,64 @@
         "file": "respuesta_soporte-case-02__B-__r2.txt",
         "met": 4,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+            "id": "folio",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "respuesta_soporte",
@@ -2791,10 +4972,64 @@
         "file": "respuesta_soporte-case-02__B+__r1.txt",
         "met": 4,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+            "id": "folio",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "B+",
         "doc_type": "respuesta_soporte",
@@ -2802,10 +5037,64 @@
         "file": "respuesta_soporte-case-02__B+__r2.txt",
         "met": 4,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+            "id": "folio",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 3,
+        "classification": null,
         "compliant": true,
         "condition": "B-",
         "doc_type": "respuesta_soporte",
@@ -2813,10 +5102,64 @@
         "file": "respuesta_soporte-case-03__B-__r1.txt",
         "met": 4,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+            "id": "folio",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "respuesta_soporte",
@@ -2826,10 +5169,64 @@
         "file": "respuesta_soporte-case-03__B-__r2.txt",
         "met": 3,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "respuesta_soporte",
@@ -2839,10 +5236,64 @@
         "file": "respuesta_soporte-case-03__B+__r1.txt",
         "met": 3,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 3,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "respuesta_soporte",
@@ -2852,10 +5303,64 @@
         "file": "respuesta_soporte-case-03__B+__r2.txt",
         "met": 3,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2033».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "respuesta_soporte",
@@ -2865,10 +5370,64 @@
         "file": "respuesta_soporte-case-04__B-__r1.txt",
         "met": 3,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B-",
         "doc_type": "respuesta_soporte",
@@ -2878,10 +5437,64 @@
         "file": "respuesta_soporte-case-04__B-__r2.txt",
         "met": 3,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "respuesta_soporte",
@@ -2891,10 +5504,64 @@
         "file": "respuesta_soporte-case-04__B+__r1.txt",
         "met": 3,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 4,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "B+",
         "doc_type": "respuesta_soporte",
@@ -2904,10 +5571,64 @@
         "file": "respuesta_soporte-case-04__B+__r2.txt",
         "met": 3,
         "rep": 2,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+            "id": "folio",
+            "ok": false
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-2180».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "C3",
         "doc_type": "cotizacion",
@@ -2918,10 +5639,44 @@
         "file": "cotizacion-case-02__C3__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+            "id": "vigencia",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+            "id": "pago",
+            "ok": false
+          }
+        ],
+        "rule_type": "required_clause",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "cotizacion",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Vigencia: 15 días naturales».",
+              "id": "vigencia",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Pago: 50 % anticipo, 50 % contra entrega».",
+              "id": "pago",
+              "ok": true
+            }
+          ],
+          "rule_type": "required_clause",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "fallo del modelo",
         "compliant": false,
         "condition": "C3",
         "doc_type": "propuesta_tecnica",
@@ -2932,10 +5687,47 @@
         "file": "propuesta_tecnica-case-02__C3__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "id": "cifra-1",
+            "ok": false
+          },
+          {
+            "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+            "id": "cifra-2",
+            "ok": false
+          }
+        ],
+        "rule_type": "cite_source",
+        "tolerant": {
+          "compliant": false,
+          "doc_type": "propuesta_tecnica",
+          "failures": [
+            "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+            "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar»."
+          ],
+          "met": 0,
+          "requirements": [
+            {
+              "detail": "Falta la referencia (Ref. FT-210) junto a «Caudal nominal: 45 m³/h».",
+              "id": "cifra-1",
+              "ok": false
+            },
+            {
+              "detail": "Falta la referencia (Ref. FT-211) junto a «Presión de descarga: 6 bar».",
+              "id": "cifra-2",
+              "ok": false
+            }
+          ],
+          "rule_type": "cite_source",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": "falso negativo del checker",
         "compliant": false,
         "condition": "C3",
         "doc_type": "ficha_tecnica",
@@ -2946,10 +5738,44 @@
         "file": "ficha_tecnica-case-02__C3__r1.txt",
         "met": 0,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+            "id": "presion",
+            "ok": false
+          },
+          {
+            "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+            "id": "temperatura",
+            "ok": false
+          }
+        ],
+        "rule_type": "unit_format",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "ficha_tecnica",
+          "failures": [],
+          "met": 2,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Presión de trabajo: 16 bar (232 psi)».",
+              "id": "presion",
+              "ok": true
+            },
+            {
+              "detail": "Falta el texto de la nota «Temperatura máxima: 120 °C».",
+              "id": "temperatura",
+              "ok": true
+            }
+          ],
+          "rule_type": "unit_format",
+          "total": 2
+        },
         "total": 2
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "C3",
         "doc_type": "reporte_cliente",
@@ -2957,10 +5783,34 @@
         "file": "reporte_cliente-case-02__C3__r1.txt",
         "met": 1,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+            "id": "paso",
+            "ok": true
+          }
+        ],
+        "rule_type": "next_step",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "reporte_cliente",
+          "failures": [],
+          "met": 1,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Siguiente paso: Mesa Técnica Demo · 2026-11-23».",
+              "id": "paso",
+              "ok": true
+            }
+          ],
+          "rule_type": "next_step",
+          "total": 1
+        },
         "total": 1
       },
       {
         "case": 2,
+        "classification": null,
         "compliant": true,
         "condition": "C3",
         "doc_type": "respuesta_soporte",
@@ -2968,6 +5818,59 @@
         "file": "respuesta_soporte-case-02__C3__r1.txt",
         "met": 4,
         "rep": 1,
+        "requirements": [
+          {
+            "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+            "id": "folio",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «garantizamos».",
+            "id": "forbidden:garantizamos",
+            "ok": true
+          },
+          {
+            "detail": "Aparece la frase prohibida «solución definitiva».",
+            "id": "forbidden:solución definitiva",
+            "ok": true
+          },
+          {
+            "detail": "Falta el folio SOP-nnnn de la nota.",
+            "id": "folio",
+            "ok": true
+          }
+        ],
+        "rule_type": "forbidden_claim",
+        "tolerant": {
+          "compliant": true,
+          "doc_type": "respuesta_soporte",
+          "failures": [],
+          "met": 4,
+          "requirements": [
+            {
+              "detail": "Falta el texto de la nota «Folio de soporte: SOP-1904».",
+              "id": "folio",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «garantizamos».",
+              "id": "forbidden:garantizamos",
+              "ok": true
+            },
+            {
+              "detail": "Aparece la frase prohibida «solución definitiva».",
+              "id": "forbidden:solución definitiva",
+              "ok": true
+            },
+            {
+              "detail": "Falta el folio SOP-nnnn de la nota.",
+              "id": "folio",
+              "ok": true
+            }
+          ],
+          "rule_type": "forbidden_claim",
+          "total": 4
+        },
         "total": 4
       }
     ],
@@ -2980,6 +5883,292 @@
     },
     "source": "codex-20261110",
     "status": "grabado",
+    "tolerant": {
+      "B+": {
+        "fraction": "30/30",
+        "k": 30,
+        "n": 30,
+        "rate": "1.0000000000",
+        "rate_display": "100.0 %",
+        "requirements_display": "100.0 %",
+        "requirements_mean": "1.0000000000",
+        "wilson95": {
+          "display": "88.6 % – 100.0 %",
+          "high": "1.0000000000",
+          "low": "0.8864866068"
+        }
+      },
+      "B-": {
+        "fraction": "24/30",
+        "k": 24,
+        "n": 30,
+        "rate": "0.8000000000",
+        "rate_display": "80.0 %",
+        "requirements_display": "80.0 %",
+        "requirements_mean": "0.8000000000",
+        "wilson95": {
+          "display": "62.7 % – 90.5 %",
+          "high": "0.9049489282",
+          "low": "0.6269430359"
+        }
+      },
+      "C3": {
+        "fraction": "4/5",
+        "k": 4,
+        "n": 5,
+        "rate": "0.8000000000",
+        "rate_display": "80.0 %",
+        "requirements_display": "80.0 %",
+        "requirements_mean": "0.8000000000",
+        "wilson95": {
+          "display": "37.6 % – 96.4 %",
+          "high": "0.9637758914",
+          "low": "0.3755346298"
+        }
+      },
+      "by_type": [
+        {
+          "B+": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "B-": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "C3": {
+            "fraction": "1/1",
+            "k": 1,
+            "n": 1,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "20.7 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.2065493144"
+            }
+          },
+          "doc_type": "cotizacion",
+          "label": "Cotización"
+        },
+        {
+          "B+": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "B-": {
+            "fraction": "0/6",
+            "k": 0,
+            "n": 6,
+            "rate": "0.0000000000",
+            "rate_display": "0.0 %",
+            "requirements_display": "0.0 %",
+            "requirements_mean": "0.0000000000",
+            "wilson95": {
+              "display": "0.0 % – 39.0 %",
+              "high": "0.3903342879",
+              "low": "0.0000000000"
+            }
+          },
+          "C3": {
+            "fraction": "0/1",
+            "k": 0,
+            "n": 1,
+            "rate": "0.0000000000",
+            "rate_display": "0.0 %",
+            "requirements_display": "0.0 %",
+            "requirements_mean": "0.0000000000",
+            "wilson95": {
+              "display": "0.0 % – 79.3 %",
+              "high": "0.7934506856",
+              "low": "0.0000000000"
+            }
+          },
+          "doc_type": "propuesta_tecnica",
+          "label": "Propuesta técnica"
+        },
+        {
+          "B+": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "B-": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "C3": {
+            "fraction": "1/1",
+            "k": 1,
+            "n": 1,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "20.7 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.2065493144"
+            }
+          },
+          "doc_type": "ficha_tecnica",
+          "label": "Ficha técnica"
+        },
+        {
+          "B+": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "B-": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "C3": {
+            "fraction": "1/1",
+            "k": 1,
+            "n": 1,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "20.7 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.2065493144"
+            }
+          },
+          "doc_type": "reporte_cliente",
+          "label": "Reporte a cliente"
+        },
+        {
+          "B+": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "B-": {
+            "fraction": "6/6",
+            "k": 6,
+            "n": 6,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "61.0 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.6096657121"
+            }
+          },
+          "C3": {
+            "fraction": "1/1",
+            "k": 1,
+            "n": 1,
+            "rate": "1.0000000000",
+            "rate_display": "100.0 %",
+            "requirements_display": "100.0 %",
+            "requirements_mean": "1.0000000000",
+            "wilson95": {
+              "display": "20.7 % – 100.0 %",
+              "high": "1.0000000000",
+              "low": "0.2065493144"
+            }
+          },
+          "doc_type": "respuesta_soporte",
+          "label": "Respuesta de soporte"
+        }
+      ],
+      "label": "revisor tolerante",
+      "sign_test": {
+        "improved": 6,
+        "n": 6,
+        "p_two_sided": "0.03125",
+        "ties": 24,
+        "worsened": 0
+      },
+      "status": "grabado"
+    },
+    "tolerant_comparison": "B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo (provisional; Carlos lo confirmará a ojo).",
     "worse_than_stub": true
   },
   "controls": {

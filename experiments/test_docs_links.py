@@ -78,7 +78,7 @@ class DocsTests(unittest.TestCase):
         for number in re.findall(r"\d+(?:[.,]\d+)?", section):
             self.assertIn(number, raw, number)
         phrases = []
-        for block, keys in ((report["held_out"], ("B-", "B+")), (report["codex_recorded"], ("B-", "B+", "C3"))):
+        for block, keys in ((report["held_out"], ("B-", "B+")), (report["codex_recorded"], ("B-", "B+", "C3")), (report["codex_recorded"]["tolerant"], ("B-", "B+", "C3"))):
             for key in keys:
                 phrases += [block[key]["fraction"], block[key]["rate_display"], block[key]["wilson95"]["display"]]
         for phrase in phrases:
@@ -90,6 +90,16 @@ class DocsTests(unittest.TestCase):
         for phrase in (recorded["label"], recorded["operator"], recorded["date_utc"],
                        recorded["sign_test"]["p_two_sided"], recorded["comparison"], *recorded["observations"]):
             self.assertIn(phrase, section)
+        for key, fraction in (("B-", "10/30"), ("B+", "19/30"), ("C3", "2/5")):
+            self.assertEqual(recorded[key]["fraction"], fraction)
+        for label in ("revisor estricto", "revisor tolerante"):
+            self.assertIn(label, section.lower())
+        self.assertIn(recorded["tolerant"]["sign_test"]["p_two_sided"], section)
+        self.assertIn(recorded["tolerant_comparison"], section)
+        for block in (recorded, recorded["tolerant"]):
+            for row in block["by_type"]:
+                for key in ("B-", "B+", "C3"):
+                    self.assertIn(row[key]["fraction"], section)
         self.assertIn(f"N = {recorded['n']}", section)
 
     def test_docs_acknowledge_recorded_runs_and_their_limits(self):
