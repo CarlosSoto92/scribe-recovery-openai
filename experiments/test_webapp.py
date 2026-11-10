@@ -11,8 +11,12 @@ from threading import Thread
 from types import SimpleNamespace
 import unittest
 from urllib.parse import urlencode
+from unittest.mock import patch
 
-import webapp as web
+if __package__:
+    from . import webapp as web
+else:
+    import webapp as web
 
 
 class StoreTests(unittest.TestCase):
@@ -113,12 +117,46 @@ class Inputs(HTMLParser):
     def __init__(self, html):
         super().__init__()
         self.hidden = {}
+        self.forms = {}
+        self.current_form = None
+        self.textarea = None
+        self.script_nonce = None
+        self.script = ""
+        self.in_script = False
         self.feed(html)
 
     def handle_starttag(self, tag, attributes):
         attributes = dict(attributes)
+        if tag == "form":
+            self.current_form = {"inputs": [], "comment": ""}
+            self.forms.setdefault(attributes["action"], []).append(self.current_form)
+        if tag == "input" and self.current_form is not None:
+            self.current_form["inputs"].append(attributes)
         if tag == "input" and attributes.get("type") == "hidden":
             self.hidden[attributes["name"]] = attributes.get("value", "")
+        if tag == "textarea" and self.current_form is not None:
+            self.textarea = self.current_form
+        if tag == "script":
+            self.script_nonce = attributes.get("nonce")
+            self.in_script = True
+
+    def handle_endtag(self, tag):
+        if tag == "form":
+            self.current_form = None
+        elif tag == "textarea":
+            self.textarea = None
+        elif tag == "script":
+            self.in_script = False
+
+    def handle_data(self, data):
+        if self.textarea is not None:
+            self.textarea["comment"] += data
+        if self.in_script:
+            self.script += data
+
+    def field(self, action, name):
+        return next(field for field in self.forms["/action/" + action][0]["inputs"]
+                    if field.get("name") == name)
 
 
 class HTTPTests(unittest.TestCase):
@@ -127,7 +165,7 @@ class HTTPTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.store = web.Store(Path(temporary.name) / "demo.db")
         try:
-            self.server = web.make_server(self.store, 0)
+            self.server = web.make_server(self.store, 8766)
         except PermissionError as exc:
             self.skipTest(f"Sandbox sin sockets loopback: {exc}")
         self.thread = Thread(target=self.server.serve_forever, kwargs={"poll_interval": 0.01})
@@ -151,12 +189,101 @@ class HTTPTests(unittest.TestCase):
             request_headers.update(headers or {})
             connection.request(method, path, body=body, headers=request_headers)
             response = connection.getresponse()
+            self.response_headers = dict(response.getheaders())
             return response.status, response.read().decode("utf-8")
         finally:
             connection.close()
 
     def post(self, action, **fields):
         return self.request("POST", "/action/" + action, dict(csrf=self.csrf, **fields))
+
+    def test_feedback_400_preserves_fields_and_can_be_corrected(self):
+        self.assertEqual(self.post("draft")[0], 200)
+        document = self.store.read("draft.v1")[-1]
+        before = self.store.history()
+        comment = '  Falta duración & fuente.\n</textarea><script>alert("x")</script>  '
+        reviewer = 'carlos "editor" <review>'
+        for targets, rating in (([], "4"), (["f2"], "3"), (["f1", "f2"], "6")):
+            with self.subTest(targets=targets, rating=rating):
+                status, html = self.post("feedback", draft_id=document["draft_id"],
+                                         reviewer=reviewer, rating=rating, comment=comment, target=targets)
+                self.assertEqual(status, 400)
+                parsed = Inputs(html)
+                self.assertEqual(parsed.forms["/action/feedback"][0]["comment"], comment)
+                for name, value in (("reviewer", reviewer), ("rating", rating), ("draft_id", document["draft_id"])):
+                    self.assertEqual(parsed.field("feedback", name)["value"], value)
+                checked = [field["value"] for field in parsed.forms["/action/feedback"][0]["inputs"]
+                           if field.get("name") == "target" and "checked" in field]
+                self.assertEqual(checked, targets)
+                self.assertNotIn('<script>alert(', html)
+                self.assertIn('&lt;/textarea&gt;&lt;script&gt;', html)
+                self.assertEqual(self.store.history(), before)
+        status, _ = self.post("feedback", draft_id=document["draft_id"], reviewer=reviewer,
+                              rating="4", comment=comment, target=["f1"])
+        self.assertEqual(status, 200)
+        self.assertEqual(self.store.read("feedback.v1")[-1]["comment"], comment)
+
+    def test_feedback_sqlite_error_preserves_comment(self):
+        self.post("draft")
+        document = self.store.read("draft.v1")[-1]
+        with patch.object(self.store, "feedback", side_effect=sqlite3.OperationalError("test")):
+            status, html = self.post("feedback", draft_id=document["draft_id"], reviewer="carlos",
+                                     rating="5", comment="Mi corrección sigue aquí", target=["f1"])
+        self.assertEqual(status, 400)
+        self.assertEqual(Inputs(html).forms["/action/feedback"][0]["comment"], "Mi corrección sigue aquí")
+
+    def test_feedback_client_validation_targets_only_must_keep_and_csp_allows_script(self):
+        status, html = self.post("draft")
+        self.assertEqual(status, 200)
+        parsed = Inputs(html)
+        targets = [field for field in parsed.forms["/action/feedback"][0]["inputs"]
+                   if field.get("name") == "target"]
+        self.assertEqual([field["value"] for field in targets if "data-must-keep" in field], ["f1"])
+        self.assertTrue(all("required" not in field for field in targets))
+        self.assertIn('Marca al menos un hecho crítico (must_keep)', html)
+        for code in ('input[name="target"][data-must-keep]', 'criticalFacts.some(input => input.checked)',
+                     'setCustomValidity', "addEventListener('change', validateTargets)",
+                     "addEventListener('submit'", 'event.preventDefault()', 'feedbackForm.reportValidity()'):
+            self.assertIn(code, parsed.script)
+        self.assertTrue(parsed.script_nonce)
+        csp = self.response_headers["Content-Security-Policy"]
+        self.assertIn(f"script-src 'nonce-{parsed.script_nonce}'", csp)
+        self.assertIn("default-src 'none'", csp)
+        self.assertNotIn("script-src 'unsafe-inline'", csp)
+        self.request("GET", "/")
+        self.assertNotEqual(csp, self.response_headers["Content-Security-Policy"])
+
+    def test_approval_prefills_latest_reviewer_and_reference_but_requires_human_post(self):
+        self.post("draft")
+        document = self.store.read("draft.v1")[-1]
+        for reviewer, reference in (("carlos", "review-l4:auto"), ('editor "L4" <human>', "review-l4:auto"),
+                                    ("fixture_simulated", "fixture:web-review")):
+            with self.subTest(reviewer=reviewer):
+                status, _ = self.post("feedback", draft_id=document["draft_id"], reviewer=reviewer,
+                                      rating="2", comment="Falta duración", target=["f1"])
+                self.assertEqual(status, 200)
+                before = self.store.history()
+                status, html = self.request("GET", "/")
+                self.assertEqual(status, 200)
+                parsed = Inputs(html)
+                self.assertEqual(parsed.field("feedback", "reviewer")["value"], reviewer)
+                for form in parsed.forms["/action/approve"]:
+                    inputs = {field["name"]: field for field in form["inputs"]}
+                    self.assertEqual(inputs["approved_by"]["value"], reviewer)
+                    self.assertEqual(inputs["approval_ref"]["value"], reference)
+                    self.assertIn("required", inputs["approved_by"])
+                    self.assertIn("required", inputs["approval_ref"])
+                self.assertEqual(self.store.history(), before)
+                lesson = self.store.read("lesson.v1")[-1]
+                self.assertEqual(lesson["state"], "proposed")
+                for missing in ("approved_by", "approval_ref"):
+                    fields = dict(lesson_id=lesson["lesson_id"], approved_by=reviewer, approval_ref=reference)
+                    fields[missing] = ""
+                    self.assertEqual(self.post("approve", **fields)[0], 400)
+                    self.assertEqual(self.store.history(), before)
+                self.assertEqual(self.post("approve", lesson_id=lesson["lesson_id"],
+                                           approved_by=reviewer, approval_ref=reference)[0], 200)
+                self.assertEqual(self.store.read("lesson.v1")[-1]["state"], "approved")
 
     def test_full_loop_and_revocation(self):
         self.assertEqual(self.server.server_address[0], "127.0.0.1")
@@ -216,12 +343,12 @@ class MemoryHTTPTests(HTTPTests):
         self.store = web.Store(Path(temporary.name) / "demo.db")
         self.csrf = "test-form-token"
         self.server = SimpleNamespace(store=self.store, note=web.ed.load(web.FIXTURE, "research_note.v1"),
-                                      csrf=self.csrf, server_port=8765,
-                                      server_address=("127.0.0.1", 8765))
+                                      csrf=self.csrf, server_port=8766,
+                                      server_address=("127.0.0.1", 8766))
 
     def request(self, method, path, fields=None, headers=None):
         body = urlencode(fields, doseq=True).encode("utf-8") if fields is not None else b""
-        request_headers = {"Host": "127.0.0.1:8765", "Content-Type": "application/x-www-form-urlencoded",
+        request_headers = {"Host": "127.0.0.1:8766", "Content-Type": "application/x-www-form-urlencoded",
                            "Content-Length": str(len(body))}
         request_headers.update(headers or {})
         raw = (f"{method} {path} HTTP/1.0\r\n" + ''.join(
@@ -243,6 +370,7 @@ class MemoryHTTPTests(HTTPTests):
         response = http.client.HTTPResponse(Connection(connection.output.getvalue()))
         try:
             response.begin()
+            self.response_headers = dict(response.getheaders())
             return response.status, response.read().decode("utf-8")
         finally:
             response.close()

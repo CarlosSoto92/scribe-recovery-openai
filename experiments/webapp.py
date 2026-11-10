@@ -156,10 +156,16 @@ def comparison_html(note, branches):
     return '<div class="comparison">' + ''.join(panels) + '</div>'
 
 
-def page(store, note, token, message="", branches=None):
+def page(store, note, token, message="", branches=None, feedback_form=None, script_nonce=""):
     history = store.history()
     drafts = [d for _, label, d in history if label == "V1"]
     latest = ed.latest_lessons([d for _, _, d in history if d["schema_version"] == "lesson.v1"])
+    reviewers = [d["reviewer"] for _, _, d in history if d["schema_version"] == "feedback.v1"]
+    reviewer = reviewers[-1] if reviewers else "carlos"
+    feedback_form = feedback_form if feedback_form is not None else {}
+
+    def entered(name, default=""):
+        return feedback_form.get(name, [default])[0]
 
     def form(action, content):
         return (f'<form method="post" action="/action/{action}">'
@@ -168,15 +174,19 @@ def page(store, note, token, message="", branches=None):
     facts = ''.join(f'<li class="{"critical" if f["must_keep"] else ""}">{h(f["fact_id"])}: '
                     f'{h(f["text"])} {"— must_keep=true" if f["must_keep"] else ""}</li>'
                     for f in note["facts"])
-    targets = ''.join(f'<label><input type="checkbox" name="target" value="{h(f["fact_id"])}">'
-                      f'{h(f["fact_id"])}: {h(f["text"])}</label>' for f in note["facts"])
+    targets = ''.join(f'<label><input type="checkbox" name="target" value="{h(f["fact_id"])}"'
+                      f'{" data-must-keep" if f["must_keep"] else ""}'
+                      f'{" checked" if f["fact_id"] in feedback_form.get("target", []) else ""}>'
+                      f'{h(f["fact_id"])}: {h(f["text"])}'
+                      f'{" — must_keep" if f["must_keep"] else ""}</label>' for f in note["facts"])
     correction = '<p>Genera un borrador antes de corregirlo.</p>'
     if drafts:
-        correction = form("feedback", f'<input type="hidden" name="draft_id" value="{h(drafts[-1]["draft_id"])}">'
-                          '<label>Reviewer <input name="reviewer" value="carlos" required></label>'
-                          '<label>Rating (1–5) <input type="number" name="rating" min="1" max="5" value="2" required></label>'
-                          '<label>Comentario <textarea name="comment" required></textarea></label>'
-                          f'<fieldset><legend>Target facts (al menos un must_keep)</legend>{targets}</fieldset>'
+        correction = form("feedback", f'<input type="hidden" name="draft_id" value="{h(entered("draft_id", drafts[-1]["draft_id"]))}">'
+                          f'<label>Reviewer <input name="reviewer" value="{h(entered("reviewer", reviewer))}" required></label>'
+                          f'<label>Rating (1–5) <input type="number" name="rating" min="1" max="5" value="{h(entered("rating", "2"))}" required></label>'
+                          f'<label>Comentario <textarea name="comment" required>{h(entered("comment"))}</textarea></label>'
+                          f'<fieldset aria-describedby="target-help"><legend>Target facts (al menos un must_keep)</legend>{targets}'
+                          '<p id="target-help">Marca al menos un hecho crítico (must_keep) para guardar la corrección.</p></fieldset>'
                           '<button>Guardar corrección y proponer lección</button>')
     lessons_html = ''
     for lesson in latest:
@@ -184,9 +194,10 @@ def page(store, note, token, message="", branches=None):
                          f'<p>{h(lesson["rule"])}</p><p>Facts: {h(", ".join(lesson["evidence"]["fact_ids"]))}</p>')
         identity = f'<input type="hidden" name="lesson_id" value="{h(lesson["lesson_id"])}">'
         if lesson["state"] == "proposed":
+            approval_ref = "fixture:web-review" if reviewer == "fixture_simulated" else "review-l4:auto"
             lessons_html += '<p>Lección propuesta — aún no se aplica</p>' + form("approve", identity +
-                            '<label>approved_by <input name="approved_by" required></label>'
-                            '<label>approval_ref <input name="approval_ref" placeholder="decision-l4:demo" required></label>'
+                            f'<label>approved_by <input name="approved_by" value="{h(reviewer)}" required></label>'
+                            f'<label>approval_ref <input name="approval_ref" value="{h(approval_ref)}" placeholder="decision-l4:demo" required></label>'
                             '<button>Aprobar lección</button>')
         if lesson["state"] in ("proposed", "approved"):
             lessons_html += form("reject", identity + '<button>Rechazar lección</button>')
@@ -220,20 +231,42 @@ table{{border-collapse:collapse;width:100%;font-size:.9rem}}td,th{{text-align:le
 <section><h2>5. Comparar</h2><p>B− sin lecciones; B+ solo con approved vigentes. Mismo writer y checker literal; invocaciones separadas en este proceso.</p>
 {form("compare", '<button>Comparar</button>')}{comparison_html(note, branches) if branches else ''}</section>
 <section class="history"><h2>Historial SQLite · append-only</h2><table><tr><th>#</th><th>Tipo</th><th>ID</th><th>Versión</th><th>Estado</th><th>Contenido</th></tr>{rows}</table></section>
-</body></html>'''
+<script nonce="{h(script_nonce)}">
+const feedbackForm = document.querySelector('form[action="/action/feedback"]');
+if (feedbackForm) {{
+    const criticalFacts = Array.from(feedbackForm.querySelectorAll('input[name="target"][data-must-keep]'));
+    function validateTargets() {{
+        const valid = criticalFacts.some(input => input.checked);
+        if (criticalFacts.length) {{
+            criticalFacts[0].setCustomValidity(valid ? '' : 'Marca al menos un hecho crítico (must_keep) para guardar la corrección.');
+        }}
+        return valid;
+    }}
+    feedbackForm.addEventListener('change', validateTargets);
+    feedbackForm.addEventListener('submit', event => {{
+        if (!validateTargets()) {{
+            event.preventDefault();
+            feedbackForm.reportValidity();
+        }}
+    }});
+    validateTargets();
+}}
+</script></body></html>'''
 
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass  # No registrar comentarios ni entradas del operador.
 
-    def respond(self, status, message="", branches=None):
-        body = page(self.server.store, self.server.note, self.server.csrf, message, branches).encode("utf-8")
+    def respond(self, status, message="", branches=None, feedback_form=None):
+        nonce = secrets.token_urlsafe(16)
+        body = page(self.server.store, self.server.note, self.server.csrf, message, branches,
+                    feedback_form, nonce).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
-        self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'")
+        self.send_header("Content-Security-Policy", f"default-src 'none'; script-src 'nonce-{nonce}'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'")
         self.end_headers()
         self.wfile.write(body)
 
@@ -250,6 +283,7 @@ class Handler(BaseHTTPRequestHandler):
             self.respond(200)
 
     def do_POST(self):
+        feedback_form = None
         try:
             ed.require(self.valid_host(), "Host inválido; usa la URL local indicada")
             ed.require(self.headers.get("Content-Type", "").split(";")[0] ==
@@ -258,6 +292,8 @@ class Handler(BaseHTTPRequestHandler):
             ed.require(0 < length <= 32768, "Formulario vacío o demasiado grande")
             form = parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values=True,
                             max_num_fields=100)
+            if self.path == "/action/feedback":
+                feedback_form = form
 
             def one(key):
                 values = form.get(key, [])
@@ -288,9 +324,9 @@ class Handler(BaseHTTPRequestHandler):
             self.respond(200, message, branches)
         except (ed.Invalid, ValueError, UnicodeError) as exc:
             message = str(exc) if isinstance(exc, ed.Invalid) else "Formulario inválido; revisa los campos"
-            self.respond(400, message)
+            self.respond(400, message, feedback_form=feedback_form)
         except sqlite3.Error:
-            self.respond(400, "No se pudo registrar la acción en SQLite")
+            self.respond(400, "No se pudo registrar la acción en SQLite", feedback_form=feedback_form)
 
 
 def make_server(store, port=8765):
