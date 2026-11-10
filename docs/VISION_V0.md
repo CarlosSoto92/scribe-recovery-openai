@@ -272,3 +272,10 @@ Lo esencial para la demostración es la **comparación antes/después y control 
 - **GATES:** Grok dirige Codex; CTO revisión y alcance; L4 define IP, autoriza T2/merge; Cursor revisa en contexto limpio.
 
 **Siguiente decisión L4:** merge de PR #4 cuando confirme HEAD/mergeability, escoger entre (a) demo V0 sintética con prueba causal antes de 17:00 o (b) integración editorial genuina en superficie privada en fase posterior. No sustituir (b) por una simulación etiquetada falsamente como DALI real.
+
+
+---
+
+## Nota de estado (post-hackathon)
+
+Documento de arquitectura del 9 nov 2026. El núcleo público descrito (M2a–d + mini web + UX-04 + Pages) quedó en `main` vía PRs #9, #11, #12, #13 y #21. **M2e (DALI/Sherlock reales)** sigue fuera de este repo público. Esta visión no autoriza T2 ni publicación automática.
