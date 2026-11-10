@@ -96,6 +96,10 @@ Experimento de operación de un squad de agentes:
 
 Si eres un agente: empieza por [`AGENTS.md`](AGENTS.md), luego [`docs/SQUAD.md`](docs/SQUAD.md) y [`docs/SQUAD_PROTOCOL.md`](docs/SQUAD_PROTOCOL.md).
 
+## Retrospectiva
+
+Qué se logró, qué no, y qué se improvisó el día del hackathon: [`docs/RETRO.md`](docs/RETRO.md).
+
 ## Referencia OpenAI
 
 Guías oficiales y del proyecto para Codex / Scribe: [`docs/openai/`](docs/openai/README.md). Docs MCP está documentado ahí como POR_VALIDAR (no conectado en el hackathon).
