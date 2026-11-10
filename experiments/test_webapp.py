@@ -19,6 +19,42 @@ else:
     import webapp as web
 
 
+class ComparisonText(HTMLParser):
+    """Leer los borradores visibles y sus marcas, sin incluir la leyenda o tablas."""
+
+    def __init__(self, html):
+        super().__init__()
+        self.drafts = []
+        self.marks = {"diff-add": [], "diff-del": []}
+        self.in_draft = False
+        self.mark = None
+        self.draft_tags = []
+        self.feed(html)
+
+    def handle_starttag(self, tag, attributes):
+        attributes = dict(attributes)
+        if tag == "p" and attributes.get("class") == "draft-text":
+            self.in_draft = True
+            self.drafts.append("")
+        elif self.in_draft:
+            self.draft_tags.append(tag)
+            if tag == "mark":
+                self.mark = attributes["class"]
+                self.marks[self.mark].append("")
+
+    def handle_endtag(self, tag):
+        if tag == "p":
+            self.in_draft = False
+        elif tag == "mark":
+            self.mark = None
+
+    def handle_data(self, data):
+        if self.in_draft:
+            self.drafts[-1] += data
+            if self.mark:
+                self.marks[self.mark][-1] += data
+
+
 class StoreTests(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(prefix="scribe-web-test-")
@@ -111,6 +147,85 @@ class StoreTests(unittest.TestCase):
             altered["text"] = text
             altered["fact_refs"] = ["f1"]
             self.assertIn(expected, web.fact_table(self.note, altered))
+
+    def test_comparison_marks_approved_fact_and_citation_without_fake_negative_text(self):
+        lesson = self.propose()
+        self.store.transition(lesson["lesson_id"], "approved", "fixture:diff", "fixture_simulated")
+        branches = self.store.compare(self.note)
+        before = deepcopy(branches)
+        html = web.comparison_html(self.note, branches)
+        parsed = ComparisonText(html)
+        added = ''.join(parsed.marks["diff-add"])
+        self.assertIn(self.note["facts"][0]["text"], added)
+        self.assertIn('[synthetic-note-001:f1]', added)
+        self.assertEqual(parsed.marks["diff-del"], [])
+        self.assertEqual(parsed.drafts, [branches[label]["draft"]["text"] for label in ("B−", "B+")])
+        self.assertEqual(branches, before)
+        for label, expected in (("B−", '<td>No</td><td>No</td><td>FAIL</td>'),
+                                ("B+", '<td>Sí</td><td>Sí</td><td>PASS</td>')):
+            table = web.fact_table(self.note, branches[label]["draft"])
+            self.assertIn(table, html)
+            self.assertIn(expected, table)
+
+    def test_comparison_legend_explains_colors_omissions_and_checker_boundary(self):
+        html = web.comparison_html(self.note, self.store.compare(self.note))
+        for text in ('Leyenda del diff:', 'Verde: texto agregado en B+',
+                     'Rojo: texto de B− eliminado o sustituido en B+',
+                     'Si B− solo omite un dato', 'no hay texto que marcar en rojo en B−',
+                     'diff de texto del borrador, no un juicio del checker'):
+            self.assertIn(text, html)
+
+    def test_comparison_identical_drafts_have_no_marks_for_proposed_or_rejected(self):
+        lesson = self.propose()
+        for state in ("proposed", "rejected"):
+            with self.subTest(state=state):
+                if state == "rejected":
+                    self.store.transition(lesson["lesson_id"], state)
+                branches = self.store.compare(self.note)
+                parsed = ComparisonText(web.comparison_html(self.note, branches))
+                self.assertEqual(parsed.drafts[0], parsed.drafts[1])
+                self.assertEqual(parsed.marks, {"diff-add": [], "diff-del": []})
+
+    def test_comparison_replacements_and_deletions_mark_only_original_text(self):
+        branches = self.store.compare(self.note)
+        for minus, plus, deleted, added in (
+                ("El piloto fue breve.", "El piloto duró 4 semanas.", "fue breve.", "duró 4 semanas."),
+                ("Texto común. Sobra.", "Texto común.", " Sobra.", ""),
+                ("Inicio.\nFinal.", "Inicio.\nDato nuevo.\nFinal.", "", "Dato nuevo.")):
+            with self.subTest(minus=minus, plus=plus):
+                for label, text in (("B−", minus), ("B+", plus)):
+                    branches[label]["draft"]["text"] = text
+                    branches[label]["check"] = web.ed.check_draft(self.note, branches[label]["draft"])
+                parsed = ComparisonText(web.comparison_html(self.note, branches))
+                self.assertEqual(parsed.drafts, [minus, plus])
+                for kind, expected in (("diff-del", deleted), ("diff-add", added)):
+                    if expected:
+                        marked = ' '.join(' '.join(parsed.marks[kind]).split())
+                        self.assertIn(' '.join(expected.split()), marked)
+                    else:
+                        self.assertEqual(parsed.marks[kind], [])
+
+    def test_comparison_escapes_dangerous_drafts_and_comments(self):
+        document = self.store.generate(self.note)
+        comment = '</textarea><script>alert("comment")</script>'
+        self.store.feedback(self.note, document["draft_id"], "fixture_simulated", 2, comment, ["f1"])
+        branches = self.store.compare(self.note)
+        common = '<img src=x onerror="alert(1)"> & "común" '
+        minus = common + '</p><script>alert("minus")</script>'
+        plus = common + '</mark><script>alert("plus")</script>'
+        for label, text in (("B−", minus), ("B+", plus)):
+            branches[label]["draft"]["text"] = text
+        html = web.page(self.store, self.note, "csrf", branches=branches,
+                        feedback_form={"comment": [comment]}, script_nonce="test-nonce")
+        parsed = ComparisonText(html)
+        self.assertEqual(parsed.drafts, [minus, plus])
+        self.assertEqual(set(parsed.draft_tags), {"mark"})
+        for raw in ('<script>', '<img ', '</textarea><script>', '</mark><script>'):
+            self.assertNotIn(raw, html)
+        for escaped in (web.h(common), web.h(comment), web.h(minus[len(common):]), web.h(plus[len(common):])):
+            self.assertIn(escaped, html)
+        self.assertEqual(parsed.marks["diff-del"], [minus[len(common):]])
+        self.assertEqual(parsed.marks["diff-add"], [plus[len(common):]])
 
 
 class Inputs(HTMLParser):
@@ -301,6 +416,7 @@ class HTTPTests(unittest.TestCase):
         status, html = self.post("compare")
         self.assertEqual(status, 200)
         self.assertIn("B+ · FAIL", html)
+        self.assertNotIn('<mark class="diff-add">', html)
         before = self.store.history()
         status, html = self.post("approve", lesson_id=lesson["lesson_id"], approval_ref="", approved_by="fixture_simulated")
         self.assertEqual(status, 400)
@@ -312,10 +428,15 @@ class HTTPTests(unittest.TestCase):
         self.assertEqual(status, 200)
         for text in ("B− · FAIL", "B+ · PASS", "<th>dato literal</th>", "<th>cita</th>", "0/1 (0%)", "1/1 (100%)", lesson["lesson_id"] + "@v2"):
             self.assertIn(text, html)
+        self.assertIn('<mark class="diff-add">', html)
+        self.assertNotIn('<mark class="diff-del">', html)
+        self.assertIn('Leyenda del diff:', html)
+        self.assertNotIn('<script>alert(1)</script>', html)
         self.assertEqual(self.post("reject", lesson_id=lesson["lesson_id"])[0], 200)
         status, html = self.post("compare")
         self.assertEqual(status, 200)
         self.assertIn("B+ · FAIL", html)
+        self.assertNotIn('<mark class="diff-add">', html)
         self.assertEqual([d["version"] for d in self.store.read("lesson.v1")], [1, 2, 3])
         # Reabrir la DB mantiene todos los eventos y sus IDs.
         self.assertEqual(web.Store(self.store.path).history(), self.store.history())
