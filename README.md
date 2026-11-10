@@ -2,6 +2,8 @@
 
 Corrige una vez. La IA lo recuerda… si tú lo apruebas.
 
+[Nota de laboratorio del experimento: resultados y límites](docs/NOTA_EXPERIMENTO.md).
+
 MIT · [demo](docs/corrige/index.html) · [cómo probarlo](#para-expertos)
 
 ## En 30 segundos
