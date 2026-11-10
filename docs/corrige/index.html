@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corrige una vez · Válvulas y Bombas Ejemplo del Bajío</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzE0M2QzMiIvPjxwYXRoIGQ9Ik0yMyA5YTEwIDEwIDAgMSAwIDAgMTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmRmOCIgc3Ryb2tlLXdpZHRoPSI0Ii8+PC9zdmc+">
+<meta name="description" content="Caso ficticio: una corrección en las cotizaciones se vuelve una lección y la persona decide si la IA la usa.">
+<style>
+:root {
+  --ink: #1c1915;
+  --muted: #3f382f;
+  --paper: #f3efe6;
+  --sheet: #fffdf8;
+  --line: #e3dac8;
+  --green: #143d32;
+  --green-ink: #f4f7f4;
+  --miss-bg: #fde8e8;
+  --miss: #7f1d1d;
+  --ok-bg: #e5f6ea;
+  --ok: #14532d;
+  --amber-bg: #fff4cc;
+  --amber: #6b4e00;
+  --focus: #9a3412;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font: 17px/1.5 "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+a { color: #143d32; }
+a:hover { color: #0f2e26; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.skip {
+  position: absolute; left: 1rem; top: 0; transform: translateY(-120%);
+  background: #fff; color: var(--ink); padding: .6rem 1rem; z-index: 2;
+}
+.skip:focus { transform: none; }
+.hero {
+  background: var(--green); color: var(--green-ink);
+  padding: 2.5rem 1.25rem 2rem;
+}
+.hero-inner, main, .site-footer { max-width: 980px; margin: 0 auto; }
+main { padding: 1.25rem; }
+.kicker { letter-spacing: .04em; text-transform: uppercase; font-size: 16px; margin: 0 0 .6rem; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .8rem; font-weight: 650; }
+h2 { font-size: 1.45rem; line-height: 1.25; margin: 0 0 .6rem; }
+h3 { font-size: 1.15rem; margin: 0; }
+.lead { font-size: 1.15rem; margin: 0 0 1rem; max-width: 38rem; }
+.button, button {
+  font: inherit; min-height: 44px; border-radius: 8px; cursor: pointer;
+}
+.button {
+  display: inline-block; background: #f4e1b5; color: #1c1915; text-decoration: none;
+  padding: .7rem 1.1rem; font-weight: 650;
+}
+button {
+  background: var(--green); color: var(--green-ink); border: 2px solid var(--green);
+  padding: .55rem 1rem;
+}
+button[disabled] { opacity: .55; cursor: not-allowed; }
+button[aria-pressed="false"] { background: #fff; color: var(--green); }
+button[aria-pressed="true"] { background: var(--green); color: var(--green-ink); }
+button.switch[aria-checked="false"] { background: var(--green); color: var(--green-ink); }
+button.switch[aria-checked="true"] { background: var(--miss-bg); color: var(--miss); border-color: var(--miss); }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 1rem 0 0; list-style: none; }
+.chips li {
+  border: 1px solid rgba(244, 247, 244, .45); border-radius: 999px;
+  padding: .2rem .75rem; font-size: 16px;
+}
+.plain { font-size: 1.05rem; max-width: 40rem; }
+section { margin: 1.5rem 0; }
+.sheet {
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1.1rem 1.1rem 1.2rem; margin: 1rem 0;
+  box-shadow: 0 10px 28px rgba(40, 32, 20, .05);
+}
+.stamp {
+  display: inline-block; border: 2px solid var(--miss); color: var(--miss);
+  font-weight: 750; letter-spacing: .12em; padding: .1rem .45rem; margin: 0 0 .4rem;
+}
+.company { margin: 0; font-family: Georgia, "Iowan Old Style", Palatino, serif; }
+.meta { color: var(--muted); margin: .2rem 0; }
+table { width: 100%; border-collapse: collapse; margin: .8rem 0; }
+th, td { text-align: left; padding: .45rem .3rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.gap { background: var(--miss-bg); color: var(--miss); border-radius: 8px; padding: .8rem 1rem; }
+.added { background: var(--ok-bg); color: var(--ok); border-radius: 8px; padding: .8rem 1rem; }
+.added p, .gap p { margin: .25rem 0; }
+.review { margin: .8rem 0 0; }
+.toggle { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+.lesson, .proposal {
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1rem; margin: .8rem 0;
+}
+.badge {
+  display: inline-block; font-weight: 750; border-radius: 999px; padding: .15rem .7rem; font-size: 16px;
+}
+.propuesta { background: var(--amber-bg); color: var(--amber); }
+.aprobada { background: var(--ok-bg); color: var(--ok); }
+.retirada { background: var(--miss-bg); color: var(--miss); }
+.switch { background: #fff; color: var(--ink); border: 2px solid var(--green); }
+.bars { display: grid; gap: .7rem; }
+.bar-row { display: grid; grid-template-columns: minmax(8rem, 14rem) 1fr auto; gap: .6rem; align-items: center; }
+.track { background: #efe8d8; border-radius: 999px; height: 12px; }
+.bar { height: 12px; border-radius: 999px; }
+.bar.empty { width: 8%; background: var(--miss); }
+.bar.full { width: 100%; background: var(--ok); }
+.official, .pending, .note {
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 1rem;
+}
+.pending { background: #fff8e8; }
+.site-footer { padding: 0 1.25rem 2.5rem; color: var(--muted); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+}
+details { margin-top: .8rem; }
+summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 16px/1.45 ui-monospace, monospace; }
+@media (max-width: 700px) {
+  h1 { font-size: 1.7rem; }
+  .bar-row { grid-template-columns: 1fr; }
+  table, thead, tbody, tr, th, td { display: block; }
+  thead, tfoot th { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  td { border-bottom: 0; padding: .2rem 0; }
+  tr { border-bottom: 1px solid var(--line); padding: .45rem 0; }
+  td::before { content: attr(data-label); font-weight: 700; display: block; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#caso">Saltar al caso</a>
+<header class="hero" id="inicio">
+  <div class="hero-inner">
+    <p class="kicker">Válvulas y Bombas Ejemplo del Bajío · FICTICIA</p>
+    <h1>Cada semana la misma corrección. Esta vez la IA la aprende.</h1>
+    <p class="lead">Corrige una vez. El siguiente documento ya sale bien, y tú decides qué aprende la IA.</p>
+    <p class="plain">El error de esta casa: las cotizaciones salían sin vigencia y sin condiciones de pago. Una persona lo corrige, lo aprueba, y las de las semanas siguientes salen bien.</p>
+    <p><a class="button" href="#caso">Ver el caso</a></p>
+    <ul class="chips">
+      <li>Datos 100 % ficticios</li>
+      <li>Sin reentrenar</li>
+      <li>Tú apruebas</li>
+    </ul>
+  </div>
+</header>
+<main>
+  <section id="caso">
+    <h2>Semana 1 — el error</h2>
+    <p>Cliente Demo 01 pidió una cotización. Faltó lo de siempre. El caso 1 es donde nace la corrección; no entra en la medición de las semanas siguientes.</p>
+    <article class="sheet" id="semana-1">
+        
+    <p class="stamp">FICTICIA</p>
+    <h3 class="company">Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)</h3>
+    <p class="meta">RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000</p>
+    <p class="meta">Ciudad Ejemplo del Bajío (dirección ficticia)</p>
+    <p><strong>Cotización · Semana 1 · Cliente Demo 01</strong></p>
+    <p class="meta">compras@cliente-demo-01.example</p>
+    <table>
+      <caption class="sr-only">Partidas de la cotización</caption>
+      <thead><tr><th>Descripción</th><th>Cant.</th><th>Importe</th></tr></thead>
+      <tbody><tr><td data-label="Descripción">Válvula de compuerta de 2 pulgadas</td><td data-label="Cantidad">4</td><td data-label="Importe">4,800.00 MXN</td></tr>
+<tr><td data-label="Descripción">Empaque de fibra para demostración</td><td data-label="Cantidad">8</td><td data-label="Importe">680.00 MXN</td></tr></tbody>
+      <tfoot><tr><th>Total</th><td colspan="2" data-label="Total">5,480.00 MXN</td></tr></tfoot>
+    </table>
+    
+        <div class="gap" data-view="sin"><p><strong>Falta vigencia y condiciones de pago</strong></p></div>
+        <p class="review">Revisor de la casa, persona ficticia: «Otra vez sin vigencia.»</p>
+        <details><summary>Ver el texto del writer sin la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 01 · compras@cliente-demo-01.example
+Documento: Cotización · b2b-cotizacion-01
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Válvula de compuerta de 2 pulgadas | 4 | 4,800.00 MXN
+Partida | Empaque de fibra para demostración | 8 | 680.00 MXN
+Total | 5,480.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+</pre></details><details><summary>Ver el texto del writer con la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 01 · compras@cliente-demo-01.example
+Documento: Cotización · b2b-cotizacion-01
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Válvula de compuerta de 2 pulgadas | 4 | 4,800.00 MXN
+Partida | Empaque de fibra para demostración | 8 | 680.00 MXN
+Total | 5,480.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+Vigencia: 15 días naturales
+Pago: 50 % anticipo, 50 % contra entrega
+</pre></details>
+        </article>
+  </section>
+  <section id="correccion">
+    <h2>La corrección</h2>
+    <p>El revisor escribe: «Incluir el texto literal de vigencia y de condiciones de pago.»</p>
+    <p><button type="button" id="convertir">Convertir en lección</button></p>
+    <article class="proposal" id="tarjeta-cotizacion" hidden>
+      <p><span class="badge propuesta" id="estado-cotizacion">PROPUESTA</span></p>
+      <h3>Cotizaciones</h3>
+      <p>En toda cotización, incluye la vigencia y el pago con el texto literal de la casa.</p>
+      <p>Alcance: cotizaciones. Evidencia: b2b-cotizacion-01. En la evaluación se aplicó a 3 casos retenidos.</p>
+      <p id="detalle-aprobacion" hidden>Aprobada por fixture_simulated · fixture:b2b-cotizacion. Aprobación simulada · fixture.</p>
+    </article>
+  </section>
+  <section id="compuerta">
+    <h2>La compuerta humana</h2>
+    <p>Sin tu aprobación, la IA no la usa.</p>
+    <p><button type="button" id="aprobar" disabled>Aprobar <span>aprobación simulada · fixture</span></button></p>
+  </section>
+  <section id="semanas">
+    <h2>Semanas 2, 3 y 4</h2>
+    <p>Otros clientes y otras partidas. Si apruebas la lección, estas cotizaciones salen con vigencia y con condiciones de pago. Si la retiras, el hueco vuelve.</p>
+    <article class="sheet" id="semana-2" data-week="2" data-mode="sin">
+    
+    <p class="stamp">FICTICIA</p>
+    <h3 class="company">Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)</h3>
+    <p class="meta">RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000</p>
+    <p class="meta">Ciudad Ejemplo del Bajío (dirección ficticia)</p>
+    <p><strong>Cotización · Semana 2 · Cliente Demo 02</strong></p>
+    <p class="meta">compras@cliente-demo-02.example</p>
+    <table>
+      <caption class="sr-only">Partidas de la cotización</caption>
+      <thead><tr><th>Descripción</th><th>Cant.</th><th>Importe</th></tr></thead>
+      <tbody><tr><td data-label="Descripción">Bomba centrífuga de demostración</td><td data-label="Cantidad">1</td><td data-label="Importe">18,600.00 MXN</td></tr>
+<tr><td data-label="Descripción">Sello mecánico de demostración</td><td data-label="Cantidad">2</td><td data-label="Importe">1,880.00 MXN</td></tr></tbody>
+      <tfoot><tr><th>Total</th><td colspan="2" data-label="Total">20,480.00 MXN</td></tr></tfoot>
+    </table>
+    
+    <div class="gap" data-view="sin"><p><strong>Falta vigencia y condiciones de pago</strong></p></div>
+    <div class="added" data-view="con" hidden><p>Vigencia: 15 días naturales</p><p>Pago: 50 % anticipo, 50 % contra entrega</p></div>
+    <div class="toggle" role="group" aria-label="Versión de la semana 2">
+      <button type="button" data-mode-button="sin" aria-pressed="true">Ver sin la lección</button>
+      <button type="button" data-mode-button="con" aria-pressed="false">Ver con la lección</button>
+    </div>
+    <details><summary>Ver el texto del writer sin la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 02 · compras@cliente-demo-02.example
+Documento: Cotización · b2b-cotizacion-02
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Bomba centrífuga de demostración | 1 | 18,600.00 MXN
+Partida | Sello mecánico de demostración | 2 | 1,880.00 MXN
+Total | 20,480.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+</pre></details><details><summary>Ver el texto del writer con la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 02 · compras@cliente-demo-02.example
+Documento: Cotización · b2b-cotizacion-02
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Bomba centrífuga de demostración | 1 | 18,600.00 MXN
+Partida | Sello mecánico de demostración | 2 | 1,880.00 MXN
+Total | 20,480.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+Vigencia: 15 días naturales
+Pago: 50 % anticipo, 50 % contra entrega
+</pre></details>
+    </article>
+<article class="sheet" id="semana-3" data-week="3" data-mode="sin">
+    
+    <p class="stamp">FICTICIA</p>
+    <h3 class="company">Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)</h3>
+    <p class="meta">RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000</p>
+    <p class="meta">Ciudad Ejemplo del Bajío (dirección ficticia)</p>
+    <p><strong>Cotización · Semana 3 · Cliente Demo 03</strong></p>
+    <p class="meta">compras@cliente-demo-03.example</p>
+    <table>
+      <caption class="sr-only">Partidas de la cotización</caption>
+      <thead><tr><th>Descripción</th><th>Cant.</th><th>Importe</th></tr></thead>
+      <tbody><tr><td data-label="Descripción">Válvula de bola de 1 pulgada</td><td data-label="Cantidad">6</td><td data-label="Importe">4,560.00 MXN</td></tr>
+<tr><td data-label="Descripción">Brida de demostración</td><td data-label="Cantidad">6</td><td data-label="Importe">1,260.00 MXN</td></tr></tbody>
+      <tfoot><tr><th>Total</th><td colspan="2" data-label="Total">5,820.00 MXN</td></tr></tfoot>
+    </table>
+    
+    <div class="gap" data-view="sin"><p><strong>Falta vigencia y condiciones de pago</strong></p></div>
+    <div class="added" data-view="con" hidden><p>Vigencia: 15 días naturales</p><p>Pago: 50 % anticipo, 50 % contra entrega</p></div>
+    <div class="toggle" role="group" aria-label="Versión de la semana 3">
+      <button type="button" data-mode-button="sin" aria-pressed="true">Ver sin la lección</button>
+      <button type="button" data-mode-button="con" aria-pressed="false">Ver con la lección</button>
+    </div>
+    <details><summary>Ver el texto del writer sin la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 03 · compras@cliente-demo-03.example
+Documento: Cotización · b2b-cotizacion-03
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Válvula de bola de 1 pulgada | 6 | 4,560.00 MXN
+Partida | Brida de demostración | 6 | 1,260.00 MXN
+Total | 5,820.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+</pre></details><details><summary>Ver el texto del writer con la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 03 · compras@cliente-demo-03.example
+Documento: Cotización · b2b-cotizacion-03
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Válvula de bola de 1 pulgada | 6 | 4,560.00 MXN
+Partida | Brida de demostración | 6 | 1,260.00 MXN
+Total | 5,820.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+Vigencia: 15 días naturales
+Pago: 50 % anticipo, 50 % contra entrega
+</pre></details>
+    </article>
+<article class="sheet" id="semana-4" data-week="4" data-mode="sin">
+    
+    <p class="stamp">FICTICIA</p>
+    <h3 class="company">Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)</h3>
+    <p class="meta">RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000</p>
+    <p class="meta">Ciudad Ejemplo del Bajío (dirección ficticia)</p>
+    <p><strong>Cotización · Semana 4 · Cliente Demo 04</strong></p>
+    <p class="meta">compras@cliente-demo-04.example</p>
+    <table>
+      <caption class="sr-only">Partidas de la cotización</caption>
+      <thead><tr><th>Descripción</th><th>Cant.</th><th>Importe</th></tr></thead>
+      <tbody><tr><td data-label="Descripción">Actuador neumático de demostración</td><td data-label="Cantidad">2</td><td data-label="Importe">14,900.00 MXN</td></tr>
+<tr><td data-label="Descripción">Kit de montaje de demostración</td><td data-label="Cantidad">2</td><td data-label="Importe">1,060.00 MXN</td></tr></tbody>
+      <tfoot><tr><th>Total</th><td colspan="2" data-label="Total">15,960.00 MXN</td></tr></tfoot>
+    </table>
+    
+    <div class="gap" data-view="sin"><p><strong>Falta vigencia y condiciones de pago</strong></p></div>
+    <div class="added" data-view="con" hidden><p>Vigencia: 15 días naturales</p><p>Pago: 50 % anticipo, 50 % contra entrega</p></div>
+    <div class="toggle" role="group" aria-label="Versión de la semana 4">
+      <button type="button" data-mode-button="sin" aria-pressed="true">Ver sin la lección</button>
+      <button type="button" data-mode-button="con" aria-pressed="false">Ver con la lección</button>
+    </div>
+    <details><summary>Ver el texto del writer sin la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 04 · compras@cliente-demo-04.example
+Documento: Cotización · b2b-cotizacion-04
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Actuador neumático de demostración | 2 | 14,900.00 MXN
+Partida | Kit de montaje de demostración | 2 | 1,060.00 MXN
+Total | 15,960.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+</pre></details><details><summary>Ver el texto del writer con la lección</summary><pre>Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+RFC FICT000101AAA · ventas@valvulas-ejemplo.example · +52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)
+Cliente: Cliente Demo 04 · compras@cliente-demo-04.example
+Documento: Cotización · b2b-cotizacion-04
+
+Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.
+Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.
+Partida | Actuador neumático de demostración | 2 | 14,900.00 MXN
+Partida | Kit de montaje de demostración | 2 | 1,060.00 MXN
+Total | 15,960.00 MXN
+Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.
+Vigencia: 15 días naturales
+Pago: 50 % anticipo, 50 % contra entrega
+</pre></details>
+    </article>
+  </section>
+  <section id="biblioteca">
+    <h2>Biblioteca de lecciones</h2>
+    <p>Cinco reglas de la casa, una por tipo de documento. Retirar una lección devuelve el fallo: el efecto depende de que siga aprobada.</p>
+    <article class="lesson" id="leccion-cotizacion">
+    <h3>Cotización</h3>
+    <p>En toda cotización, incluye la vigencia y el pago con el texto literal de la casa.</p>
+    <p>Estado en la evaluación: approved. Alcance: Cotización. Evidencia: b2b-cotizacion-01. Veces aplicada en los casos retenidos: 3.</p>
+    <p>Sin la lección 0/3. Con la lección 3/3.</p>
+    <p><button type="button" class="switch" role="switch" aria-checked="false" data-retire="cotizacion">Retirar lección</button></p>
+    </article>
+<article class="lesson" id="leccion-propuesta_tecnica">
+    <h3>Propuesta técnica</h3>
+    <p>Cada afirmación numérica va seguida de la referencia de ficha tomada del hecho.</p>
+    <p>Estado en la evaluación: approved. Alcance: Propuesta técnica. Evidencia: b2b-propuesta_tecnica-01. Veces aplicada en los casos retenidos: 3.</p>
+    <p>Sin la lección 0/3. Con la lección 3/3.</p>
+    <p><button type="button" class="switch" role="switch" aria-checked="false" data-retire="propuesta_tecnica">Retirar lección</button></p>
+    </article>
+<article class="lesson" id="leccion-ficha_tecnica">
+    <h3>Ficha técnica</h3>
+    <p>La presión se escribe en bar y en psi; la temperatura, en grados Celsius.</p>
+    <p>Estado en la evaluación: approved. Alcance: Ficha técnica. Evidencia: b2b-ficha_tecnica-01. Veces aplicada en los casos retenidos: 3.</p>
+    <p>Sin la lección 0/3. Con la lección 3/3.</p>
+    <p><button type="button" class="switch" role="switch" aria-checked="false" data-retire="ficha_tecnica">Retirar lección</button></p>
+    </article>
+<article class="lesson" id="leccion-reporte_cliente">
+    <h3>Reporte a cliente</h3>
+    <p>El reporte cierra con responsable y fecha: Siguiente paso, tomados de la nota.</p>
+    <p>Estado en la evaluación: approved. Alcance: Reporte a cliente. Evidencia: b2b-reporte_cliente-01. Veces aplicada en los casos retenidos: 3.</p>
+    <p>Sin la lección 0/3. Con la lección 3/3.</p>
+    <p><button type="button" class="switch" role="switch" aria-checked="false" data-retire="reporte_cliente">Retirar lección</button></p>
+    </article>
+<article class="lesson" id="leccion-respuesta_soporte">
+    <h3>Respuesta de soporte</h3>
+    <p>No prometas garantía ni solución definitiva, e incluye el folio SOP de la nota.</p>
+    <p>Estado en la evaluación: approved. Alcance: Respuesta de soporte. Evidencia: b2b-respuesta_soporte-01. Veces aplicada en los casos retenidos: 3.</p>
+    <p>Sin la lección 0/3. Con la lección 3/3.</p>
+    <p><button type="button" class="switch" role="switch" aria-checked="false" data-retire="respuesta_soporte">Retirar lección</button></p>
+    </article>
+  </section>
+  <section id="marcador">
+    <h2>Marcador</h2>
+    <div class="official">
+      <p><strong data-figure="Writer de demostración (determinista)">Writer de demostración (determinista)</strong></p>
+      <p>El 0 % → 100 % del stub prueba el mecanismo y los controles, no la calidad de un LLM.</p>
+      <div class="bars" id="marcador-vivo"><div class="bar-row">
+    <span>Cotización</span>
+    <div class="track" aria-hidden="true"><div class="bar empty" data-live-bar="cotizacion"></div></div>
+    <strong data-live-label="cotizacion" data-figure="0/3">0/3</strong>
+    </div>
+<div class="bar-row">
+    <span>Propuesta técnica</span>
+    <div class="track" aria-hidden="true"><div class="bar full" data-live-bar="propuesta_tecnica"></div></div>
+    <strong data-live-label="propuesta_tecnica" data-figure="3/3">3/3</strong>
+    </div>
+<div class="bar-row">
+    <span>Ficha técnica</span>
+    <div class="track" aria-hidden="true"><div class="bar full" data-live-bar="ficha_tecnica"></div></div>
+    <strong data-live-label="ficha_tecnica" data-figure="3/3">3/3</strong>
+    </div>
+<div class="bar-row">
+    <span>Reporte a cliente</span>
+    <div class="track" aria-hidden="true"><div class="bar full" data-live-bar="reporte_cliente"></div></div>
+    <strong data-live-label="reporte_cliente" data-figure="3/3">3/3</strong>
+    </div>
+<div class="bar-row">
+    <span>Respuesta de soporte</span>
+    <div class="track" aria-hidden="true"><div class="bar full" data-live-bar="respuesta_soporte"></div></div>
+    <strong data-live-label="respuesta_soporte" data-figure="3/3">3/3</strong>
+    </div></div>
+      <p id="total-vivo">Parcial: la cotización de esta página aún no está aprobada.</p>
+    </div>
+    <div class="note">
+      <h3>Resultado de la evaluación</h3>
+      <p>Sin lección <strong data-figure="0/15">0/15</strong>
+        (0.0 %, Wilson 95 % 0.0 % – 20.4 %).</p>
+      <p>Con lección <strong data-figure="15/15">15/15</strong>
+        (100.0 %, Wilson 95 % 79.6 % – 100.0 %).</p>
+      <p>Requisitos críticos cumplidos: 0.0 % → 100.0 %.</p>
+    </div>
+  </section>
+  <section id="modelo-real">
+    <h2>Con un modelo real</h2>
+    <div class="note">
+      <p><strong data-figure="Codex (codex-cli 0.167, suscripción ChatGPT)">Codex (codex-cli 0.167, suscripción ChatGPT)</strong></p>
+      <p>N = 65 corridas; cada repetición cuenta como un ensayo.</p>
+      <p>CLI exacto: 0.167.0. Fecha UTC: 2026-11-10T12:58:24.523613Z.
+      Operador: Hack Ops. Fuente: codex-20261110.</p>
+      <p>El revisor tolerante acepta markdown, tablas y folios sin prefijo. Conserva cifras, unidades,
+      citas junto al valor y rechaza promesas afirmativas. Ambos son regex; no miden calidad editorial.</p>
+      <table><thead><tr><th>Condición</th><th>Revisor estricto (primario): fracción; tasa; Wilson 95 %</th>
+      <th>Revisor tolerante: fracción; tasa; Wilson 95 %</th></tr></thead><tbody><tr><th>B-</th><td data-label="Revisor estricto (primario)"><span data-figure="10/30">10/30</span>; <span data-figure="33.3 %">33.3 %</span>; <span data-figure="19.2 % – 51.2 %">19.2 % – 51.2 %</span></td><td data-label="Revisor tolerante"><span data-figure="24/30">24/30</span>; <span data-figure="80.0 %">80.0 %</span>; <span data-figure="62.7 % – 90.5 %">62.7 % – 90.5 %</span></td></tr><tr><th>B+</th><td data-label="Revisor estricto (primario)"><span data-figure="19/30">19/30</span>; <span data-figure="63.3 %">63.3 %</span>; <span data-figure="45.5 % – 78.1 %">45.5 % – 78.1 %</span></td><td data-label="Revisor tolerante"><span data-figure="30/30">30/30</span>; <span data-figure="100.0 %">100.0 %</span>; <span data-figure="88.6 % – 100.0 %">88.6 % – 100.0 %</span></td></tr><tr><th>C3</th><td data-label="Revisor estricto (primario)"><span data-figure="2/5">2/5</span>; <span data-figure="40.0 %">40.0 %</span>; <span data-figure="11.8 % – 76.9 %">11.8 % – 76.9 %</span></td><td data-label="Revisor tolerante"><span data-figure="4/5">4/5</span>; <span data-figure="80.0 %">80.0 %</span>; <span data-figure="37.6 % – 96.4 %">37.6 % – 96.4 %</span></td></tr></tbody></table>
+      <p>Prueba de signos bilateral, pares por (doc_type, case, rep):</p><p>Revisor estricto (primario): 11 mejoran, 2 empeoran, 17 empatan. Sin empates: n = 13, p bilateral = 0.0224609375.</p><p>Revisor tolerante: 6 mejoran, 0 empeoran, 24 empatan. Sin empates: n = 6, p bilateral = 0.03125.</p>
+      <p>C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el control de texto idéntico al stub ni demuestra ausencia de regresión.</p>
+      <p>Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.</p>
+      <p>B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo. La etiqueta «falso negativo del checker» es automática: «falla el estricto y pasa el tolerante»; no es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general; eso no convierte la etiqueta en un dictamen editorial ni demuestra calidad general.</p>
+      <ul><li>B+: 11 falso negativo del checker; 0 fallo del modelo.</li><li>B-: 14 falso negativo del checker; 6 fallo del modelo.</li><li>C3: 2 falso negativo del checker; 1 fallo del modelo.</li></ul><p>«Falso negativo del checker»: etiqueta automática, «falla el estricto y pasa el tolerante»;
+      «fallo del modelo» indica que el fallo persiste con el tolerante. No es una revisión humana independiente.
+      Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general;
+      eso no convierte las etiquetas en dictámenes editoriales ni demuestra calidad general.
+      Los fallos restantes y cada reclasificación están en <a href="../EVAL.md">la evaluación completa</a>.</p>
+      <details><summary>Resultados por tipo con ambos revisores</summary>
+      <table><thead><tr><th>Tipo y revisor</th><th>B-: fracción; tasa; Wilson 95 %</th>
+      <th>B+: fracción; tasa; Wilson 95 %</th><th>C3: fracción; tasa; Wilson 95 %</th></tr></thead>
+      <tbody><tr><th>Cotización · Revisor estricto (primario)</th><td data-label="B-: fracción; tasa; Wilson 95 %">1/6; 16.7 %; 3.0 % – 56.4 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">0/1; 0.0 %; 0.0 % – 79.3 %</td></tr><tr><th>Cotización · Revisor tolerante</th><td data-label="B-: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">1/1; 100.0 %; 20.7 % – 100.0 %</td></tr><tr><th>Propuesta técnica · Revisor estricto (primario)</th><td data-label="B-: fracción; tasa; Wilson 95 %">0/6; 0.0 %; 0.0 % – 39.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">5/6; 83.3 %; 43.6 % – 97.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">0/1; 0.0 %; 0.0 % – 79.3 %</td></tr><tr><th>Propuesta técnica · Revisor tolerante</th><td data-label="B-: fracción; tasa; Wilson 95 %">0/6; 0.0 %; 0.0 % – 39.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">0/1; 0.0 %; 0.0 % – 79.3 %</td></tr><tr><th>Ficha técnica · Revisor estricto (primario)</th><td data-label="B-: fracción; tasa; Wilson 95 %">1/6; 16.7 %; 3.0 % – 56.4 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">0/6; 0.0 %; 0.0 % – 39.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">0/1; 0.0 %; 0.0 % – 79.3 %</td></tr><tr><th>Ficha técnica · Revisor tolerante</th><td data-label="B-: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">1/1; 100.0 %; 20.7 % – 100.0 %</td></tr><tr><th>Reporte a cliente · Revisor estricto (primario)</th><td data-label="B-: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">1/1; 100.0 %; 20.7 % – 100.0 %</td></tr><tr><th>Reporte a cliente · Revisor tolerante</th><td data-label="B-: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">1/1; 100.0 %; 20.7 % – 100.0 %</td></tr><tr><th>Respuesta de soporte · Revisor estricto (primario)</th><td data-label="B-: fracción; tasa; Wilson 95 %">2/6; 33.3 %; 9.7 % – 70.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">2/6; 33.3 %; 9.7 % – 70.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">1/1; 100.0 %; 20.7 % – 100.0 %</td></tr><tr><th>Respuesta de soporte · Revisor tolerante</th><td data-label="B-: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="B+: fracción; tasa; Wilson 95 %">6/6; 100.0 %; 61.0 % – 100.0 %</td><td data-label="C3: fracción; tasa; Wilson 95 %">1/1; 100.0 %; 20.7 % – 100.0 %</td></tr></tbody></table></details>
+      <p>Revisor estricto (primario): en ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.</p>
+      <p>Muestra pequeña: una versión del CLI, un día y un operador. Generación no determinista; las repeticiones de una misma nota no son del todo independientes. El checker es un regex y no mide calidad editorial general.</p>
+      <p><a href="../EVAL.md">Ver la metodología</a> · <a href="../LIMITATIONS.md">Ver los límites</a></p>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" id="pie">
+  <h2>¿Qué corrección repites tú cada semana?</h2>
+  <p><a href="https://github.com/CarlosSoto92/scribe-recovery-openai/issues/new?template=feedback-experto.yml">Contarlo en un issue</a></p>
+  <p>Repo <a href="https://github.com/CarlosSoto92/scribe-recovery-openai">MIT</a> · <a href="../demo/">Demo anterior</a> · Sin trackers.</p>
+  <p id="aviso-vivo" aria-live="polite">La lección de cotización todavía no está propuesta.</p>
+</footer>
+<script type="application/json" id="datos">{"held": {"minus": "0/15", "plus": "15/15", "rate_minus": "0.0 %", "rate_plus": "100.0 %"}, "lessons": [{"doc_type": "cotizacion", "minus": "0/3", "plus": "3/3"}, {"doc_type": "propuesta_tecnica", "minus": "0/3", "plus": "3/3"}, {"doc_type": "ficha_tecnica", "minus": "0/3", "plus": "3/3"}, {"doc_type": "reporte_cliente", "minus": "0/3", "plus": "3/3"}, {"doc_type": "respuesta_soporte", "minus": "0/3", "plus": "3/3"}]}</script>
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById("datos").textContent);
+  var state = { proposed: false, approved: false, retired: {} };
+  data.lessons.forEach(function (lesson) { state.retired[lesson.doc_type] = false; });
+  var card = document.getElementById("tarjeta-cotizacion");
+  var status = document.getElementById("estado-cotizacion");
+  var detail = document.getElementById("detalle-aprobacion");
+  var live = document.getElementById("aviso-vivo");
+  var total = document.getElementById("total-vivo");
+
+  function quoteActive() {
+    return state.approved && !state.retired.cotizacion;
+  }
+  function lessonActive(kind) {
+    if (kind === "cotizacion") return quoteActive();
+    return !state.retired[kind];
+  }
+  function render() {
+    card.hidden = !(state.proposed || state.approved);
+    status.className = "badge propuesta";
+    status.textContent = "PROPUESTA";
+    detail.hidden = true;
+    if (state.approved && state.retired.cotizacion) {
+      status.className = "badge retirada";
+      status.textContent = "RETIRADA";
+    } else if (state.approved) {
+      status.className = "badge aprobada";
+      status.textContent = "APROBADA";
+      detail.hidden = false;
+    }
+    document.querySelectorAll("[data-week]").forEach(function (sheet) {
+      var showWith = quoteActive() && sheet.getAttribute("data-mode") === "con";
+      sheet.querySelector("[data-view=sin]").hidden = showWith;
+      sheet.querySelector("[data-view=con]").hidden = !showWith;
+      sheet.querySelector("[data-mode-button=sin]").setAttribute("aria-pressed", showWith ? "false" : "true");
+      sheet.querySelector("[data-mode-button=con]").setAttribute("aria-pressed", showWith ? "true" : "false");
+      sheet.querySelector("[data-mode-button=con]").disabled = !quoteActive();
+    });
+    var allOn = true;
+    var allOff = true;
+    data.lessons.forEach(function (lesson) {
+      var active = lessonActive(lesson.doc_type);
+      allOn = allOn && active;
+      allOff = allOff && !active;
+      var label = document.querySelector('[data-live-label="' + lesson.doc_type + '"]');
+      var bar = document.querySelector('[data-live-bar="' + lesson.doc_type + '"]');
+      label.textContent = active ? lesson.plus : lesson.minus;
+      bar.classList.toggle("full", active);
+      bar.classList.toggle("empty", !active);
+      var sw = document.querySelector('[data-retire="' + lesson.doc_type + '"]');
+      if (lesson.doc_type === "cotizacion") sw.disabled = !state.approved;
+      sw.setAttribute("aria-checked", state.retired[lesson.doc_type] ? "true" : "false");
+      sw.textContent = state.retired[lesson.doc_type] ? "Restaurar lección" : "Retirar lección";
+    });
+    if (allOn) total.textContent = data.held.plus + " · " + data.held.rate_plus;
+    else if (allOff) total.textContent = data.held.minus + " · " + data.held.rate_minus;
+    else total.textContent = "Parcial: la cotización de esta página aún no está aprobada, o hay una lección retirada.";
+  }
+  document.getElementById("convertir").addEventListener("click", function () {
+    state.proposed = true;
+    document.getElementById("aprobar").disabled = false;
+    live.textContent = "La lección quedó en propuesta. Todavía no se usa.";
+    render();
+  });
+  document.getElementById("aprobar").addEventListener("click", function () {
+    if (!state.proposed) return;
+    state.approved = true;
+    document.querySelectorAll("[data-week]").forEach(function (sheet) {
+      sheet.setAttribute("data-mode", "con");
+    });
+    live.textContent = "Lección aprobada con una aprobación simulada. Las semanas 2, 3 y 4 salen con vigencia y pago.";
+    render();
+  });
+  document.querySelectorAll("[data-mode-button]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var sheet = button.closest("[data-week]");
+      var mode = button.getAttribute("data-mode-button");
+      if (mode === "con" && !quoteActive()) {
+        live.textContent = "Sin tu aprobación, la IA no la usa.";
+        return;
+      }
+      sheet.setAttribute("data-mode", mode);
+      live.textContent = mode === "con" ? "Esta cotización se muestra con la lección." : "Esta cotización se muestra sin la lección.";
+      render();
+    });
+  });
+  document.querySelectorAll("[data-retire]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var kind = button.getAttribute("data-retire");
+      if (kind === "cotizacion" && !state.approved) return;
+      state.retired[kind] = !state.retired[kind];
+      if (kind === "cotizacion" && state.retired.cotizacion) {
+        document.querySelectorAll("[data-week]").forEach(function (sheet) {
+          sheet.setAttribute("data-mode", "sin");
+        });
+        live.textContent = "Lección retirada. Las cotizaciones vuelven a salir sin vigencia y sin condiciones de pago.";
+      } else if (kind === "cotizacion") {
+        document.querySelectorAll("[data-week]").forEach(function (sheet) {
+          sheet.setAttribute("data-mode", "con");
+        });
+        live.textContent = "La lección de cotización vuelve a estar en uso.";
+      } else {
+        live.textContent = state.retired[kind] ? "Lección retirada. Ese tipo de documento vuelve a fallar." : "Lección otra vez en uso.";
+      }
+      render();
+    });
+  });
+  render();
+})();
+</script>
+</body>
+</html>

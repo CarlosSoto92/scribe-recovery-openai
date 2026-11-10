@@ -1,0 +1,48 @@
+name: Feedback de experto
+description: Hallazgo sobre el caso, la evaluación, la demo o los límites. Sin datos reales.
+title: "[FEEDBACK] "
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - Caso y documentos
+        - Lección y compuerta humana
+        - Evaluación y métricas
+        - Demo
+        - Límites
+        - Otra
+    validations:
+      required: true
+  - type: textarea
+    id: hallazgo
+    attributes:
+      label: Hallazgo
+      description: Qué viste, en concreto.
+    validations:
+      required: true
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Evidencia o enlace
+      description: Comando, archivo, cita o URL pública. No pegues datos reales ni secretos.
+    validations:
+      required: true
+  - type: textarea
+    id: sugerencia
+    attributes:
+      label: Sugerencia
+      description: Qué cambiarías, si tienes una idea.
+    validations:
+      required: false
+  - type: dropdown
+    id: reproducir
+    attributes:
+      label: ¿Puedes reproducirlo?
+      options:
+        - Sí, con los comandos del README
+        - No
+        - No aplica
+    validations:
+      required: true

@@ -1,0 +1,34 @@
+# Propuesta técnica ficticia
+## Válvula de demostración y su actuador
+
+**Documento para revisión humana**
+
+**Elaborado por:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**Cliente:** Cliente Demo 03  
+**Contacto del cliente:** compras@cliente-demo-03.example
+
+### Objeto y alcance
+
+Describir una válvula de demostración y su actuador. La tubería queda fuera del alcance.
+
+### Datos técnicos
+
+| Parámetro | Valor | Referencia de la nota |
+|---|---|---|
+| Par de operación | 40 N·m | FT-330 |
+| Ciclos de prueba | 5000 | FT-331 |
+
+### Condiciones
+
+Esta propuesta ficticia solo describe el equipo. No incluye precios ni plazos.
+
+### Aviso sobre el carácter del documento
+
+Este texto fue preparado por Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) únicamente para mostrar una corrección interna. No constituye una oferta, un dictamen ni una promesa hacia un tercero.
+
+Los datos son 100 % ficticios. La empresa, el cliente, los equipos, las ciudades, las referencias y las cifras corresponden a un ejemplo sin datos de una operación real. Este documento no debe atribuirse a una empresa, persona o pedido reales.
+
+**Contacto de la empresa ficticia:**  
+ventas@valvulas-ejemplo.example  
++52 000 000 0000  
+Ciudad Ejemplo del Bajío (dirección ficticia)

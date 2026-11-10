@@ -1,0 +1,30 @@
+# Cotización ficticia
+**Borrador para revisión humana**
+
+**Emisor:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**RFC:** FICT000101AAA  
+**Ubicación:** Ciudad Ejemplo del Bajío (dirección ficticia)  
+**Correo:** ventas@valvulas-ejemplo.example  
+**Teléfono:** +52 000 000 0000  
+
+**Cliente:** Cliente Demo 02  
+**Correo:** compras@cliente-demo-02.example  
+
+Este documento se preparó exclusivamente para mostrar una corrección interna con datos ficticios. No constituye una oferta, un dictamen ni una promesa hacia terceros, ni corresponde a una operación real.
+
+| Descripción | Cantidad | Importe indicado (MXN) |
+|---|---:|---:|
+| Bomba centrífuga de demostración | 1 | 18,600.00 |
+| Sello mecánico de demostración | 2 | 1,880.00 |
+
+**Total indicado: 20,480.00 MXN**
+
+**Entrega:** Estimada en la planta del cliente ficticio, sin almacenaje ni obra civil. La nota no especifica un plazo de entrega.
+
+**Vigencia:** 15 días naturales.
+
+**Pago:** 50 % anticipo, 50 % contra entrega.
+
+**Pendientes de revisión:** Confirmar si los importes indicados son unitarios o por partida, el tratamiento de impuestos y la fecha de inicio de la vigencia.
+
+Todos los datos son ficticios. Este documento no debe atribuirse a una empresa, persona o pedido reales.

@@ -1,0 +1,24 @@
+PROPUESTA TÉCNICA FICTICIA
+Para revisión humana
+
+Emisor: Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)
+Destinatario: Cliente Demo 04
+Correo del destinatario: compras@cliente-demo-04.example
+
+Este documento se prepara únicamente para mostrar una corrección interna. No constituye una oferta, un dictamen ni una promesa hacia terceros. Todos los datos son ficticios y no corresponden a una operación real.
+
+La propuesta tiene como alcance la comparación de un catálogo ficticio. La instalación queda fuera del alcance. No se incluyen precios ni plazos; el contenido se limita a describir los datos técnicos disponibles del equipo.
+
+Los parámetros consignados para revisión son:
+
+- Eficiencia hidráulica: 72 %. Referencia de origen: FT-440.
+- NPSH requerido: 3.2 m. Referencia de origen: FT-441.
+
+La información disponible no identifica el modelo del equipo ni aporta alternativas de catálogo para desarrollar una comparación técnica. Por ello, estos parámetros se presentan sin establecer una selección o recomendación de equipo.
+
+Este ejemplo utiliza empresa, cliente, equipos, ciudades, referencias y cifras ficticios. Su finalidad es repetir una misma corrección en distintos documentos, sin utilizar datos de una operación real. No debe atribuirse a una empresa, persona o pedido reales.
+
+Contacto del emisor ficticio:
+ventas@valvulas-ejemplo.example
++52 000 000 0000
+Ciudad Ejemplo del Bajío (dirección ficticia)

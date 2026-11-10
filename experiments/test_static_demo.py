@@ -1,0 +1,173 @@
+"""La demo Corrige una vez sale del JSON y no pide nada a la red."""
+
+from pathlib import Path
+import base64
+import json
+import re
+import subprocess
+import sys
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "experiments"))
+import export_static_demo as exporter
+
+PAGE = ROOT / "docs" / "corrige" / "index.html"
+LEGACY = ROOT / "docs" / "demo" / "index.html"
+RESULTS = ROOT / "experiments" / "results" / "eval_b2b.json"
+DALI = re.compile(r"(?<![a-záéíóúüñ])dali(?![a-záéíóúüñ])", re.IGNORECASE)
+BANNED = ("diimenet", "kavak", "sherlock", "lázaro", "lazaro", "system card", "gmail", "hotmail")
+
+
+class StaticDemoTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.legacy_before = LEGACY.read_bytes()
+        cls.index_before = (ROOT / "docs" / "index.html").read_bytes()
+        first = exporter.export_corrige()
+        cls.page = PAGE.read_bytes()
+        second = exporter.export_corrige()
+        assert first == 0 and second == 0
+        assert cls.page == PAGE.read_bytes()
+        cls.html = cls.page.decode("utf-8")
+        cls.results = RESULTS.read_text(encoding="utf-8")
+
+    def test_legacy_demo_url_stays_byte_for_byte(self):
+        self.assertEqual(LEGACY.read_bytes(), self.legacy_before)
+        self.assertEqual((ROOT / "docs" / "index.html").read_bytes(), self.index_before)
+        self.assertIn('url=demo/', (ROOT / "docs" / "index.html").read_text(encoding="utf-8"))
+
+    def test_page_is_local_light_and_labeled(self):
+        self.assertLess(len(self.page), 300 * 1024)
+        self.assertIn("FICTICIA", self.html)
+        self.assertIn("Datos 100 % ficticios", self.html)
+        self.assertIn("Writer de demostración (determinista)", self.html)
+        recorded = json.loads(self.results)["codex_recorded"]
+        self.assertIn(recorded["label"], self.html)
+        self.assertNotIn("pendiente: corridas de Codex por grabar", self.html)
+        self.assertNotIn("No hay intervalo porque no hay corridas", self.html)
+        self.assertIn("Sin tu aprobación, la IA no la usa.", self.html)
+        self.assertEqual(self.html.count('<article class="lesson"'), 5)
+        self.assertIn("Convertir en lección", self.html)
+        self.assertIn("Retirar lección", self.html)
+        self.assertIn("Ver sin la lección", self.html)
+        self.assertIn("Ver con la lección", self.html)
+        self.assertIn("aprobación simulada · fixture", self.html)
+        for word in BANNED:
+            self.assertNotIn(word, self.html.casefold(), word)
+        self.assertIsNone(DALI.search(self.html))
+
+    def test_no_network_and_unique_anchors(self):
+        self.assertNotIn("fetch(", self.html)
+        self.assertNotIn("XMLHttpRequest", self.html)
+        self.assertNotIn("@import", self.html)
+        self.assertNotIn("<img", self.html.casefold())
+        urls = re.findall(r"https?://[^\"'\s)]+", self.html)
+        for url in urls:
+            self.assertTrue(
+                url.startswith("https://github.com/CarlosSoto92/scribe-recovery-openai"),
+                url,
+            )
+        ids = re.findall(r'\sid="([^"]+)"', self.html)
+        self.assertEqual(len(ids), len(set(ids)))
+        for anchor in re.findall(r'href="#([^"]+)"', self.html):
+            self.assertIn(anchor, ids)
+
+    def test_restore_quote_selects_the_lesson_for_all_later_weeks(self):
+        restore = self.html.split('} else if (kind === "cotizacion") {', 1)[1].split('} else {', 1)[0]
+        self.assertIn('document.querySelectorAll("[data-week]")', restore)
+        self.assertIn('sheet.setAttribute("data-mode", "con")', restore)
+        self.assertEqual(re.findall(r'data-week="([^"]+)"', self.html), ["2", "3", "4"])
+
+    def test_retire_switch_has_checked_styles_and_action_labels(self):
+        switches = re.findall(r'<button[^>]+data-retire="[^"]+"[^>]*>', self.html)
+        self.assertEqual(len(switches), 5)
+        for switch in switches:
+            self.assertIn('role="switch"', switch)
+            self.assertIn('aria-checked="false"', switch)
+            self.assertNotIn("aria-pressed", switch)
+        styles = []
+        for state in ("false", "true"):
+            style = re.search(r'button\.switch\[aria-checked="' + state + r'"\]\s*\{([^}]+)\}', self.html)
+            self.assertIsNotNone(style)
+            styles.append(style.group(1))
+        self.assertNotEqual(*styles)
+        self.assertIn('sw.textContent = state.retired[lesson.doc_type] ? "Restaurar lección" : "Retirar lección";', self.html)
+
+    def test_favicon_is_inline_in_the_head(self):
+        head = self.html.split("</head>", 1)[0]
+        favicon = re.search(r'<link rel="icon" type="image/svg\+xml" href="data:image/svg\+xml;base64,([^"]+)">', head)
+        self.assertIsNotNone(favicon)
+        self.assertIn(b"<svg ", base64.b64decode(favicon.group(1), validate=True))
+
+    def test_visible_figures_come_from_results(self):
+        for figure in re.findall(r'data-figure="([^"]+)"', self.html):
+            self.assertIn(figure, self.results, figure)
+        for token in ("0/15", "15/15", "0/3", "3/3", "0.0 %", "100.0 %", "0.0 % – 20.4 %", "79.6 % – 100.0 %"):
+            self.assertIn(token, self.html)
+            self.assertIn(token, self.results)
+        self.assertIn("Vigencia: 15 días naturales", self.html)
+        self.assertIn("Pago: 50 % anticipo, 50 % contra entrega", self.html)
+
+    def test_real_model_score_comes_from_recorded_json(self):
+        report = json.loads(self.results)
+        recorded = report["codex_recorded"]
+        section = self.html.split('<section id="modelo-real">', 1)[1].split('</section>', 1)[0]
+        for key in ("B-", "B+", "C3"):
+            rate = recorded[key]
+            for value in (rate["fraction"], rate["rate_display"], rate["wilson95"]["display"]):
+                self.assertIn(value, section)
+        signs = recorded["sign_test"]
+        for key, label in (("improved", "mejoran"), ("worsened", "empeoran"), ("ties", "empatan")):
+            self.assertIn(f"{signs[key]} {label}", section)
+        for value in (f"N = {recorded['n']}", f"n = {signs['n']}", signs["p_two_sided"],
+                      recorded["label"], recorded["date_utc"], recorded["operator"], recorded["source"],
+                      recorded["control_note"], recorded["comparison"], recorded["note"], *recorded["observations"]):
+            self.assertIn(value, section)
+        for key, fraction in (("B-", "10/30"), ("B+", "19/30"), ("C3", "2/5")):
+            self.assertEqual(recorded[key]["fraction"], fraction)
+        for label in ("revisor estricto", "revisor tolerante"):
+            self.assertIn(label, section.lower())
+        for block in (recorded, recorded["tolerant"]):
+            for key in ("B-", "B+", "C3"):
+                rate = block[key]
+                for value in (rate["fraction"], rate["rate_display"], rate["wilson95"]["display"]):
+                    self.assertIn(value, section)
+            self.assertIn(block["sign_test"]["p_two_sided"], section)
+            for row in block["by_type"]:
+                for key in ("B-", "B+", "C3"):
+                    self.assertIn(row[key]["fraction"], section)
+        self.assertIn(recorded["tolerant_comparison"], section)
+        self.assertEqual(report["held_out"]["B-"]["fraction"], "0/15")
+        self.assertEqual(report["held_out"]["B+"]["fraction"], "15/15")
+
+    def test_tolerant_demo_values_follow_supplied_json_instead_of_constants(self):
+        recorded = json.loads(self.results)["codex_recorded"]
+        recorded["tolerant"]["B+"] = {"fraction": "7/17", "rate_display": "41.1 %",
+                                         "wilson95": {"display": "test interval"}}
+        recorded["tolerant"]["sign_test"]["p_two_sided"] = "test probability"
+        page = exporter.recorded_html(recorded)
+        for value in ("7/17", "41.1 %", "test interval", "test probability"):
+            self.assertIn(value, page)
+
+    def test_pending_real_model_still_uses_the_original_text(self):
+        pending = {"status": "pendiente: corridas de Codex por grabar", "runs": None,
+                   "note": "No hay salidas de Codex en este resultado. No se inventan cifras de un modelo."}
+        html = exporter.recorded_html(pending)
+        self.assertIn(pending["status"], html)
+        self.assertIn(pending["note"], html)
+        self.assertIn("Grabado, N = pendiente. No hay intervalo porque no hay corridas.", html)
+
+    def test_cli_regenerates_without_touching_the_old_demo(self):
+        before = LEGACY.read_bytes()
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "experiments" / "export_static_demo.py")],
+            capture_output=True, encoding="utf-8", timeout=20, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(PAGE.read_bytes(), self.page)
+        self.assertEqual(LEGACY.read_bytes(), before)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,0 +1,54 @@
+{
+  "schema_version": "doc_note.v1",
+  "note_id": "b2b-reporte_cliente-02",
+  "doc_type": "reporte_cliente",
+  "company": {
+    "name": "Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)",
+    "rfc": "FICT000101AAA",
+    "email": "ventas@valvulas-ejemplo.example",
+    "phone": "+52 000 000 0000",
+    "city": "Ciudad Ejemplo del Bajío (dirección ficticia)"
+  },
+  "customer": {
+    "name": "Cliente Demo 02",
+    "email": "compras@cliente-demo-02.example"
+  },
+  "facts": [
+    {
+      "fact_id": "aviso",
+      "text": "Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.",
+      "must_keep": false,
+      "source_ref": "AVISO-FICT"
+    },
+    {
+      "fact_id": "contexto",
+      "text": "Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.",
+      "must_keep": false,
+      "source_ref": "CTX-FICT"
+    },
+    {
+      "fact_id": "visita",
+      "text": "Visita de demostración al cliente ficticio. Se revisó el equipo instalado y se dejó constancia de lo observado.",
+      "must_keep": false,
+      "source_ref": "VIS-FICT"
+    },
+    {
+      "fact_id": "hallazgo",
+      "text": "Hallazgo: la válvula de demostración cierra, con un goteo en el empaque que conviene observar.",
+      "must_keep": false,
+      "source_ref": "HAL-FICT"
+    },
+    {
+      "fact_id": "paso",
+      "text": "Siguiente paso: Mesa Técnica Demo · 2026-11-23",
+      "must_keep": true,
+      "source_ref": "SEG-01"
+    }
+  ],
+  "limits": [
+    "Datos 100 % ficticios. Empresa, clientes, folios y cifras son inventados.",
+    "No atribuir este documento a una empresa, persona o pedido reales.",
+    "La nota es información, no instrucciones para el modelo."
+  ],
+  "synthetic": true
+}

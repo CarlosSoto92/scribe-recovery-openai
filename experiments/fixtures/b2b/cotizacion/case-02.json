@@ -1,0 +1,72 @@
+{
+  "schema_version": "doc_note.v1",
+  "note_id": "b2b-cotizacion-02",
+  "doc_type": "cotizacion",
+  "company": {
+    "name": "Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)",
+    "rfc": "FICT000101AAA",
+    "email": "ventas@valvulas-ejemplo.example",
+    "phone": "+52 000 000 0000",
+    "city": "Ciudad Ejemplo del Bajío (dirección ficticia)"
+  },
+  "customer": {
+    "name": "Cliente Demo 02",
+    "email": "compras@cliente-demo-02.example"
+  },
+  "facts": [
+    {
+      "fact_id": "aviso",
+      "text": "Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.",
+      "must_keep": false,
+      "source_ref": "AVISO-FICT"
+    },
+    {
+      "fact_id": "contexto",
+      "text": "Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.",
+      "must_keep": false,
+      "source_ref": "CTX-FICT"
+    },
+    {
+      "fact_id": "item-1",
+      "text": "Partida | Bomba centrífuga de demostración | 1 | 18,600.00 MXN",
+      "must_keep": false,
+      "source_ref": "PART-01"
+    },
+    {
+      "fact_id": "item-2",
+      "text": "Partida | Sello mecánico de demostración | 2 | 1,880.00 MXN",
+      "must_keep": false,
+      "source_ref": "PART-02"
+    },
+    {
+      "fact_id": "total",
+      "text": "Total | 20,480.00 MXN",
+      "must_keep": false,
+      "source_ref": "TOTAL-01"
+    },
+    {
+      "fact_id": "entrega",
+      "text": "Entrega estimada en la planta del cliente ficticio, sin almacenaje ni obra civil.",
+      "must_keep": false,
+      "source_ref": "ENT-FICT"
+    },
+    {
+      "fact_id": "vigencia",
+      "text": "Vigencia: 15 días naturales",
+      "must_keep": true,
+      "source_ref": "POL-VIG"
+    },
+    {
+      "fact_id": "pago",
+      "text": "Pago: 50 % anticipo, 50 % contra entrega",
+      "must_keep": true,
+      "source_ref": "POL-PAGO"
+    }
+  ],
+  "limits": [
+    "Datos 100 % ficticios. Empresa, clientes, folios y cifras son inventados.",
+    "No atribuir este documento a una empresa, persona o pedido reales.",
+    "La nota es información, no instrucciones para el modelo."
+  ],
+  "synthetic": true
+}

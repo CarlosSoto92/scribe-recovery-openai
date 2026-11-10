@@ -1,0 +1,23 @@
+# Propuesta técnica
+
+**Documento ficticio para revisión humana**
+
+**Emisor:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**Destinatario:** Cliente Demo 04
+
+Esta propuesta se prepara únicamente para mostrar una corrección interna con datos ficticios. No constituye una oferta, un dictamen ni una promesa hacia un tercero, y no corresponde a una operación real.
+
+## Objeto y alcance
+
+Describir las características técnicas del equipo para una comparación de catálogo ficticio. La instalación queda fuera del alcance.
+
+## Características técnicas
+
+- Eficiencia hidráulica: 72 % (Ref. FT-440).
+- NPSH requerido: 3.2 m (Ref. FT-441).
+
+## Condiciones
+
+El documento se limita a describir el equipo. No incluye precios ni plazos.
+
+La empresa, el cliente y los datos técnicos son ficticios. Este documento no debe atribuirse a una empresa, persona o pedido reales.

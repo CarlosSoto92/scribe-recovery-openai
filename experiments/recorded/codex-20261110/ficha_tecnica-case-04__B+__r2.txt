@@ -1,0 +1,27 @@
+# Ficha técnica
+**Documento ficticio para revisión humana**
+
+**Elaborado por:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**Cliente:** Cliente Demo 04
+
+## Equipo y características
+
+| Concepto | Especificación |
+|---|---|
+| Equipo | Actuador serie DEMO-25 |
+| Aplicación | Agua limpia en un circuito de demostración |
+| Conexión | Brida de demostración |
+| Presión de trabajo | 25 bar (363 psi) |
+| Temperatura máxima | 150 °C |
+
+La descripción de la conexión no constituye un certificado ni una referencia normativa.
+
+## Alcance
+
+Este documento fue preparado únicamente para mostrar una corrección interna. Los datos son completamente ficticios y no corresponden a una operación real. No constituye una oferta, un dictamen ni una promesa hacia terceros, y no debe atribuirse a una empresa, persona o pedido reales.
+
+## Contacto
+
+**Correo:** ventas@valvulas-ejemplo.example  
+**Teléfono:** +52 000 000 0000  
+**Ubicación:** Ciudad Ejemplo del Bajío (dirección ficticia)

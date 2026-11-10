@@ -1,0 +1,33 @@
+# Propuesta técnica ficticia
+**Documento para revisión humana**
+
+**Elaborado por:** Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+**Dirigido a:** Cliente Demo 03  
+**Correo del cliente:** compras@cliente-demo-03.example
+
+## Aviso y contexto
+
+Este documento es ficticio y se preparó únicamente para mostrar una corrección interna. No constituye una oferta, un dictamen ni una promesa hacia un tercero.
+
+Los datos de empresa, cliente, equipo, ubicación y cifras son ficticios y no corresponden a una operación real. El ejemplo permite reproducir una misma corrección en documentos distintos. No debe atribuirse a una empresa, persona o pedido reales.
+
+## Alcance técnico
+
+El alcance comprende una válvula de demostración y su actuador. La tubería queda excluida.
+
+Los datos técnicos proporcionados son:
+
+- Par de operación: 40 N·m
+- Ciclos de prueba: 5000
+
+Las referencias de estos datos son FT-330 y FT-331, respectivamente.
+
+## Condiciones
+
+Esta propuesta ficticia se limita a describir el equipo. No incluye precios ni plazos.
+
+## Contacto del emisor ficticio
+
+**Correo:** ventas@valvulas-ejemplo.example  
+**Teléfono:** +52 000 000 0000  
+**Ubicación:** Ciudad Ejemplo del Bajío (dirección ficticia)

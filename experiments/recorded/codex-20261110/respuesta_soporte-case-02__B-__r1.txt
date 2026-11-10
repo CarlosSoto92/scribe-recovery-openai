@@ -1,0 +1,19 @@
+**Respuesta de soporte**
+
+**Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)**  
+**Para:** Cliente Demo 02  
+**Folio de soporte:** SOP-1904  
+**Asunto:** Goteo en el sello de la bomba de demostración
+
+Estimado equipo de Cliente Demo 02:
+
+En relación con el goteo reportado en el sello de la bomba de demostración, es necesario realizar un diagnóstico en sitio para evaluar la situación.
+
+Esta respuesta no confirma la causa del goteo, no promete un resultado ni sustituye una orden de servicio.
+
+Atentamente,  
+Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)  
+ventas@valvulas-ejemplo.example  
++52 000 000 0000
+
+**Documento ficticio para revisión humana.** Los datos de la empresa, el cliente, el equipo, la ciudad y el folio son ficticios y no corresponden a una operación real. Este texto se preparó únicamente para mostrar una corrección interna; no constituye una oferta, un dictamen ni una promesa hacia un tercero.
