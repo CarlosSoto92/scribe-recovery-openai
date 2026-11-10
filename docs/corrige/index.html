@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Corrige una vez · Válvulas y Bombas Ejemplo del Bajío</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzE0M2QzMiIvPjxwYXRoIGQ9Ik0yMyA5YTEwIDEwIDAgMSAwIDAgMTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmRmOCIgc3Ryb2tlLXdpZHRoPSI0Ii8+PC9zdmc+">
 <meta name="description" content="Caso ficticio: una corrección en las cotizaciones se vuelve una lección y la persona decide si la IA la usa.">
 <style>
 :root {
@@ -63,6 +64,8 @@ button {
 button[disabled] { opacity: .55; cursor: not-allowed; }
 button[aria-pressed="false"] { background: #fff; color: var(--green); }
 button[aria-pressed="true"] { background: var(--green); color: var(--green-ink); }
+button.switch[aria-checked="false"] { background: var(--green); color: var(--green-ink); }
+button.switch[aria-checked="true"] { background: var(--miss-bg); color: var(--miss); border-color: var(--miss); }
 .chips { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 1rem 0 0; list-style: none; }
 .chips li {
   border: 1px solid rgba(244, 247, 244, .45); border-radius: 999px;
@@ -520,6 +523,7 @@ Pago: 50 % anticipo, 50 % contra entrega
       var sw = document.querySelector('[data-retire="' + lesson.doc_type + '"]');
       if (lesson.doc_type === "cotizacion") sw.disabled = !state.approved;
       sw.setAttribute("aria-checked", state.retired[lesson.doc_type] ? "true" : "false");
+      sw.textContent = state.retired[lesson.doc_type] ? "Restaurar lección" : "Retirar lección";
     });
     if (allOn) total.textContent = data.held.plus + " · " + data.held.rate_plus;
     else if (allOff) total.textContent = data.held.minus + " · " + data.held.rate_minus;
@@ -564,6 +568,9 @@ Pago: 50 % anticipo, 50 % contra entrega
         });
         live.textContent = "Lección retirada. Las cotizaciones vuelven a salir sin vigencia y sin condiciones de pago.";
       } else if (kind === "cotizacion") {
+        document.querySelectorAll("[data-week]").forEach(function (sheet) {
+          sheet.setAttribute("data-mode", "con");
+        });
         live.textContent = "La lección de cotización vuelve a estar en uso.";
       } else {
         live.textContent = state.retired[kind] ? "Lección retirada. Ese tipo de documento vuelve a fallar." : "Lección otra vez en uso.";

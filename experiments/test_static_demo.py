@@ -1,6 +1,7 @@
 """La demo Corrige una vez sale del JSON y no pide nada a la red."""
 
 from pathlib import Path
+import base64
 import re
 import subprocess
 import sys
@@ -67,6 +68,33 @@ class StaticDemoTests(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
         for anchor in re.findall(r'href="#([^"]+)"', self.html):
             self.assertIn(anchor, ids)
+
+    def test_restore_quote_selects_the_lesson_for_all_later_weeks(self):
+        restore = self.html.split('} else if (kind === "cotizacion") {', 1)[1].split('} else {', 1)[0]
+        self.assertIn('document.querySelectorAll("[data-week]")', restore)
+        self.assertIn('sheet.setAttribute("data-mode", "con")', restore)
+        self.assertEqual(re.findall(r'data-week="([^"]+)"', self.html), ["2", "3", "4"])
+
+    def test_retire_switch_has_checked_styles_and_action_labels(self):
+        switches = re.findall(r'<button[^>]+data-retire="[^"]+"[^>]*>', self.html)
+        self.assertEqual(len(switches), 5)
+        for switch in switches:
+            self.assertIn('role="switch"', switch)
+            self.assertIn('aria-checked="false"', switch)
+            self.assertNotIn("aria-pressed", switch)
+        styles = []
+        for state in ("false", "true"):
+            style = re.search(r'button\.switch\[aria-checked="' + state + r'"\]\s*\{([^}]+)\}', self.html)
+            self.assertIsNotNone(style)
+            styles.append(style.group(1))
+        self.assertNotEqual(*styles)
+        self.assertIn('sw.textContent = state.retired[lesson.doc_type] ? "Restaurar lección" : "Retirar lección";', self.html)
+
+    def test_favicon_is_inline_in_the_head(self):
+        head = self.html.split("</head>", 1)[0]
+        favicon = re.search(r'<link rel="icon" type="image/svg\+xml" href="data:image/svg\+xml;base64,([^"]+)">', head)
+        self.assertIsNotNone(favicon)
+        self.assertIn(b"<svg ", base64.b64decode(favicon.group(1), validate=True))
 
     def test_visible_figures_come_from_results(self):
         for figure in re.findall(r'data-figure="([^"]+)"', self.html):
