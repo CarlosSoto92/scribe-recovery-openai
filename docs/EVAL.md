@@ -361,6 +361,8 @@ Fecha UTC: 2026-11-10T12:58:24.523613Z. Operador: Hack Ops. Fuente: `experiments
 
 El revisor estricto sigue siendo primario. El revisor tolerante admite markdown, tablas y folios sin prefijo; conserva cifras, unidades y cita junto al valor. Solo excluye negaciones simples inmediatas de las frases prohibidas.
 
+El revisor tolerante se escribió después de ver estas 65 salidas y no estuvo preregistrado: es un análisis post hoc y un techo optimista; el revisor estricto sigue siendo el resultado primario.
+
 | Condición | Revisor estricto (primario) | Tasa | Wilson 95 % | Revisor tolerante | Tasa | Wilson 95 % |
 | --- | --- | --- | --- | --- | --- | --- |
 | B- | 10/30 | 33.3 % | 19.2 % – 51.2 % | 24/30 | 80.0 % | 62.7 % – 90.5 % |
@@ -378,7 +380,7 @@ C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el contro
 
 Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.
 
-B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo (provisional; Carlos lo confirmará a ojo).
+B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo. La etiqueta «falso negativo del checker» es automática: «falla el estricto y pasa el tolerante»; no es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general; eso no convierte la etiqueta en un dictamen editorial ni demuestra calidad general.
 
 | Tipo | Revisor | B-: fracción; tasa; Wilson 95 % | B+: fracción; tasa; Wilson 95 % | C3: fracción; tasa; Wilson 95 % |
 | --- | --- | --- | --- | --- |
@@ -397,7 +399,7 @@ Revisor estricto (primario): en ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6.
 
 ### Clasificación de cada fallo estricto
 
-«Fallo del modelo» es provisional; Carlos lo confirmará a ojo. Los fallos que persisten están en las corridas listadas abajo y en el JSON.
+«Falso negativo del checker» es una etiqueta automática: «falla el estricto y pasa el tolerante»; «fallo del modelo» indica que el fallo persiste con el tolerante. No es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general; eso no convierte las etiquetas en dictámenes editoriales ni demuestra calidad general. Los fallos que persisten están en las corridas listadas abajo y en el JSON.
 
 | Corrida | Clasificación | Fallos que persisten con el tolerante |
 | --- | --- | --- |
@@ -440,4 +442,4 @@ Muestra pequeña: una versión del CLI, un día y un operador. Generación no de
 
 ## Límites honestos
 
-El stub es una prueba de mecanismo y de los controles, no evidencia de calidad de un LLM. Los fixtures son sintéticos y los escribimos nosotros. Cada checker es un regex: el estricto penaliza formatos equivalentes; el tolerante acepta formas acotadas, no paráfrasis generales. Una copia literal puede salir conforme. Las clasificaciones requieren revisión humana. Las reglas son convenciones de la casa, no conocimiento del mundo. n = 15 es pequeño. La aprobación humana de estas lecciones es simulada (`fixture:`). El detalle está en `docs/LIMITATIONS.md`.
+El stub es una prueba de mecanismo y de los controles, no evidencia de calidad de un LLM. Los fixtures son sintéticos y los escribimos nosotros. Cada checker es un regex: el estricto penaliza formatos equivalentes; el tolerante acepta formas acotadas, no paráfrasis generales. Una copia literal puede salir conforme. Las clasificaciones automáticas no sustituyen una revisión humana independiente. Las reglas son convenciones de la casa, no conocimiento del mundo. n = 15 es pequeño. La aprobación humana de estas lecciones es simulada (`fixture:`). El detalle está en `docs/LIMITATIONS.md`.

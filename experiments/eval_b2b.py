@@ -298,6 +298,9 @@ def recorded_markdown(recorded):
         "tablas y folios sin prefijo; conserva cifras, unidades y cita junto al valor. "
         "Solo excluye negaciones simples inmediatas de las frases prohibidas.",
         "",
+        "El revisor tolerante se escribió después de ver estas 65 salidas y no estuvo preregistrado: "
+        "es un análisis post hoc y un techo optimista; el revisor estricto sigue siendo el resultado primario.",
+        "",
         "| Condición | Revisor estricto (primario) | Tasa | Wilson 95 % | Revisor tolerante | Tasa | Wilson 95 % |",
         "| --- | --- | --- | --- | --- | --- | --- |",
     ]
@@ -320,7 +323,11 @@ def recorded_markdown(recorded):
                      if row.get(key) else "—" for key in ("B-", "B+", "C3")]
             lines.append(f"| {row['label']} | {label} | " + " | ".join(cells) + " |")
     lines += ["", *recorded["observations"], "", "### Clasificación de cada fallo estricto", "",
-              "«Fallo del modelo» es provisional; Carlos lo confirmará a ojo. "
+              "«Falso negativo del checker» es una etiqueta automática: «falla el estricto y pasa el tolerante»; "
+              "«fallo del modelo» indica que el fallo persiste con el tolerante. "
+              "No es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 "
+              "y coincidió en lo general; eso no convierte las etiquetas en dictámenes editoriales "
+              "ni demuestra calidad general. "
               "Los fallos que persisten están en las corridas listadas abajo y en el JSON.", "",
               "| Corrida | Clasificación | Fallos que persisten con el tolerante |", "| --- | --- | --- |"]
     for row in recorded["failure_classification"]:
@@ -445,7 +452,7 @@ def render_markdown(report):
         "El stub es una prueba de mecanismo y de los controles, no evidencia de calidad de un LLM. "
         "Los fixtures son sintéticos y los escribimos nosotros. Cada checker es un regex: "
         "el estricto penaliza formatos equivalentes; el tolerante acepta formas acotadas, no paráfrasis generales. "
-        "Una copia literal puede salir conforme. Las clasificaciones requieren revisión humana. "
+        "Una copia literal puede salir conforme. Las clasificaciones automáticas no sustituyen una revisión humana independiente. "
         "Las reglas son convenciones de la casa, no conocimiento del mundo. "
         "n = 15 es pequeño. La aprobación humana de estas lecciones es simulada (`fixture:`). "
         "El detalle está en `docs/LIMITATIONS.md`.",
@@ -560,7 +567,10 @@ def summarize_recorded(replayed):
             f"B+ con revisor estricto: {summary['B+']['fraction']}; con revisor tolerante: {plus['fraction']}. "
             f"El tolerante {'mejora la tasa' if Decimal(plus['rate']) > Decimal(summary['B+']['rate']) else 'no mejora la tasa'}. "
             f"De los fallos B+ estrictos, {counts['falso negativo del checker']} son falso negativo del checker "
-            f"y {counts['fallo del modelo']} siguen como fallo del modelo (provisional; Carlos lo confirmará a ojo)."
+            f"y {counts['fallo del modelo']} siguen como fallo del modelo. "
+            "La etiqueta «falso negativo del checker» es automática: «falla el estricto y pasa el tolerante»; "
+            "no es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 "
+            "y coincidió en lo general; eso no convierte la etiqueta en un dictamen editorial ni demuestra calidad general."
         )
     return summary
 

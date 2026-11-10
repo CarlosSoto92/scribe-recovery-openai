@@ -40,6 +40,8 @@ CLI exacto: 0.167.0. Fecha UTC: 2026-11-10T12:58:24.523613Z. Operador: Hack Ops.
 
 El **revisor estricto** es el primario y conserva sus cifras. El **revisor tolerante** acepta markdown, tablas y el folio sin prefijo; sigue exigiendo las cifras y unidades de la nota, la cita junto al valor y la ausencia de promesas afirmativas.
 
+El revisor tolerante se escribió después de ver estas 65 salidas y no estuvo preregistrado: es un análisis post hoc y un techo optimista; el revisor estricto sigue siendo el resultado primario.
+
 | Condición | Revisor estricto (primario) | Tasa | Wilson 95 % | Revisor tolerante | Tasa | Wilson 95 % |
 | --- | --- | --- | --- | --- | --- | --- |
 | B- | 10/30 | 33.3 % | 19.2 % – 51.2 % | 24/30 | 80.0 % | 62.7 % – 90.5 % |
@@ -57,7 +59,7 @@ C3 usa la skill de OTRO tipo de documento. Se mide cumplimiento; no es el contro
 
 Stub determinista: 0/15 → 15/15; Codex: 10/30 → 19/30. En esta grabación Codex sale peor que el writer determinista con lección. El stub tiene el arreglo codificado; esta comparación no prueba calidad general de un modelo.
 
-B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo (provisional; Carlos lo confirmará a ojo).
+B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejora la tasa. De los fallos B+ estrictos, 11 son falso negativo del checker y 0 siguen como fallo del modelo. La etiqueta «falso negativo del checker» es automática: «falla el estricto y pasa el tolerante»; no es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general; eso no convierte la etiqueta en un dictamen editorial ni demuestra calidad general.
 
 | Tipo | B- estricto | B- tolerante | B+ estricto | B+ tolerante | C3 estricto | C3 tolerante |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -69,7 +71,7 @@ B+ con revisor estricto: 19/30; con revisor tolerante: 30/30. El tolerante mejor
 
 Revisor estricto (primario): en ficha_tecnica, B+ sale peor que B-: 1/6 → 0/6. El checker es un regex; estos números no identifican la causa.
 
-Los fallos que persisten con el tolerante son las propuestas técnicas B− y una propuesta técnica C3: faltan referencias junto a las cifras. Cada fallo estricto está clasificado en el JSON y en la evaluación completa. «Fallo del modelo» es provisional; Carlos lo confirmará a ojo.
+Los fallos que persisten con el tolerante son las propuestas técnicas B− y una propuesta técnica C3: faltan referencias junto a las cifras. Cada fallo estricto está clasificado en el JSON y en la evaluación completa. «Fallo del modelo» indica que el fallo persiste con el tolerante. Son etiquetas automáticas, no dictámenes editoriales; la revisión de Carlos de los 11 casos B+ el 2026-11-10 coincidió en lo general y no demuestra calidad general.
 
 Muestra pequeña: una versión del CLI, un día y un operador. Generación no determinista; las repeticiones de una misma nota no son del todo independientes. El checker es un regex y no mide calidad editorial general.
 

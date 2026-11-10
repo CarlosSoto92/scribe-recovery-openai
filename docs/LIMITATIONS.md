@@ -8,7 +8,7 @@ Las veinte notas son sintéticas. La empresa, los clientes, los folios y las cif
 
 ## 2. Dos revisores basados en regex
 
-El revisor estricto es primario y mantiene sus resultados. El revisor tolerante admite etiquetas en markdown o tablas, el folio de la nota en cualquier parte y negaciones simples inmediatas. No relaja cifras ni unidades; la cita debe estar en la misma línea, viñeta o fila que el valor. Ambos normalizan mayúsculas, espacios y guiones; no entienden paráfrasis generales. Una copia literal puede salir conforme. El replay guarda ambos resultados y clasifica cada fallo estricto: «falso negativo del checker» si pasa el tolerante, o «fallo del modelo» si persiste. Esta última clasificación es provisional y requiere confirmación visual de Carlos; pasar el tolerante no demuestra calidad editorial.
+El revisor estricto es primario y mantiene sus resultados. El revisor tolerante admite etiquetas en markdown o tablas, el folio de la nota en cualquier parte y negaciones simples inmediatas. No relaja cifras ni unidades; la cita debe estar en la misma línea, viñeta o fila que el valor. Ambos normalizan mayúsculas, espacios y guiones; no entienden paráfrasis generales. Una copia literal puede salir conforme. El replay guarda ambos resultados y clasifica cada fallo estricto: «falso negativo del checker» si pasa el tolerante, o «fallo del modelo» si persiste. La etiqueta «falso negativo del checker» es automática: «falla el estricto y pasa el tolerante»; no es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general; eso no convierte la etiqueta en un dictamen editorial ni demuestra calidad general.
 
 ## 3. La regla no se adivina
 

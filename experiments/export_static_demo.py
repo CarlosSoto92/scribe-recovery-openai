@@ -216,7 +216,10 @@ def recorded_html(recorded):
       <p>{esc(recorded['control_note'])}</p>
       <p>{esc(recorded['comparison'])}</p>
       <p>{esc(recorded['tolerant_comparison'])}</p>
-      <ul>{classifications}</ul><p>Fallo del modelo: clasificación provisional; Carlos lo confirmará a ojo.
+      <ul>{classifications}</ul><p>«Falso negativo del checker»: etiqueta automática, «falla el estricto y pasa el tolerante»;
+      «fallo del modelo» indica que el fallo persiste con el tolerante. No es una revisión humana independiente.
+      Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general;
+      eso no convierte las etiquetas en dictámenes editoriales ni demuestra calidad general.
       Los fallos restantes y cada reclasificación están en <a href="../EVAL.md">la evaluación completa</a>.</p>
       <details><summary>Resultados por tipo con ambos revisores</summary>
       <table><thead><tr><th>Tipo y revisor</th><th>B-: fracción; tasa; Wilson 95 %</th>

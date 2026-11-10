@@ -52,15 +52,17 @@ Por tipo, cada celda muestra **estricto → tolerante** para la misma condición
 
 Los negativos también cuentan: con el estricto, ficha técnica cae de 1/6 en B- a 0/6 en B+; soporte y reporte no mejoran. Con el tolerante persisten los fallos de referencias junto a cifras en propuestas B- y en la propuesta C3. C3 mide cumplimiento con una lección ajena; no demuestra ausencia de regresión ni exige texto idéntico al de B-.
 
-De los **11 fallos B+ estrictos, 11 se clasificaron como falso negativo del checker** al pasar el tolerante. Es una clasificación **provisional, pendiente de confirmación visual de Carlos**; pasar ese checker no demuestra calidad general.
+De los **11 fallos B+ estrictos, 11 se clasificaron como falso negativo del checker**. La etiqueta «falso negativo del checker» es automática: «falla el estricto y pasa el tolerante»; no es una revisión humana independiente. Carlos revisó los 11 casos B+ el 2026-11-10 y coincidió en lo general; eso no convierte la etiqueta en un dictamen editorial ni demuestra calidad general.
 
 El **0/15 → 15/15 del writer de demostración determinista** prueba el mecanismo: tiene el fallo y el arreglo codificados. No mide calidad de un modelo ni sirve como referencia de superioridad frente a Codex.
 
 ## Lo que nos enseñó el revisor
 
+El revisor tolerante se escribió después de ver estas 65 salidas y no estuvo preregistrado: es un análisis post hoc y un techo optimista; el revisor estricto sigue siendo el resultado primario.
+
 Hay que calibrar el medidor y separar fallo del modelo de fallo del checker, al estilo UK AISI. Un regex literal puede castigar una tabla markdown que conserva el dato, un folio incluido en el asunto o «no garantizamos» por contener la palabra prohibida. Los conteos por sí solos no identifican la causa.
 
-El tolerante admite esas formas acotadas, pero sigue exigiendo cifras, unidades y referencias junto al valor. La diferencia entre revisores obliga a revisar ejemplos con etiquetas humanas; no autoriza a borrar el resultado primario ni a dar por confirmada la clasificación provisional.
+El tolerante admite esas formas acotadas, pero sigue exigiendo cifras, unidades y referencias junto al valor. La diferencia entre revisores exige calibrar con etiquetas humanas independientes; la coincidencia general de Carlos en los 11 casos B+ no sustituye esa calibración ni autoriza a borrar el resultado primario.
 
 ## Cómo se construyó
 
