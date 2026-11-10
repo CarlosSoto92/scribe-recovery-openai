@@ -216,10 +216,9 @@ def page(store, note, token, message="", branches=None, feedback_form=None, scri
                          f'<p>{h(lesson["rule"])}</p><p>Facts: {h(", ".join(lesson["evidence"]["fact_ids"]))}</p>')
         identity = f'<input type="hidden" name="lesson_id" value="{h(lesson["lesson_id"])}">'
         if lesson["state"] == "proposed":
-            approval_ref = "fixture:web-review" if reviewer == "fixture_simulated" else "review-l4:auto"
             lessons_html += '<p>Lección propuesta — aún no se aplica</p>' + form("approve", identity +
                             f'<label>approved_by <input name="approved_by" value="{h(reviewer)}" required></label>'
-                            f'<label>approval_ref <input name="approval_ref" value="{h(approval_ref)}" placeholder="decision-l4:demo" required></label>'
+                            '<label>approval_ref <input name="approval_ref" value="" placeholder="decision-l4:demo" required></label>'
                             '<button>Aprobar lección</button>')
         if lesson["state"] in ("proposed", "approved"):
             lessons_html += form("reject", identity + '<button>Rechazar lección</button>')
@@ -318,9 +317,6 @@ class Handler(BaseHTTPRequestHandler):
             ed.require(0 < length <= 32768, "Formulario vacío o demasiado grande")
             form = parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values=True,
                             max_num_fields=100)
-            if self.path == "/action/feedback":
-                feedback_form = form
-
             def one(key):
                 values = form.get(key, [])
                 ed.require(len(values) == 1, f"Campo requerido o repetido: {key}")
@@ -335,6 +331,7 @@ class Handler(BaseHTTPRequestHandler):
                 store.generate(note)
                 message = "Borrador generado con las lecciones approved vigentes"
             elif self.path == "/action/feedback":
+                feedback_form = form
                 store.feedback(note, one("draft_id"), one("reviewer"), int(one("rating")),
                                one("comment"), form.get("target", []))
                 message = "Lección propuesta — aún no se aplica"

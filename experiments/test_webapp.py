@@ -280,7 +280,7 @@ class HTTPTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.store = web.Store(Path(temporary.name) / "demo.db")
         try:
-            self.server = web.make_server(self.store, 8766)
+            self.server = web.make_server(self.store, 0)
         except PermissionError as exc:
             self.skipTest(f"Sandbox sin sockets loopback: {exc}")
         self.thread = Thread(target=self.server.serve_forever, kwargs={"poll_interval": 0.01})
@@ -300,7 +300,8 @@ class HTTPTests(unittest.TestCase):
         connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
         try:
             body = urlencode(fields, doseq=True) if fields is not None else None
-            request_headers = {"Content-Type": "application/x-www-form-urlencoded"}
+            request_headers = {"Host": f"127.0.0.1:{self.server.server_port}",
+                               "Content-Type": "application/x-www-form-urlencoded"}
             request_headers.update(headers or {})
             connection.request(method, path, body=body, headers=request_headers)
             response = connection.getresponse()
@@ -311,6 +312,35 @@ class HTTPTests(unittest.TestCase):
 
     def post(self, action, **fields):
         return self.request("POST", "/action/" + action, dict(csrf=self.csrf, **fields))
+
+    def test_host_validation_uses_assigned_port(self):
+        port = self.server.server_port
+        self.assertEqual(port, self.server.server_address[1])
+        self.assertEqual(self.request("GET", "/", headers={"Host": f"localhost:{port}"})[0], 200)
+        other_port = (port + 1) % 65536
+        self.assertEqual(self.request("GET", "/", headers={"Host": f"127.0.0.1:{other_port}"})[0], 400)
+
+    def test_feedback_invalid_csrf_does_not_preserve_untrusted_fields(self):
+        self.assertEqual(self.post("draft")[0], 200)
+        document = self.store.read("draft.v1")[-1]
+        before = self.store.history()
+        for csrf in (None, "incorrecto", "ñ", [self.csrf, "incorrecto"]):
+            with self.subTest(csrf=csrf):
+                fields = dict(draft_id="attacker-draft", reviewer="attacker-reviewer",
+                              rating="5", comment="attacker-comment", target=["f1", "f2"])
+                if csrf is not None:
+                    fields["csrf"] = csrf
+                status, html = self.request("POST", "/action/feedback", fields)
+                self.assertEqual(status, 400)
+                parsed = Inputs(html)
+                form = parsed.forms["/action/feedback"][0]
+                self.assertEqual(form["comment"], "")
+                for name, value in (("draft_id", document["draft_id"]), ("reviewer", "carlos"), ("rating", "2")):
+                    self.assertEqual(parsed.field("feedback", name)["value"], value)
+                self.assertFalse(any("checked" in field for field in form["inputs"]
+                                     if field.get("name") == "target"))
+                self.assertNotIn("attacker-", html)
+                self.assertEqual(self.store.history(), before)
 
     def test_feedback_400_preserves_fields_and_can_be_corrected(self):
         self.assertEqual(self.post("draft")[0], 200)
@@ -368,11 +398,11 @@ class HTTPTests(unittest.TestCase):
         self.request("GET", "/")
         self.assertNotEqual(csp, self.response_headers["Content-Security-Policy"])
 
-    def test_approval_prefills_latest_reviewer_and_reference_but_requires_human_post(self):
+    def test_approval_prefills_latest_reviewer_but_requires_explicit_reference(self):
         self.post("draft")
         document = self.store.read("draft.v1")[-1]
-        for reviewer, reference in (("carlos", "review-l4:auto"), ('editor "L4" <human>', "review-l4:auto"),
-                                    ("fixture_simulated", "fixture:web-review")):
+        for reviewer, reference in (("carlos", "decision-l4:test"), ('editor "L4" <human>', "decision-l4:test"),
+                                    ("fixture_simulated", "fixture:web-test")):
             with self.subTest(reviewer=reviewer):
                 status, _ = self.post("feedback", draft_id=document["draft_id"], reviewer=reviewer,
                                       rating="2", comment="Falta duración", target=["f1"])
@@ -385,7 +415,8 @@ class HTTPTests(unittest.TestCase):
                 for form in parsed.forms["/action/approve"]:
                     inputs = {field["name"]: field for field in form["inputs"]}
                     self.assertEqual(inputs["approved_by"]["value"], reviewer)
-                    self.assertEqual(inputs["approval_ref"]["value"], reference)
+                    self.assertEqual(inputs["approval_ref"]["value"], "")
+                    self.assertEqual(inputs["approval_ref"]["placeholder"], "decision-l4:demo")
                     self.assertIn("required", inputs["approved_by"])
                     self.assertIn("required", inputs["approval_ref"])
                 self.assertEqual(self.store.history(), before)
@@ -464,12 +495,12 @@ class MemoryHTTPTests(HTTPTests):
         self.store = web.Store(Path(temporary.name) / "demo.db")
         self.csrf = "test-form-token"
         self.server = SimpleNamespace(store=self.store, note=web.ed.load(web.FIXTURE, "research_note.v1"),
-                                      csrf=self.csrf, server_port=8766,
-                                      server_address=("127.0.0.1", 8766))
+                                      csrf=self.csrf, server_port=0,
+                                      server_address=("127.0.0.1", 0))
 
     def request(self, method, path, fields=None, headers=None):
         body = urlencode(fields, doseq=True).encode("utf-8") if fields is not None else b""
-        request_headers = {"Host": "127.0.0.1:8766", "Content-Type": "application/x-www-form-urlencoded",
+        request_headers = {"Host": f"127.0.0.1:{self.server.server_port}", "Content-Type": "application/x-www-form-urlencoded",
                            "Content-Length": str(len(body))}
         request_headers.update(headers or {})
         raw = (f"{method} {path} HTTP/1.0\r\n" + ''.join(
