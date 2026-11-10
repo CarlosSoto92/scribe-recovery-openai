@@ -2,9 +2,11 @@
 
 import argparse
 from contextlib import contextmanager
+from difflib import SequenceMatcher
 from html import escape
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+import re
 import secrets
 import sqlite3
 import sys
@@ -142,18 +144,38 @@ def fact_table(note, document):
             '<th>Checker crítico</th></tr>' + ''.join(rows) + '</table>')
 
 
+def draft_diff(minus, plus):
+    """Diff por palabras del texto original; escapar antes de añadir marcas HTML."""
+    before = re.findall(r'\s+|\S+', minus)
+    after = re.findall(r'\s+|\S+', plus)
+    left, right = [], []
+    for tag, i, j, k, l in SequenceMatcher(None, before, after, autojunk=False).get_opcodes():
+        old, new = h(''.join(before[i:j])), h(''.join(after[k:l]))
+        left.append(f'<mark class="diff-del">{old}</mark>' if tag in ("delete", "replace") else old)
+        right.append(f'<mark class="diff-add">{new}</mark>' if tag in ("insert", "replace") else new)
+    return ''.join(left), ''.join(right)
+
+
 def comparison_html(note, branches):
+    minus, plus = draft_diff(branches["B−"]["draft"]["text"], branches["B+"]["draft"]["text"])
+    texts = {"B−": minus, "B+": plus}
+    legend = ('<p class="diff-legend"><strong>Leyenda del diff:</strong> '
+              '<span class="diff-add">Verde: texto agregado en B+ respecto a B−.</span> '
+              '<span class="diff-del">Rojo: texto de B− eliminado o sustituido en B+.</span> '
+              'Si B− solo omite un dato, se resalta su incorporación en verde en B+; '
+              'no hay texto que marcar en rojo en B−. '
+              'Es un diff de texto del borrador, no un juicio del checker.</p>')
     panels = []
     for label, branch in branches.items():
         document, check = branch["draft"], branch["check"]
         passed = check[METRIC] == 1.0
         metric = f'{len(check["retained_fact_ids"])}/{check["critical_total"]}'
         panels.append(f'<article><h3>{h(label)} · {"PASS" if passed else "FAIL"}</h3>'
-                      f'<p>{h(document["text"])}</p>{fact_table(note, document)}'
+                      f'<p class="draft-text">{texts[label]}</p>{fact_table(note, document)}'
                       f'<p>Retención: {h(metric)} ({check[METRIC]:.0%})</p>'
                       f'<p>Lecciones usadas: {h(", ".join(document["applied_lesson_ids"]) or "ninguna")}</p>'
                       '</article>')
-    return '<div class="comparison">' + ''.join(panels) + '</div>'
+    return legend + '<div class="comparison">' + ''.join(panels) + '</div>'
 
 
 def page(store, note, token, message="", branches=None, feedback_form=None, script_nonce=""):
@@ -217,6 +239,10 @@ label{{display:block;margin:.7rem 0}}input,textarea,button{{font:inherit;padding
 button{{background:#174f85;color:white;border:0;border-radius:5px;cursor:pointer;margin:.4rem 0}}
 table{{border-collapse:collapse;width:100%;font-size:.9rem}}td,th{{text-align:left;padding:.5rem;border-bottom:1px solid #ddd;overflow-wrap:anywhere}}
 .comparison{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}}.notice{{padding:1rem;background:#e4eef9}}
+.draft-text{{white-space:pre-wrap;overflow-wrap:anywhere}}
+.diff-add{{background:#dcfce7;color:#14532d;border-bottom:2px solid #15803d}}
+.diff-del{{background:#fee2e2;color:#991b1b;border-bottom:2px dashed #b91c1c}}
+.diff-legend{{line-height:1.7}}
 @media(max-width:700px){{.comparison{{grid-template-columns:1fr}}}}.history{{overflow-x:auto}}
 </style><body><h1>Scribe · Loop editorial V0</h1>
 <p>Demo local · datos sintéticos · writer determinista. Copia los hechos autorizados de la nota; no usa LLM ni API.</p>
