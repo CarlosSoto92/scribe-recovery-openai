@@ -27,7 +27,7 @@ con datos sintéticos que genera el producto; no es telemetría real de Codex.
 
 La comprobación de GitHub dentro del sandbox había parecido indicar una sesión
 inválida. Fuera del aislamiento de red se verificaron la identidad operativa
-`Quark-lab-diimenet` y el permiso de escritura, sin cambiar credenciales.
+`la cuenta de laboratorio del nodo` y el permiso de escritura, sin cambiar credenciales.
 
 ## Lecciones reutilizables
 

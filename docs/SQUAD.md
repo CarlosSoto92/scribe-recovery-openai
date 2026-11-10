@@ -3,7 +3,7 @@
 > Diagrama de operación completo: [`SQUAD_OPERATION.md`](SQUAD_OPERATION.md).
 
 Versión hackathon (9 nov 2026). Basado en el *Synthetic Squad Operating Map* v0.1 de
-[`diimenet-agent-infra-lab`](https://github.com/CarlosSoto92/diimenet-agent-infra-lab/blob/main/docs/SYNTHETIC_SQUAD_OPERATING_MAP.md), en versión ligera.
+el mapa operativo del squad sintético del laboratorio privado (fuera de este repo público), en versión ligera.
 
 ```mermaid
 flowchart TD

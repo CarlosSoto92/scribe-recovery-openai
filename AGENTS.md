@@ -39,7 +39,7 @@ Los demás asientos (CTO Sintético, Antigravity, Hack Ops) **no escriben códig
 
 ## Condiciones del nodo LT01
 
-- **Ruta canónica:** `/home/anton-lab/Work/scribe-recovery-openai` (con W mayúscula).
+- **Ruta canónica:** `~/Work/scribe-recovery-openai` (o el clone local del operador).
 - **Memoria:** 7.1 GB totales y ~2.6 GB disponibles. La RAM es el cuello de botella.
 - **Paralelismo:** máximo **1 agente empleado a la vez**. Builder → Tester → Scribe corren en secuencia, nunca en paralelo.
 - **Prohibido:** `ollama run` y modelos locales (consumen 2–4 GB). Los modelos se consumen en la nube (Fase 0 vía suscripción de Codex; Fase 1 vía API).
