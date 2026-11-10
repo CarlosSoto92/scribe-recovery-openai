@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import html
 import json
 import sys
 import tempfile
@@ -145,7 +146,7 @@ a{{color:#174f85}}
 """
 
 
-def main() -> int:
+def export_legacy() -> int:
     note = ed.load(FIXTURE, "research_note.v1")
     with tempfile.TemporaryDirectory(prefix="scribe-static-") as tmp:
         store = web.Store(Path(tmp) / "demo.sqlite")
@@ -160,6 +161,465 @@ def main() -> int:
         "lesson": f"{lesson['lesson_id']}@v{lesson['version']}",
     }))
     return 0
+
+
+RESULTS = ROOT / "experiments" / "results" / "eval_b2b.json"
+CORRIGE = ROOT / "docs" / "corrige" / "index.html"
+DEMO_V0 = ROOT / "docs" / "demo" / "index.html"
+
+
+def esc(value):
+    return html.escape(str(value), quote=True)
+
+
+def render_corrige(report):
+    """Página estática. Los números salen del JSON de la evaluación."""
+    company = report["demo"]["company"]
+    weeks = report["demo"]["weeks"]
+    lessons = report["lessons"]
+    quote = next(lesson for lesson in lessons if lesson["doc_type"] == "cotizacion")
+    held = report["held_out"]
+    payload = {
+        "lessons": [
+            {"doc_type": lesson["doc_type"], "minus": next(row["B-"]["fraction"] for row in report["by_type"] if row["doc_type"] == lesson["doc_type"]),
+             "plus": next(row["B+"]["fraction"] for row in report["by_type"] if row["doc_type"] == lesson["doc_type"])}
+            for lesson in lessons
+        ],
+        "held": {
+            "minus": held["B-"]["fraction"],
+            "plus": held["B+"]["fraction"],
+            "rate_minus": held["B-"]["rate_display"],
+            "rate_plus": held["B+"]["rate_display"],
+        },
+    }
+    blob = json.dumps(payload, ensure_ascii=False, sort_keys=True).replace("<", "\\u003c")
+    first = next(week for week in weeks if week["week"] == 1)
+    later = [week for week in weeks if week["week"] != 1]
+    first_sheet = sheet_html(first, company, quote)
+    later_sheets = "\n".join(sheet_html(week, company, quote) for week in later)
+    cards = "\n".join(card_html(lesson, report) for lesson in lessons)
+    rows = "\n".join(score_row(row) for row in report["by_type"])
+    return f"""<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corrige una vez · Válvulas y Bombas Ejemplo del Bajío</title>
+<meta name="description" content="Caso ficticio: una corrección en las cotizaciones se vuelve una lección y la persona decide si la IA la usa.">
+<style>
+:root {{
+  --ink: #1c1915;
+  --muted: #3f382f;
+  --paper: #f3efe6;
+  --sheet: #fffdf8;
+  --line: #e3dac8;
+  --green: #143d32;
+  --green-ink: #f4f7f4;
+  --miss-bg: #fde8e8;
+  --miss: #7f1d1d;
+  --ok-bg: #e5f6ea;
+  --ok: #14532d;
+  --amber-bg: #fff4cc;
+  --amber: #6b4e00;
+  --focus: #9a3412;
+}}
+* {{ box-sizing: border-box; }}
+html {{ scroll-behavior: smooth; }}
+body {{
+  margin: 0;
+  font: 17px/1.5 "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}}
+a {{ color: #143d32; }}
+a:hover {{ color: #0f2e26; }}
+:focus-visible {{ outline: 3px solid var(--focus); outline-offset: 3px; }}
+.skip {{
+  position: absolute; left: 1rem; top: 0; transform: translateY(-120%);
+  background: #fff; color: var(--ink); padding: .6rem 1rem; z-index: 2;
+}}
+.skip:focus {{ transform: none; }}
+.hero {{
+  background: var(--green); color: var(--green-ink);
+  padding: 2.5rem 1.25rem 2rem;
+}}
+.hero-inner, main, .site-footer {{ max-width: 980px; margin: 0 auto; }}
+main {{ padding: 1.25rem; }}
+.kicker {{ letter-spacing: .04em; text-transform: uppercase; font-size: 16px; margin: 0 0 .6rem; }}
+h1 {{ font-size: 2rem; line-height: 1.2; margin: 0 0 .8rem; font-weight: 650; }}
+h2 {{ font-size: 1.45rem; line-height: 1.25; margin: 0 0 .6rem; }}
+h3 {{ font-size: 1.15rem; margin: 0; }}
+.lead {{ font-size: 1.15rem; margin: 0 0 1rem; max-width: 38rem; }}
+.button, button {{
+  font: inherit; min-height: 44px; border-radius: 8px; cursor: pointer;
+}}
+.button {{
+  display: inline-block; background: #f4e1b5; color: #1c1915; text-decoration: none;
+  padding: .7rem 1.1rem; font-weight: 650;
+}}
+button {{
+  background: var(--green); color: var(--green-ink); border: 2px solid var(--green);
+  padding: .55rem 1rem;
+}}
+button[disabled] {{ opacity: .55; cursor: not-allowed; }}
+button[aria-pressed="false"] {{ background: #fff; color: var(--green); }}
+button[aria-pressed="true"] {{ background: var(--green); color: var(--green-ink); }}
+.chips {{ display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; margin: 1rem 0 0; list-style: none; }}
+.chips li {{
+  border: 1px solid rgba(244, 247, 244, .45); border-radius: 999px;
+  padding: .2rem .75rem; font-size: 16px;
+}}
+.plain {{ font-size: 1.05rem; max-width: 40rem; }}
+section {{ margin: 1.5rem 0; }}
+.sheet {{
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1.1rem 1.1rem 1.2rem; margin: 1rem 0;
+  box-shadow: 0 10px 28px rgba(40, 32, 20, .05);
+}}
+.stamp {{
+  display: inline-block; border: 2px solid var(--miss); color: var(--miss);
+  font-weight: 750; letter-spacing: .12em; padding: .1rem .45rem; margin: 0 0 .4rem;
+}}
+.company {{ margin: 0; font-family: Georgia, "Iowan Old Style", Palatino, serif; }}
+.meta {{ color: var(--muted); margin: .2rem 0; }}
+table {{ width: 100%; border-collapse: collapse; margin: .8rem 0; }}
+th, td {{ text-align: left; padding: .45rem .3rem; border-bottom: 1px solid var(--line); vertical-align: top; }}
+.gap {{ background: var(--miss-bg); color: var(--miss); border-radius: 8px; padding: .8rem 1rem; }}
+.added {{ background: var(--ok-bg); color: var(--ok); border-radius: 8px; padding: .8rem 1rem; }}
+.added p, .gap p {{ margin: .25rem 0; }}
+.review {{ margin: .8rem 0 0; }}
+.toggle {{ display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }}
+.lesson, .proposal {{
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1rem; margin: .8rem 0;
+}}
+.badge {{
+  display: inline-block; font-weight: 750; border-radius: 999px; padding: .15rem .7rem; font-size: 16px;
+}}
+.propuesta {{ background: var(--amber-bg); color: var(--amber); }}
+.aprobada {{ background: var(--ok-bg); color: var(--ok); }}
+.retirada {{ background: var(--miss-bg); color: var(--miss); }}
+.switch {{ background: #fff; color: var(--ink); border: 2px solid var(--green); }}
+.bars {{ display: grid; gap: .7rem; }}
+.bar-row {{ display: grid; grid-template-columns: minmax(8rem, 14rem) 1fr auto; gap: .6rem; align-items: center; }}
+.track {{ background: #efe8d8; border-radius: 999px; height: 12px; }}
+.bar {{ height: 12px; border-radius: 999px; }}
+.bar.empty {{ width: 8%; background: var(--miss); }}
+.bar.full {{ width: 100%; background: var(--ok); }}
+.official, .pending, .note {{
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; padding: 1rem;
+}}
+.pending {{ background: #fff8e8; }}
+.site-footer {{ padding: 0 1.25rem 2.5rem; color: var(--muted); }}
+.sr-only {{
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+}}
+details {{ margin-top: .8rem; }}
+summary {{ cursor: pointer; min-height: 44px; display: flex; align-items: center; }}
+pre {{ white-space: pre-wrap; overflow-wrap: anywhere; font: 16px/1.45 ui-monospace, monospace; }}
+@media (max-width: 700px) {{
+  h1 {{ font-size: 1.7rem; }}
+  .bar-row {{ grid-template-columns: 1fr; }}
+  table, thead, tbody, tr, th, td {{ display: block; }}
+  thead, tfoot th {{ position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }}
+  td {{ border-bottom: 0; padding: .2rem 0; }}
+  tr {{ border-bottom: 1px solid var(--line); padding: .45rem 0; }}
+  td::before {{ content: attr(data-label); font-weight: 700; display: block; }}
+}}
+@media (prefers-reduced-motion: reduce) {{
+  html {{ scroll-behavior: auto; }}
+  * {{ transition: none !important; animation: none !important; }}
+}}
+</style>
+</head>
+<body>
+<a class="skip" href="#caso">Saltar al caso</a>
+<header class="hero" id="inicio">
+  <div class="hero-inner">
+    <p class="kicker">Válvulas y Bombas Ejemplo del Bajío · FICTICIA</p>
+    <h1>Cada semana la misma corrección. Esta vez la IA la aprende.</h1>
+    <p class="lead">Corrige una vez. El siguiente documento ya sale bien, y tú decides qué aprende la IA.</p>
+    <p class="plain">El error de esta casa: las cotizaciones salían sin vigencia y sin condiciones de pago. Una persona lo corrige, lo aprueba, y las de las semanas siguientes salen bien.</p>
+    <p><a class="button" href="#caso">Ver el caso</a></p>
+    <ul class="chips">
+      <li>Datos 100 % ficticios</li>
+      <li>Sin reentrenar</li>
+      <li>Tú apruebas</li>
+    </ul>
+  </div>
+</header>
+<main>
+  <section id="caso">
+    <h2>Semana 1 — el error</h2>
+    <p>{esc(first["customer"])} pidió una cotización. Faltó lo de siempre. El caso 1 es donde nace la corrección; no entra en la medición de las semanas siguientes.</p>
+    {first_sheet}
+  </section>
+  <section id="correccion">
+    <h2>La corrección</h2>
+    <p>El revisor escribe: «{esc(quote["correction"])}»</p>
+    <p><button type="button" id="convertir">Convertir en lección</button></p>
+    <article class="proposal" id="tarjeta-cotizacion" hidden>
+      <p><span class="badge propuesta" id="estado-cotizacion">PROPUESTA</span></p>
+      <h3>Cotizaciones</h3>
+      <p>{esc(quote["rule"])}</p>
+      <p>Alcance: cotizaciones. Evidencia: {esc(quote["evidence_note"])}. En la evaluación se aplicó a {esc(quote["applied_held_out"])} casos retenidos.</p>
+      <p id="detalle-aprobacion" hidden>Aprobada por {esc(quote["approved_by"])} · {esc(quote["approval_ref"])}. Aprobación simulada · fixture.</p>
+    </article>
+  </section>
+  <section id="compuerta">
+    <h2>La compuerta humana</h2>
+    <p>Sin tu aprobación, la IA no la usa.</p>
+    <p><button type="button" id="aprobar" disabled>Aprobar <span>aprobación simulada · fixture</span></button></p>
+  </section>
+  <section id="semanas">
+    <h2>Semanas 2, 3 y 4</h2>
+    <p>Otros clientes y otras partidas. Si apruebas la lección, estas cotizaciones salen con vigencia y con condiciones de pago. Si la retiras, el hueco vuelve.</p>
+    {later_sheets}
+  </section>
+  <section id="biblioteca">
+    <h2>Biblioteca de lecciones</h2>
+    <p>Cinco reglas de la casa, una por tipo de documento. Retirar una lección devuelve el fallo: el efecto depende de que siga aprobada.</p>
+    {cards}
+  </section>
+  <section id="marcador">
+    <h2>Marcador</h2>
+    <div class="official">
+      <p><strong data-figure="{esc(report["writer_label"])}">{esc(report["writer_label"])}</strong></p>
+      <p>{esc(report["honesty"])}</p>
+      <div class="bars" id="marcador-vivo">{rows}</div>
+      <p id="total-vivo">Parcial: la cotización de esta página aún no está aprobada.</p>
+    </div>
+    <div class="note">
+      <h3>Resultado de la evaluación</h3>
+      <p>Sin lección <strong data-figure="{esc(held["B-"]["fraction"])}">{esc(held["B-"]["fraction"])}</strong>
+        ({esc(held["B-"]["rate_display"])}, Wilson 95 % {esc(held["B-"]["wilson95"]["display"])}).</p>
+      <p>Con lección <strong data-figure="{esc(held["B+"]["fraction"])}">{esc(held["B+"]["fraction"])}</strong>
+        ({esc(held["B+"]["rate_display"])}, Wilson 95 % {esc(held["B+"]["wilson95"]["display"])}).</p>
+      <p>Requisitos críticos cumplidos: {esc(held["B-"]["rate_display"])} → {esc(held["B+"]["rate_display"])}.</p>
+    </div>
+  </section>
+  <section id="modelo-real">
+    <h2>Con un modelo real</h2>
+    <div class="pending">
+      <p data-figure="{esc(report["codex_recorded"]["status"])}"><strong>{esc(report["codex_recorded"]["status"])}</strong></p>
+      <p>{esc(report["codex_recorded"]["note"])}</p>
+      <p>Grabado, N = pendiente. No hay intervalo porque no hay corridas.</p>
+      <p><a href="../EVAL.md">Ver la metodología</a> · <a href="../LIMITATIONS.md">Ver los límites</a></p>
+    </div>
+  </section>
+</main>
+<footer class="site-footer" id="pie">
+  <h2>¿Qué corrección repites tú cada semana?</h2>
+  <p><a href="https://github.com/CarlosSoto92/scribe-recovery-openai/issues/new?template=feedback-experto.yml">Contarlo en un issue</a></p>
+  <p>Repo <a href="https://github.com/CarlosSoto92/scribe-recovery-openai">MIT</a> · <a href="../demo/">Demo anterior</a> · Sin trackers.</p>
+  <p id="aviso-vivo" aria-live="polite">La lección de cotización todavía no está propuesta.</p>
+</footer>
+<script type="application/json" id="datos">{blob}</script>
+<script>
+(function () {{
+  var data = JSON.parse(document.getElementById("datos").textContent);
+  var state = {{ proposed: false, approved: false, retired: {{}} }};
+  data.lessons.forEach(function (lesson) {{ state.retired[lesson.doc_type] = false; }});
+  var card = document.getElementById("tarjeta-cotizacion");
+  var status = document.getElementById("estado-cotizacion");
+  var detail = document.getElementById("detalle-aprobacion");
+  var live = document.getElementById("aviso-vivo");
+  var total = document.getElementById("total-vivo");
+
+  function quoteActive() {{
+    return state.approved && !state.retired.cotizacion;
+  }}
+  function lessonActive(kind) {{
+    if (kind === "cotizacion") return quoteActive();
+    return !state.retired[kind];
+  }}
+  function render() {{
+    card.hidden = !(state.proposed || state.approved);
+    status.className = "badge propuesta";
+    status.textContent = "PROPUESTA";
+    detail.hidden = true;
+    if (state.approved && state.retired.cotizacion) {{
+      status.className = "badge retirada";
+      status.textContent = "RETIRADA";
+    }} else if (state.approved) {{
+      status.className = "badge aprobada";
+      status.textContent = "APROBADA";
+      detail.hidden = false;
+    }}
+    document.querySelectorAll("[data-week]").forEach(function (sheet) {{
+      var showWith = quoteActive() && sheet.getAttribute("data-mode") === "con";
+      sheet.querySelector("[data-view=sin]").hidden = showWith;
+      sheet.querySelector("[data-view=con]").hidden = !showWith;
+      sheet.querySelector("[data-mode-button=sin]").setAttribute("aria-pressed", showWith ? "false" : "true");
+      sheet.querySelector("[data-mode-button=con]").setAttribute("aria-pressed", showWith ? "true" : "false");
+      sheet.querySelector("[data-mode-button=con]").disabled = !quoteActive();
+    }});
+    var allOn = true;
+    var allOff = true;
+    data.lessons.forEach(function (lesson) {{
+      var active = lessonActive(lesson.doc_type);
+      allOn = allOn && active;
+      allOff = allOff && !active;
+      var label = document.querySelector('[data-live-label="' + lesson.doc_type + '"]');
+      var bar = document.querySelector('[data-live-bar="' + lesson.doc_type + '"]');
+      label.textContent = active ? lesson.plus : lesson.minus;
+      bar.classList.toggle("full", active);
+      bar.classList.toggle("empty", !active);
+      var sw = document.querySelector('[data-retire="' + lesson.doc_type + '"]');
+      if (lesson.doc_type === "cotizacion") sw.disabled = !state.approved;
+      sw.setAttribute("aria-checked", state.retired[lesson.doc_type] ? "true" : "false");
+    }});
+    if (allOn) total.textContent = data.held.plus + " · " + data.held.rate_plus;
+    else if (allOff) total.textContent = data.held.minus + " · " + data.held.rate_minus;
+    else total.textContent = "Parcial: la cotización de esta página aún no está aprobada, o hay una lección retirada.";
+  }}
+  document.getElementById("convertir").addEventListener("click", function () {{
+    state.proposed = true;
+    document.getElementById("aprobar").disabled = false;
+    live.textContent = "La lección quedó en propuesta. Todavía no se usa.";
+    render();
+  }});
+  document.getElementById("aprobar").addEventListener("click", function () {{
+    if (!state.proposed) return;
+    state.approved = true;
+    document.querySelectorAll("[data-week]").forEach(function (sheet) {{
+      sheet.setAttribute("data-mode", "con");
+    }});
+    live.textContent = "Lección aprobada con una aprobación simulada. Las semanas 2, 3 y 4 salen con vigencia y pago.";
+    render();
+  }});
+  document.querySelectorAll("[data-mode-button]").forEach(function (button) {{
+    button.addEventListener("click", function () {{
+      var sheet = button.closest("[data-week]");
+      var mode = button.getAttribute("data-mode-button");
+      if (mode === "con" && !quoteActive()) {{
+        live.textContent = "Sin tu aprobación, la IA no la usa.";
+        return;
+      }}
+      sheet.setAttribute("data-mode", mode);
+      live.textContent = mode === "con" ? "Esta cotización se muestra con la lección." : "Esta cotización se muestra sin la lección.";
+      render();
+    }});
+  }});
+  document.querySelectorAll("[data-retire]").forEach(function (button) {{
+    button.addEventListener("click", function () {{
+      var kind = button.getAttribute("data-retire");
+      if (kind === "cotizacion" && !state.approved) return;
+      state.retired[kind] = !state.retired[kind];
+      if (kind === "cotizacion" && state.retired.cotizacion) {{
+        document.querySelectorAll("[data-week]").forEach(function (sheet) {{
+          sheet.setAttribute("data-mode", "sin");
+        }});
+        live.textContent = "Lección retirada. Las cotizaciones vuelven a salir sin vigencia y sin condiciones de pago.";
+      }} else if (kind === "cotizacion") {{
+        live.textContent = "La lección de cotización vuelve a estar en uso.";
+      }} else {{
+        live.textContent = state.retired[kind] ? "Lección retirada. Ese tipo de documento vuelve a fallar." : "Lección otra vez en uso.";
+      }}
+      render();
+    }});
+  }});
+  render();
+}})();
+</script>
+</body>
+</html>
+"""
+
+
+def sheet_html(week, company, quote):
+    rows = "\n".join(
+        "<tr><td data-label=\"Descripción\">"
+        + esc(item["desc"])
+        + "</td><td data-label=\"Cantidad\">"
+        + esc(item["qty"])
+        + "</td><td data-label=\"Importe\">"
+        + esc(item["amount"])
+        + "</td></tr>"
+        for item in week["items"]
+    )
+    header = f"""
+    <p class="stamp">FICTICIA</p>
+    <h3 class="company">{esc(company["name"])}</h3>
+    <p class="meta">RFC {esc(company["rfc"])} · {esc(company["email"])} · {esc(company["phone"])}</p>
+    <p class="meta">{esc(company["city"])}</p>
+    <p><strong>Cotización · Semana {esc(week["week"])} · {esc(week["customer"])}</strong></p>
+    <p class="meta">{esc(week["email"])}</p>
+    <table>
+      <caption class="sr-only">Partidas de la cotización</caption>
+      <thead><tr><th>Descripción</th><th>Cant.</th><th>Importe</th></tr></thead>
+      <tbody>{rows}</tbody>
+      <tfoot><tr><th>Total</th><td colspan="2" data-label="Total">{esc(week["total"])}</td></tr></tfoot>
+    </table>
+    """
+    gap = f'<div class="gap" data-view="sin"><p><strong>{esc(quote["gap_label"])}</strong></p></div>'
+    added = '<div class="added" data-view="con" hidden>' + "".join(
+        f"<p>{esc(clause)}</p>" for clause in week["clauses"]
+    ) + "</div>"
+    texts = (
+        "<details><summary>Ver el texto del writer sin la lección</summary><pre>"
+        + esc(week["text_without"])
+        + "</pre></details><details><summary>Ver el texto del writer con la lección</summary><pre>"
+        + esc(week["text_with"])
+        + "</pre></details>"
+    )
+    if week["week"] == 1:
+        return f"""<article class="sheet" id="semana-1">
+        {header}
+        {gap}
+        <p class="review">Revisor de la casa, persona ficticia: «{esc(quote["comment"])}»</p>
+        {texts}
+        </article>"""
+    return f"""<article class="sheet" id="semana-{esc(week["week"])}" data-week="{esc(week["week"])}" data-mode="sin">
+    {header}
+    {gap}
+    {added}
+    <div class="toggle" role="group" aria-label="Versión de la semana {esc(week["week"])}">
+      <button type="button" data-mode-button="sin" aria-pressed="true">Ver sin la lección</button>
+      <button type="button" data-mode-button="con" aria-pressed="false">Ver con la lección</button>
+    </div>
+    {texts}
+    </article>"""
+
+
+def card_html(lesson, report):
+    minus = next(row["B-"]["fraction"] for row in report["by_type"] if row["doc_type"] == lesson["doc_type"])
+    plus = next(row["B+"]["fraction"] for row in report["by_type"] if row["doc_type"] == lesson["doc_type"])
+    return f"""<article class="lesson" id="leccion-{esc(lesson["doc_type"])}">
+    <h3>{esc(lesson["label"])}</h3>
+    <p>{esc(lesson["rule"])}</p>
+    <p>Estado en la evaluación: {esc(lesson["state"])}. Alcance: {esc(lesson["scope"])}. Evidencia: {esc(lesson["evidence_note"])}. Veces aplicada en los casos retenidos: {esc(lesson["applied_held_out"])}.</p>
+    <p>Sin la lección {esc(minus)}. Con la lección {esc(plus)}.</p>
+    <p><button type="button" class="switch" role="switch" aria-checked="false" data-retire="{esc(lesson["doc_type"])}">Retirar lección</button></p>
+    </article>"""
+
+
+def score_row(row):
+    initial = row["B-"]["fraction"] if row["doc_type"] == "cotizacion" else row["B+"]["fraction"]
+    klass = "empty" if row["doc_type"] == "cotizacion" else "full"
+    return f"""<div class="bar-row">
+    <span>{esc(row["label"])}</span>
+    <div class="track" aria-hidden="true"><div class="bar {klass}" data-live-bar="{esc(row["doc_type"])}"></div></div>
+    <strong data-live-label="{esc(row["doc_type"])}" data-figure="{esc(initial)}">{esc(initial)}</strong>
+    </div>"""
+
+
+def export_corrige():
+    report = json.loads(RESULTS.read_text(encoding="utf-8"))
+    page = render_corrige(report)
+    CORRIGE.parent.mkdir(parents=True, exist_ok=True)
+    CORRIGE.write_text(page, encoding="utf-8")
+    print(f"Wrote {CORRIGE} ({len(page.encode('utf-8'))} bytes)")
+    return 0
+
+
+def main(argv=None):
+    # La demo V0 sigue en docs/demo/ para no cambiar su URL publicada.
+    # --v0 la regenera (lleva reloj y no es estable). Lo normal es esta página.
+    if argv and argv[:1] == ["--v0"]:
+        return export_legacy()
+    return export_corrige()
 
 
 if __name__ == "__main__":
