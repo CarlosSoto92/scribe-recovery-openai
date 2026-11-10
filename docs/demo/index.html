@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scribe/Recovery · Demo V0 (RSI Hackathon)</title>
+<meta name="description" content="Demo estática del loop editorial Scribe/Recovery. Proyecto del RSI Hackathon Kavak × OpenAI × Primero AI, 9 nov 2026 CDMX.">
+<style>
+body{font:16px/1.5 system-ui,-apple-system,sans-serif;background:#f4f6f8;color:#182637;max-width:980px;margin:0 auto;padding:1.5rem}
+header.banner{background:#0f2744;color:#f5f7fa;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem}
+header.banner p{margin:.4rem 0;opacity:.95}
+header.banner strong{color:#ffd978}
+section,article{background:#fff;border:1px solid #dce2e9;border-radius:10px;padding:1rem 1.15rem;margin:1rem 0}
+h1,h2,h3{line-height:1.25;margin-top:0}
+.critical{font-weight:700;background:#fff0c6;padding:.35rem .5rem;border-radius:4px}
+ul{padding-left:1.2rem}li{margin:.4rem 0}
+.draft-text,pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+td,th{text-align:left;padding:.45rem;border-bottom:1px solid #ddd;overflow-wrap:anywhere}
+.diff-add{background:#dcfce7;color:#14532d;border-bottom:2px solid #15803d}
+.diff-del{background:#fee2e2;color:#991b1b;border-bottom:2px dashed #b91c1c}
+.diff-legend{line-height:1.7}
+.shot{margin:1rem 0}
+.shot img{max-width:100%;height:auto;border:1px solid #dce2e9;border-radius:8px}
+.shot figcaption{font-size:.9rem;color:#4a5a6d;margin-top:.4rem}
+.notice{background:#eef5ff;border:1px solid #c7daf5;border-radius:8px;padding:.9rem 1rem}
+.limits{background:#fff7e8;border:1px solid #f0d9a0;border-radius:8px;padding:.9rem 1rem}
+footer{margin:2rem 0 1rem;font-size:.95rem;color:#4a5a6d}
+a{color:#174f85}
+.badges span{display:inline-block;background:#e8eef6;border-radius:999px;padding:.2rem .7rem;margin:.15rem .25rem 0 0;font-size:.85rem}
+@media(max-width:700px){.comparison{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="banner">
+  <p><strong>Proyecto creado en el RSI Hackathon Kavak × OpenAI × Primero AI · 9 nov 2026, CDMX</strong></p>
+  <h1>Scribe/Recovery · Demo pública V0</h1>
+  <p>Una corrección humana se convierte en una lección aprobada que el agente siguiente usa — sin reentrenar.</p>
+</header>
+
+<div class="notice">
+  <p><strong>Qué es (3 líneas).</strong></p>
+  <ol>
+    <li><strong>Scribe</strong> registra la falla o la corrección de forma estructurada.</li>
+    <li><strong>Recovery</strong> solo aplica lecciones en estado <em>approved</em> (gate humano).</li>
+    <li>El writer siguiente retiene hechos críticos medibles (B− vs B+) con fixtures sintéticos.</li>
+  </ol>
+</div>
+
+<div class="badges">
+  <span>MIT</span>
+  <span>N=1 (Codex en vivo)</span>
+  <span>Fixtures sintéticos</span>
+  <span>Nada se publica solo a LinkedIn</span>
+</div>
+
+<section><h2>1. Nota sintética</h2><p>Adopción de IA: piloto enteramente sintético</p><ul><li class="critical">f1: El piloto sintético duró 4 semanas. — must_keep=true</li><li class="">f2: El equipo ficticio revisó sus procesos.</li></ul><p>Datos inventados: no atribuirlos a personas ni empresas reales.</p></section>
+
+<section><h2>2. Borrador V1 (sin lecciones)</h2><p class='draft-text'>Borrador sintético: un piloto de IA muestra oportunidades para mejorar procesos.</p><p>Lecciones usadas: ninguna · session <code>web-b8c9a807e0a449ea908964f233ad9391</code></p><figure class="shot"><img src="../assets/02-borrador.png" alt="Captura UX · borrador V1 en la mini web local" loading="lazy" width="960"><figcaption>Captura UX · borrador V1 en la mini web local</figcaption></figure></section>
+
+<section><h2>3. Corrección humana (simulada)</h2><p>Reviewer: <code>fixture_simulated</code> · rating 2/5 · target <code>f1</code></p><p class='draft-text'>«Omitiste la duración del piloto sintético.»</p><p>Corrección pedida: conservar «4 semanas» y citar f1. No se atribuye a una persona real.</p><figure class="shot"><img src="../assets/03-correccion.png" alt="Captura UX · formulario de corrección" loading="lazy" width="960"><figcaption>Captura UX · formulario de corrección</figcaption></figure></section>
+
+<section><h2>4. Lección aprobada (gate simulado)</h2><p>Lección <code>lesson-8598acb82856e681bb0deeac@v1</code> → estado <strong>approved</strong>.</p><p>Aprobada por <code>fixture_simulated</code> · ref <code>fixture:demo-control</code>. La UI local pide declaración humana; esta página usa el gate de la demo.</p><figure class="shot"><img src="../assets/04-aprobacion.png" alt="Captura UX · aprobación de lección" loading="lazy" width="960"><figcaption>Captura UX · aprobación de lección</figcaption></figure></section>
+
+<section><h2>5. Comparación B− vs B+ (diff visual)</h2><p>B− sin lecciones → FAIL. B+ con lección approved → PASS.</p><p class="diff-legend"><strong>Leyenda del diff:</strong> <span class="diff-add">Verde: texto agregado en B+ respecto a B−.</span> <span class="diff-del">Rojo: texto de B− eliminado o sustituido en B+.</span> Si B− solo omite un dato, se resalta su incorporación en verde en B+; no hay texto que marcar en rojo en B−. Es un diff de texto del borrador, no un juicio del checker.</p><div class="comparison"><article><h3>B− · FAIL</h3><p class="draft-text">Borrador sintético: un piloto de IA muestra oportunidades para mejorar procesos.</p><table><tr><th>Fact</th><th>dato literal</th><th>cita</th><th>Checker crítico</th></tr><tr><td>f1</td><td>No</td><td>No</td><td>FAIL</td></tr><tr><td>f2</td><td>No</td><td>No</td><td>No crítico</td></tr></table><p>Retención: 0/1 (0%)</p><p>Lecciones usadas: ninguna</p></article><article><h3>B+ · PASS</h3><p class="draft-text">Borrador sintético: un piloto de IA muestra oportunidades para mejorar procesos.<mark class="diff-add"> El piloto sintético duró 4 semanas. [synthetic-note-001:f1]</mark></p><table><tr><th>Fact</th><th>dato literal</th><th>cita</th><th>Checker crítico</th></tr><tr><td>f1</td><td>Sí</td><td>Sí</td><td>PASS</td></tr><tr><td>f2</td><td>No</td><td>No</td><td>No crítico</td></tr></table><p>Retención: 1/1 (100%)</p><p>Lecciones usadas: lesson-8598acb82856e681bb0deeac@v2</p></article></div><figure class="shot"><img src="../assets/05-comparacion.png" alt="Captura UX · comparación B− vs B+ en navegador real" loading="lazy" width="960"><figcaption>Captura UX · comparación B− vs B+ en navegador real</figcaption></figure></section>
+
+<div class="limits">
+  <p><strong>Resultado honesto.</strong> Esta demo usa fixtures sintéticos y un writer determinista en el recorrido estático. La corrida Codex en vivo del hackathon fue <strong>N=1</strong> por rama. El checker es literal + cita; una paráfrasis puede fallar. <strong>Nada se publica solo</strong> a LinkedIn u otra red: la publicación la hace una persona.</p>
+</div>
+
+<footer>
+  <p>Repo: <a href="https://github.com/CarlosSoto92/scribe-recovery-openai">CarlosSoto92/scribe-recovery-openai</a></p>
+  <p>Correr local: <code>python3 experiments/demo_editorial.py</code> ·
+  <code>python3 experiments/demo_codex_writer.py --dry-run</code> ·
+  <code>python3 experiments/webapp.py</code> (solo 127.0.0.1)</p>
+  <p>Regenerar esta página: <code>python3 experiments/export_static_demo.py</code></p>
+  <p>Licencia MIT · Sin trackers · Sin JS externo.</p>
+</footer>
+</body>
+</html>

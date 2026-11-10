@@ -1,0 +1,11 @@
+{
+  "schema_version": "research_note.v1",
+  "note_id": "synthetic-note-001",
+  "source": {"type": "synthetic", "url": null, "retrieved_at": "2026-11-09T21:00:00Z"},
+  "topic": "Adopción de IA: piloto enteramente sintético",
+  "facts": [
+    {"fact_id": "f1", "text": "El piloto sintético duró 4 semanas.", "must_keep": true},
+    {"fact_id": "f2", "text": "El equipo ficticio revisó sus procesos.", "must_keep": false}
+  ],
+  "limits": ["Datos inventados: no atribuirlos a personas ni empresas reales."]
+}
