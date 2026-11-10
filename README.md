@@ -1,56 +1,105 @@
-# 🧠 Scribe/Recovery — los agentes de IA que aprenden de sus propios errores
+# Scribe/Recovery
 
-> **Estado: experimental (hackathon, 9 nov 2026, CDMX).** El nombre, el concepto, la arquitectura y el stack son provisionales y pueden cambiar durante el evento.
+> **Proyecto creado en el RSI Hackathon Kavak × OpenAI × Primero AI · 9 noviembre 2026, CDMX.**  
+> Repo público MIT · demo estática en GitHub Pages · N=1 / fixtures sintéticos.
+
+Los agentes de IA fallan de formas que se repiten. **Scribe** registra la falla o la corrección de forma estructurada; **Recovery** solo aplica lecciones en estado `approved` (gate humano). El agente siguiente retiene hechos críticos medibles — sin reentrenar.
+
+## Demo pública
+
+**[Abrir la demo en GitHub Pages →](https://carlossoto92.github.io/scribe-recovery-openai/demo/)**
+
+Recorrido de 5 pasos generado desde el mismo código y fixtures: nota → borrador V1 → corrección → lección aprobada → comparación B− vs B+ (diff visual).
 
 ## Hipótesis
 
-Los agentes de IA (como Codex, Antigravity o Claude Code) fallan de formas que se repiten: comandos rotos, supuestos falsos, bucles, pasos que olvidan el contexto. Hoy esos errores se pierden en los logs.
+Si una corrección humana se guarda como lección y **solo entra con aprobación**, V2 mejora de forma medible frente a un baseline sin lección (B− vs B+).
 
-**Creemos que si un "escriba" (Scribe) registra cada falla de forma estructurada y un módulo de recuperación (Recovery) la convierte en una lección reutilizable, los agentes pueden recuperarse más rápido y repetir menos errores.**
+## Loop (V0)
 
-## Problema
-
-- Los errores de los agentes no quedan registrados de forma útil.
-- Cada sesión empieza de cero: el agente no recuerda qué falló antes ni por qué.
-- Recuperarse depende de que un humano lea el log y corrija a mano.
-
-## Solución (propuesta)
-
-1. **Scribe**: captura los eventos y errores de un agente (qué intentó, qué falló, en qué contexto).
-2. **Recovery**: clasifica la falla y propone o ejecuta una estrategia de recuperación.
-3. **Aprendizaje**: guarda la lección para que la siguiente corrida la use desde el inicio.
-
-## Arquitectura y tecnologías
-
-Por definir durante el hackathon; el CTO Sintético dirige la arquitectura. Codex (OpenAI) es el harness protagonista de la implementación.
-
-```
-src/          código de la solución (stack por definir)
-experiments/  pruebas rápidas de ideas, modelos y herramientas
-docs/         decisiones, bitácora y notas del equipo
+```mermaid
+flowchart LR
+  A[Corrección humana] --> B[Lección proposed]
+  B --> C{Gate humano}
+  C -->|approved| D[Agente siguiente]
+  C -->|rejected| E[No se aplica]
+  D --> F[Retención medible B+ > B−]
 ```
 
-## Quickstart
+## Qué hay en este repo
+
+| Pieza | Estado |
+| --- | --- |
+| Misión 1 · demo CSV V1→Scribe→V2 | en `main` |
+| Loop editorial + gate humano | en `main` |
+| Codex writer con lección como skill (N=1) | en `main` |
+| Mini web local (`experiments/webapp.py`) | en `main` · solo `127.0.0.1` |
+| Diff visual B−/B+ | en `main` |
+| Demo estática Pages | `docs/demo/` |
+
+## Cómo correrlo local
 
 ```bash
 git clone https://github.com/CarlosSoto92/scribe-recovery-openai.git
 cd scribe-recovery-openai
+
+# Misión 1 (CSV)
+python3 experiments/demo.py
+
+# Loop editorial determinista (sin red)
+python3 experiments/demo_editorial.py
+
+# Writer Codex en modo dry-run (textos enlatados)
+python3 experiments/demo_codex_writer.py --dry-run
+
+# Mini web interactiva (loop completo en el navegador)
+python3 experiments/webapp.py
+# → http://127.0.0.1:8765
+
+# Regenerar la demo estática de Pages
+python3 experiments/export_static_demo.py
+
+# Tests
+python3 -m unittest discover -s experiments
 ```
 
-Las instrucciones de instalación se agregan cuando se fije el stack. El prototipo (Fase 0) corre solo con la suscripción de Codex y no necesita llaves. En la fase funcional (Fase 1) las llaves se inyectan con 1Password (`op run --env-file=.env.example -- <comando>`); nunca subas llaves ni secretos.
+Fase 0 / demos deterministas **no necesitan** API key. Si en el futuro se usa la API, las llaves van por 1Password (`op://…` en `.env.example`); nunca en el repo.
+
+## Cómo se usó Codex (harness)
+
+Durante el hackathon Codex escribió el producto en modo **non-interactive** (`codex exec`) con:
+
+- sandbox de escritura en el worktree (sin red ni commit desde el sandbox)
+- **un escritor / un worktree** por misión
+- push y merge hechos por el operador humano
+- revisión independiente (otro agente) que encontró fallas reales (p. ej. `approval_ref` vacío, CSRF)
+
+Esto documenta el método; no expone prompts internos ni playbooks privados.
+
+## Límites honestos
+
+- **N=1** en la corrida Codex en vivo del hackathon (sin inferencia estadística).
+- Fixtures **sintéticos**; el gate de la demo usa `fixture_simulated`.
+- El checker es **literal + cita**; una paráfrasis puede fallar.
+- **Nada se publica solo** a LinkedIn u otra red: la publicación la hace una persona.
+- Frontera de IP: este repo público contiene el **mecanismo** y datos sintéticos. No incluye System Card, prompts internos, datos de clientes ni protocolos privados.
 
 ## Squad
 
-Este repo también es el experimento de cómo opera un squad de agentes. **Codex ejecuta; el resto ordena su harness.**
+Experimento de operación de un squad de agentes:
 
 - **Carlos (L4):** decide y hace merge.
-- **CTO Sintético (ChatGPT Cloud):** dirección técnica, investigación y coordinación de agentes.
-- **Codex:** ejecuta y opera a los agentes empleados del proyecto.
-- **Antigravity:** experto en el nodo LT01; optimiza la superficie donde corre Codex.
-- **Hack Ops (Grok Bot):** operación híbrida nube + LT01, revisión, bitácora y demo.
+- **CTO Sintético:** dirección técnica.
+- **Codex:** ejecutor del producto (T1).
+- **Antigravity:** entorno del nodo.
+- **Hack Ops (Grok Bot):** operación híbrida, demos y bitácora.
 
 Si eres un agente: empieza por [`AGENTS.md`](AGENTS.md), luego [`docs/SQUAD.md`](docs/SQUAD.md) y [`docs/SQUAD_PROTOCOL.md`](docs/SQUAD_PROTOCOL.md).
 
+## Referencia OpenAI
+
+Guías oficiales y del proyecto para Codex / Scribe: [`docs/openai/`](docs/openai/README.md). Docs MCP está documentado ahí como POR_VALIDAR (no conectado en el hackathon).
+
 ## Licencia
 
-[MIT](LICENSE)
+[MIT](LICENSE) · Copyright (c) 2026 Carlos Soto Santis
