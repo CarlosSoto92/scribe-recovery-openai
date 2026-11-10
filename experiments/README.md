@@ -140,3 +140,5 @@ Un escritor secuencial, sin garantías transaccionales entre log y auxiliares;
 no usar secretos, prompts internos ni datos reales. La etiqueta synthetic no
 es un detector de información sensible. Salidas: 0 éxito, 1 chequeo/demo FAIL,
 2 entrada/estado inválido con JSON `outcome=invalid`, sin traceback.
+
+M2d: `python3 experiments/demo_codex_writer.py --dry-run` ejecuta el control offline; `python3 experiments/demo_codex_writer.py` usa Codex real (solo operador). Skills, eventos y salidas quedan en `/tmp`; gate fixture simulado, checker literal, N=1 por rama, sin inferencia estadística ni prueba automática de lectura de la skill.
