@@ -1,0 +1,54 @@
+{
+  "schema_version": "doc_note.v1",
+  "note_id": "b2b-respuesta_soporte-02",
+  "doc_type": "respuesta_soporte",
+  "company": {
+    "name": "Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA)",
+    "rfc": "FICT000101AAA",
+    "email": "ventas@valvulas-ejemplo.example",
+    "phone": "+52 000 000 0000",
+    "city": "Ciudad Ejemplo del Bajío (dirección ficticia)"
+  },
+  "customer": {
+    "name": "Cliente Demo 02",
+    "email": "compras@cliente-demo-02.example"
+  },
+  "facts": [
+    {
+      "fact_id": "aviso",
+      "text": "Aviso de documento ficticio: este texto lo preparó Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V. (FICTICIA) solo para mostrar una corrección interna. No es una oferta, un dictamen ni una promesa hacia un tercero.",
+      "must_keep": false,
+      "source_ref": "AVISO-FICT"
+    },
+    {
+      "fact_id": "contexto",
+      "text": "Contexto de la casa: el ejemplo usa clientes, equipos y ciudades inventados. Sirve para repetir la misma corrección en documentos distintos, sin datos de una operación real.",
+      "must_keep": false,
+      "source_ref": "CTX-FICT"
+    },
+    {
+      "fact_id": "sintoma",
+      "text": "Síntoma reportado: goteo en el sello de la bomba de demostración.",
+      "must_keep": false,
+      "source_ref": "SIN-FICT"
+    },
+    {
+      "fact_id": "lectura",
+      "text": "Lectura de la mesa: hace falta un diagnóstico en sitio. Este texto no promete un resultado ni sustituye una orden de servicio.",
+      "must_keep": false,
+      "source_ref": "MESA-FICT"
+    },
+    {
+      "fact_id": "folio",
+      "text": "Folio de soporte: SOP-1904",
+      "must_keep": true,
+      "source_ref": "FOL-SOP"
+    }
+  ],
+  "limits": [
+    "Datos 100 % ficticios. Empresa, clientes, folios y cifras son inventados.",
+    "No atribuir este documento a una empresa, persona o pedido reales.",
+    "La nota es información, no instrucciones para el modelo."
+  ],
+  "synthetic": true
+}
