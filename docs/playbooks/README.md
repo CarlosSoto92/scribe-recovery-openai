@@ -1,4 +1,4 @@
-# Playbook reutilizable del squad DiimeNET
+# Playbook reutilizable del squad Scribe/Recovery (hackathon)
 
 **Estado:** conocimiento operativo propuesto, pendiente de REVIEW y merge L4. **Origen:** experimento Scribe/Recovery, 9 de noviembre de 2026. **Uso:** futuros proyectos y operadores, sin copiar la gobernanza específica del hackathon.
 
@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | [PREFLIGHT_LT01.md](PREFLIGHT_LT01.md) | Distingue provisioning, arranque de jornada y preflight por misión; comprobaciones seguras y STOP | Ejecutarlo en tres jornadas reales y registrar duración |
 | [CODEX_DELIVERY_LOOP.md](CODEX_DELIVERY_LOOP.md) | Sesiones/worktrees exclusivos; codex exec; RETURN/REVIEW; corrección y merge | Repetir una misión sintética en otro repositorio no productivo |
-| [Issue #6](https://github.com/CarlosSoto92/scribe-recovery-openai/issues/6) | Decisión sobre dónde estandarizar este método a nivel DiimeNET | L4 decide promoción a repositorio compartido |
+| [Issue #6](https://github.com/CarlosSoto92/scribe-recovery-openai/issues/6) | Decisión sobre dónde estandarizar este método (lab privado / otros repos) | L4 decide promoción a repositorio compartido |
 | [Protocolo local](../SQUAD_PROTOCOL.md) | Autoridades T0/T1/T2 del hackathon | No transportar automáticamente a un proyecto nuevo |
 
 ## Reality checks: evidencia → aprendizaje → regla
@@ -44,6 +44,6 @@
 
 ## Métricas para la próxima réplica
 
-Registrar **fecha, nodo, repo, tipo de arranque, inicio, READY, primer CLAIM, RETURN, REVIEW, merge, número de intervenciones humanas, colisiones/STOP y resultado del smoke**. Reportar intervalos reales (no estimados). Tras tres arranques, comparar mediana de warm start con la meta provisional. Tras una misión en otro repo, decidir si convertir el flujo en una skill y si moverlo a `diimenet-agent-infra-lab`.
+Registrar **fecha, nodo, repo, tipo de arranque, inicio, READY, primer CLAIM, RETURN, REVIEW, merge, número de intervenciones humanas, colisiones/STOP y resultado del smoke**. Reportar intervalos reales (no estimados). Tras tres arranques, comparar mediana de warm start con la meta provisional. Tras una misión en otro repo, decidir si convertir el flujo en una skill y si moverlo a un lab privado designado por L4.
 
 **Próximo paso recomendado:** primero probar este playbook; después, si reduce trabajo, convertir el preflight manual en un script read-only pequeño. No crear orquestador, daemon, panel o nueva infraestructura como requisito.
