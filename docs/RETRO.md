@@ -22,14 +22,13 @@ Probar que un agente puede **aprender de una corrección humana** sin reentrenar
 | README público + demo estática Pages | [PR #21](https://github.com/CarlosSoto92/scribe-recovery-openai/pull/21) |
 | Referencia OpenAI (`docs/openai/`) | [PR #5](https://github.com/CarlosSoto92/scribe-recovery-openai/pull/5) |
 | Playbooks de preflight / Codex | [PR #10](https://github.com/CarlosSoto92/scribe-recovery-openai/pull/10) |
-| Visión V0 (arquitectura) | [PR #8](https://github.com/CarlosSoto92/scribe-recovery-openai/pull/8) · [`docs/VISION_V0.md`](VISION_V0.md) |
+| Visión de arquitectura inicial | [PR #8](https://github.com/CarlosSoto92/scribe-recovery-openai/pull/8) |
 
 Suite al cierre documental: **87 tests OK** (`python3 -m unittest discover -s experiments`).
 
 ## 3. Qué no se hizo (honesto)
 
-- **DALI real / System Card / prompts internos** — fuera de frontera IP del repo público.
-- **Sherlock / fuentes privadas** — no integrados.
+- **Producto editorial interno, prompts y fuentes privadas**: fuera de la frontera de IP del repo público.
 - **Publicación automática a LinkedIn** — nunca; la persona publica.
 - **Docs MCP conectado** — documentado como POR_VALIDAR; T2 HOLD.
 - **UX-05…UX-10** — abiertos como roadmap `post-hackathon` ([#15](https://github.com/CarlosSoto92/scribe-recovery-openai/issues/15)–[#20](https://github.com/CarlosSoto92/scribe-recovery-openai/issues/20)).
@@ -39,7 +38,7 @@ Suite al cierre documental: **87 tests OK** (`python3 -m unittest discover -s ex
 
 - **Colisión de sesiones en Misión 1** (STOP / coordinación) antes del merge de #4.
 - **Exportador de la demo Pages** (`experiments/export_static_demo.py`): lo escribió **Hack Ops**, no Codex, porque **LT01 estaba offline** al momento del end-to-end.
-- **Pushes y merges** con identidades de laboratorio (**Quark-lab-diimenet**, **antonda2025-lab**) bajo autorización L4; merge final humano/gobernado.
+- **Pushes y merges** con cuentas de laboratorio bajo autorización de Carlos; merge final humano.
 - **Chromium personal de Carlos** no fue operable por el agente (sin extensión/CDP) → validación UX con **Playwright + perfil aislado** (Antigravity).
 - **Revisión independiente (Cursor)** encontró fallas reales en la mini web (p. ej. `approval_ref` vacío, CSRF antes de replay) corregidas antes del merge de #12/#13.
 
@@ -54,13 +53,13 @@ Suite al cierre documental: **87 tests OK** (`python3 -m unittest discover -s ex
 
 1. Un **escritor / un worktree** por misión; `codex exec` en sandbox de escritura **sin** commit desde el sandbox.
 2. Push y merge los hace el operador; la revisión cruzada vale la pena.
-3. Repo público = **mecanismo + sintéticos**; lab privado = IP de producto (DALI, clientes, prompts).
+3. Repo público = **mecanismo + sintéticos**; lab privado = IP de producto (clientes, prompts).
 4. Documentar reality checks (`docs/playbooks/`) evita repetir colisiones.
 
 ## 7. Siguiente
 
 - Roadmap UX [#15](https://github.com/CarlosSoto92/scribe-recovery-openai/issues/15)–[#20](https://github.com/CarlosSoto92/scribe-recovery-openai/issues/20) cuando LT01 esté disponible.
-- Superficie privada para DALI/Sherlock si L4 lo decide (no en este repo).
+- Superficie privada para la integración editorial interna si Carlos lo decide (no en este repo).
 - Medir arranques reales del playbook antes de promoverlo a otro destino.
 
 — Hack Ops · cierre autorizado por Carlos (L4)
