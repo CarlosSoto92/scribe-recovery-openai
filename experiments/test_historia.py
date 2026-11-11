@@ -21,13 +21,23 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.tags = []
         self.content = []
+        self.visible_content = []
+        self.hidden_depth = 0
         self.feed(source)
 
     def handle_starttag(self, tag, attrs):
         self.tags.append((tag, dict(attrs)))
+        if tag in ('title', 'desc', 'style', 'script'):
+            self.hidden_depth += 1
+
+    def handle_endtag(self, tag):
+        if tag in ('title', 'desc', 'style', 'script'):
+            self.hidden_depth -= 1
 
     def handle_data(self, data):
         self.content.append(data)
+        if not self.hidden_depth:
+            self.visible_content.append(data)
 
 
 class HistoriaTests(unittest.TestCase):
@@ -184,6 +194,89 @@ class HistoriaTests(unittest.TestCase):
             if tag == 'rect' and attrs.get('data-document') == 'true':
                 counts[attrs['data-condition']] += 1
         self.assertEqual(counts, {key: self.recorded[key]['n'] for key in cartel.CONDITIONS})
+
+    def test_unchanged_fractions_never_say_paso_de(self):
+        self.assertNotRegex(self.visible, r'pasó de (\d+/\d+) a \1(?![\d/])')
+        by = {row['doc_type']: row for row in self.recorded['by_type']}
+        for key, label in (('respuesta_soporte', 'Soporte'),
+                           ('reporte_cliente', 'Reporte a cliente')):
+            self.assertIn(f"{label} se quedó en {by[key]['B+']['fraction']}.", self.visible)
+
+    def test_prose_tracks_equal_rising_and_falling_data_for_both_reviewers(self):
+        row = next(r for r in self.recorded['by_type'] if r['doc_type'] == 'cotizacion')
+        low, high = row['B-'], row['B+']
+        for before, after, phrase in (
+                (high, high, f"se quedó en {high['fraction']}"),
+                (low, high, f"pasó de {low['fraction']} a {high['fraction']}"),
+                (high, low, f"empeoró: de {high['fraction']} a {low['fraction']}")):
+            with self.subTest(phrase=phrase):
+                report = deepcopy(self.report)
+                r = report['codex_recorded']
+                for block, key in ((r, 'respuesta_soporte'), (r['tolerant'], 'ficha_tecnica')):
+                    target = next(v for v in block['by_type'] if v['doc_type'] == key)
+                    target['B-'], target['B+'] = deepcopy(before), deepcopy(after)
+                visible = ' '.join(Page(cartel.build_html(report)).visible_content)
+                self.assertIn(f'Soporte {phrase}.', visible)
+                self.assertIn(f'la ficha técnica {phrase},', visible)
+                self.assertNotRegex(visible, r'pasó de (\d+/\d+) a \1(?![\d/])')
+
+    def test_problem_caption_is_visible_exactly_once(self):
+        phrase = 'La corrección se queda en el documento, no en la herramienta.'
+        self.assertEqual(' '.join(self.page.visible_content).count(phrase), 1)
+
+    def test_design_description_uses_singular_and_plural(self):
+        self.assertNotRegex(self.visible, r'\b1 documentos\b')
+        for count, noun in ((1, 'documento'), (6, 'documentos')):
+            recorded = deepcopy(self.recorded)
+            recorded['by_type'][0]['C3']['n'] = count
+            tree = ET.fromstring(cartel.design_svg(recorded))
+            desc = tree.find('{http://www.w3.org/2000/svg}desc').text
+            self.assertIn(f'C3 {count} {noun}', desc)
+            self.assertNotRegex(desc, r'\b1 documentos\b')
+
+    def test_wilson_whiskers_center_on_strict_bars_and_labels_clear_them(self):
+        ns = {'s': 'http://www.w3.org/2000/svg'}
+        tree = ET.fromstring(cartel.results_svg(self.recorded))
+        groups = tree.findall('s:g[@class="result-condition"]', ns)
+        self.assertEqual(len(groups), len(cartel.CONDITIONS))
+        for group, key in zip(groups, cartel.CONDITIONS):
+            with self.subTest(condition=key):
+                m = self.recorded[key]
+                bars = group.findall('s:rect', ns)
+                strict = next(b for b in bars if b.attrib['fill'] != 'none')
+                center = float(strict.attrib['x']) + float(strict.attrib['width']) / 2
+                tolerant = next(b for b in bars if b.attrib['fill'] == 'none')
+                self.assertEqual(tolerant.attrib['stroke-dasharray'], '6 5')
+                self.assertAlmostEqual(float(tolerant.attrib['y']),
+                                       390 - float(self.recorded['tolerant'][key]['rate']) * 280)
+                low = 390 - float(m['wilson95']['low']) * 280
+                high = 390 - float(m['wilson95']['high']) * 280
+                strokes = group.findall('s:g[@class="wilson-interval"]/s:line', ns)
+                self.assertEqual(len(strokes), 6)
+                for outline, foreground in zip(strokes[:3], strokes[3:]):
+                    for coordinate in ('x1', 'y1', 'x2', 'y2'):
+                        self.assertEqual(outline.attrib[coordinate], foreground.attrib[coordinate])
+                    self.assertEqual(outline.attrib['stroke'], '#fff')
+                    self.assertEqual(foreground.attrib['stroke'], '#182637')
+                    self.assertGreater(float(outline.attrib['stroke-width']),
+                                       float(foreground.attrib['stroke-width']))
+                stem, upper, lower = strokes[3:]
+                self.assertEqual(float(stem.attrib['x1']), center)
+                self.assertEqual(float(stem.attrib['x2']), center)
+                self.assertAlmostEqual(float(stem.attrib['y1']), high)
+                self.assertAlmostEqual(float(stem.attrib['y2']), low)
+                for cap, endpoint in ((upper, high), (lower, low)):
+                    self.assertAlmostEqual(float(cap.attrib['y1']), endpoint)
+                    self.assertAlmostEqual(float(cap.attrib['y2']), endpoint)
+                    self.assertLess(float(cap.attrib['x1']), center)
+                    self.assertGreater(float(cap.attrib['x2']), center)
+                    self.assertEqual((float(cap.attrib['x1']) + float(cap.attrib['x2'])) / 2, center)
+                texts = group.findall('s:text', ns)
+                label = next(t for t in texts if t.text == m['fraction'])
+                tolerant_label = next(t for t in texts if t.text.startswith('tol. '))
+                self.assertEqual(float(label.attrib['x']), center)
+                self.assertLessEqual(float(label.attrib['y']), high - 12)
+                self.assertLessEqual(float(tolerant_label.attrib['y']), float(label.attrib['y']) - 30)
 
     def test_section_order_and_readme_link(self):
         labels = re.findall(r'<p class="section-label">(.*?)</p>', self.source)

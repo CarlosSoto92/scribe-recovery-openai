@@ -33,6 +33,17 @@ def interval(metric):
     return esc(metric['wilson95']['display'])
 
 
+def change_phrase(label, block):
+    before, after = block['B-'], block['B+']
+    delta = after['k'] * before['n'] - before['k'] * after['n']
+    if delta == 0:
+        phrase = f"se quedó en {after['fraction']}"
+    else:
+        verb = 'pasó de' if delta > 0 else 'empeoró: de'
+        phrase = f"{verb} {before['fraction']} a {after['fraction']}"
+    return esc(f'{label} {phrase}')
+
+
 def svg_start(name, title, description, width, height, css='diagram'):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" class="{css}" '
             f'viewBox="0 0 {width} {height}" role="img" '
@@ -51,9 +62,9 @@ def rect(x, y, width, height, fill='#fff', stroke='#536779', extra=''):
             f'rx="6" fill="{fill}" stroke="{stroke}" {extra}/>')
 
 
-def line(x1, y1, x2, y2, color='#536779', extra=''):
+def line(x1, y1, x2, y2, color='#536779', extra='', width=2):
     return (f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
-            f'stroke="{color}" stroke-width="2" {extra}/>')
+            f'stroke="{color}" stroke-width="{width}" {extra}/>')
 
 
 def header_icons():
@@ -79,7 +90,7 @@ def problem_svg():
                    'Semana 2: Cliente Demo 02, otra vez sin vigencia ni pago. Corrige otra vez. '
                    'Semana 3: Cliente Demo 03, mismo hueco. '
                    'La corrección se queda en el documento, no en la herramienta.')
-    s = svg_start('problema', 'El problema: el mismo hueco cada semana', description, 940, 245)
+    s = svg_start('problema', 'El problema: el mismo hueco cada semana', description, 940, 210)
     for i in range(3):
         x = 10 + i * 345
         s += rect(x, 15, 240, 150)
@@ -96,7 +107,6 @@ def problem_svg():
             s += line(cx, 80, cx + 19, 67)
             s += line(cx + 19, 67, cx + 26, 50, '#876600')
             s += text(cx, 193, 'Lucía corrige' if i == 0 else 'Corrige otra vez', 15, 'middle')
-    s += text(10, 231, 'La corrección se queda en el documento, no en la herramienta.', 18)
     return s + '</svg>'
 
 
@@ -139,7 +149,9 @@ def design_svg(recorded):
     rows = recorded['by_type']
     total = sum(recorded[k]['n'] for k in CONDITIONS)
     description = f"{len(rows)} tipos; " + '; '.join(
-        f"{r['label']}: " + ', '.join(f"{key} {r[key]['n']} documentos" for key in CONDITIONS)
+        f"{r['label']}: " + ', '.join(
+            f"{key} {r[key]['n']} {'documento' if r[key]['n'] == 1 else 'documentos'}"
+            for key in CONDITIONS)
         for r in rows)
     description += f'. Total: {total} corridas. Cada cuadrito es un documento generado y guardado.'
     width = len(rows) * 178 + 80
@@ -187,6 +199,7 @@ def results_svg(recorded):
         s += text(58, y + 6, tick, 16, 'end')
     s += text(12, 84, 'de cada 100', 16)
     for i, key in enumerate(CONDITIONS):
+        s += f'<g class="result-condition" data-condition="{key}">'
         x = 130 + i * 225
         m, t = recorded[key], tolerant[key]
         y = 390 - float(m['rate']) * 280
@@ -196,14 +209,22 @@ def results_svg(recorded):
         s += rect(x, ty, 120, 390 - ty, 'none', '#536779', 'stroke-dasharray="6 5" stroke-width="2"')
         s += rect(x + 5, y, 110, 390 - y, COLORS[i],
                   '#876600' if key == 'C3' else COLORS[i])
-        # Offset the whisker so it remains visible against a dark bar.
-        s += line(x + 130, high, x + 130, low, '#182637')
-        s += line(x + 122, high, x + 138, high, '#182637')
-        s += line(x + 122, low, x + 138, low, '#182637')
-        s += text(x + 60, y - 9, m['fraction'], 23, 'middle')
-        s += text(x + 60, ty - 30, 'tol. ' + t['fraction'], 17, 'middle')
+        # A light outline keeps the centered interval visible over every bar.
+        center = x + 60
+        whisker = ((center, high, center, low),
+                   (center - 8, high, center + 8, high),
+                   (center - 8, low, center + 8, low))
+        s += '<g class="wilson-interval">'
+        for color, width in (('#fff', 6), ('#182637', 2)):
+            for coords in whisker:
+                s += line(*coords, color, width=width)
+        s += '</g>'
+        label_y = min(y, high) - 12
+        s += text(center, label_y, m['fraction'], 23, 'middle')
+        s += text(center, min(ty - 30, label_y - 30), 'tol. ' + t['fraction'], 17, 'middle')
         s += text(x + 60, 421, LABELS[i], 17, 'middle')
         s += text(x + 60, 447, 'apoyo: ' + m['rate_display'], 16, 'middle')
+        s += '</g>'
     s += text(70, 482, 'Bigotes: intervalo de Wilson 95. La muestra es pequeña.', 18)
     total = sum(recorded[k]['n'] for k in CONDITIONS)
     s += text(70, 510, f"Codex {recorded['codex_version']} · {total} corridas · un día", 17)
@@ -291,6 +312,14 @@ def build_html(report):
     seal_date = f'{months[int(month) - 1]} {year}'
     a, b, c = r['B-'], r['B+'], r['C3']
     by = {v['doc_type']: v for v in r['by_type']}
+    type_changes = []
+    for key in ORDER:
+        group = by[key]
+        label = 'Soporte' if key == 'respuesta_soporte' else group['label']
+        sentence = change_phrase(label, group) + '.'
+        if group['B+']['k'] * group['B-']['n'] < group['B-']['k'] * group['B+']['n']:
+            sentence = f'<strong>{sentence}</strong>'
+        type_changes.append(sentence)
     tf = next(v for v in t['by_type'] if v['doc_type'] == 'ficha_tecnica')
     repo = 'https://github.com/CarlosSoto92/scribe-recovery-openai'
 
@@ -357,8 +386,8 @@ def build_html(report):
 <ul class="result-copy">
 <li><strong>Resultado principal (revisor estricto):</strong> sin lección cumplieron <strong>{words(a)}</strong>; con lección, <strong>{words(b)}</strong>. Comparando cada caso contra su gemelo, {esc(sign_sentence(r))} Es poco probable bajo la hipótesis de igual probabilidad de mejorar o empeorar, pero la muestra es chica.</li>
 <li><strong>Control:</strong> con la lección de <em>otro</em> tipo cumplieron <strong>{words(c)}</strong>. La lección sirve donde corresponde; este control pequeño no demuestra por sí solo esa relación.</li>
-<li><strong>No todo mejoró.</strong> Cotización pasó de {fraction(by['cotizacion']['B-'])} a {fraction(by['cotizacion']['B+'])}. Propuesta técnica, de {fraction(by['propuesta_tecnica']['B-'])} a {fraction(by['propuesta_tecnica']['B+'])}. Reporte a cliente ya estaba en {fraction(by['reporte_cliente']['B-'])} y siguió en {fraction(by['reporte_cliente']['B+'])}. Soporte pasó de {fraction(by['respuesta_soporte']['B-'])} a {fraction(by['respuesta_soporte']['B+'])}. <strong>Ficha técnica empeoró: de {fraction(by['ficha_tecnica']['B-'])} a {fraction(by['ficha_tecnica']['B+'])}.</strong></li>
-<li><strong>Una segunda lectura (post hoc).</strong> Después de ver las salidas escribimos un revisor <strong>tolerante</strong>, que acepta tablas, markdown o el folio sin prefijo. Con él, sin lección dan <strong>{words(t['B-'])}</strong> y con lección <strong>{words(t['B+'])}</strong>; el control da {words(t['C3'])}. Como lo hicimos después de ver los datos, lo presentamos como <strong>techo optimista</strong>, no como resultado principal. Ahí las fichas técnicas salen {fraction(tf['B-'])} → {fraction(tf['B+'])}, lo que sugiere que buena parte de su caída es de formato. El revisor no permite afirmar la causa.</li>
+<li><strong>No todo mejoró.</strong> {' '.join(type_changes)}</li>
+<li><strong>Una segunda lectura (post hoc).</strong> Después de ver las salidas escribimos un revisor <strong>tolerante</strong>, que acepta tablas, markdown o el folio sin prefijo. Con él, sin lección dan <strong>{words(t['B-'])}</strong> y con lección <strong>{words(t['B+'])}</strong>; el control da {words(t['C3'])}. Como lo hicimos después de ver los datos, lo presentamos como <strong>techo optimista</strong>, no como resultado principal. Ahí, {change_phrase('la ficha técnica', tf)}, lo que sugiere que buena parte de su caída es de formato. El revisor no permite afirmar la causa.</li>
 </ul>
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="Gráfica de resultados con intervalos">{results_svg(r)}</div>
