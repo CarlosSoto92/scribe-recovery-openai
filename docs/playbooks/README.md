@@ -40,7 +40,7 @@
 - **La suscripción Codex ≠ uso ilimitado:** Fase 0 no usa la API del producto, pero la cuota de Codex existe; no inventar coste cero total o volumen de tokens.
 - **Publicar un PR ≠ aprobar su contenido:** Grok/Cursor revisan; CTO/L4 evalúan y **L4 fusiona**. Un PASS sobre SHA antiguo no valida un nuevo HEAD.
 - **La lección propuesta ≠ lección aprobada:** solo una decisión humana trazable puede activar cambio de skill, `AGENTS.md` o comportamiento en otro agente.
-- **Repo público ≠ depósito de IP:** no exponer System Card DALI, prompts internos, fuentes privadas Sherlock, clientes, credenciales ni datos personales.
+- **Repo público ≠ depósito de IP:** no exponer prompts internos, fuentes privadas, clientes, credenciales ni datos personales.
 
 ## Métricas para la próxima réplica
 
