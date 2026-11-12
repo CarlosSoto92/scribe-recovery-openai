@@ -20,6 +20,11 @@ Tú decides qué aprende la IA. Puedes aprobar la lección y puedes retirarla.
 
 La empresa, los clientes y las cifras son inventados. En cada hoja dice FICTICIA.
 
+## La historia, en un cartel
+
+Una corrección aprobada, el experimento y sus límites, explicados para tu negocio.
+[Lee la historia en un cartel](docs/historia/index.html).
+
 ## Resultados
 
 Lo que se mide es si el documento trae lo que la casa pidió (una vigencia, una referencia, un folio). No es una nota de “qué tan bien escribe”.
