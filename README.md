@@ -1,5 +1,9 @@
 # Scribe/Recovery
 
+> **Experimento terminado · nov 2026.** Este repo ya no recibe cambios de método ni corridas nuevas: queda como registro del experimento.
+> La historia en un cartel: [historia/](https://carlossoto92.github.io/scribe-recovery-openai/historia/) · Demo: [corrige/](https://carlossoto92.github.io/scribe-recovery-openai/corrige/) · Demo del hackathon: [demo/](https://carlossoto92.github.io/scribe-recovery-openai/demo/)  
+> Para leer a fondo: [nota del experimento](docs/NOTA_EXPERIMENTO.md) · [evaluación](docs/EVAL.md) · [límites](docs/LIMITATIONS.md) · [material para compartir y cómo citar](docs/COMPARTIR.md)
+
 Corrige una vez. La IA lo recuerda… si tú lo apruebas.
 
 [Nota de laboratorio del experimento: resultados y límites](docs/NOTA_EXPERIMENTO.md).
