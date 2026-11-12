@@ -3,6 +3,8 @@
 Página corta para quien quiera hablar de este experimento sin inflarlo. Todo lo de aquí sale de [`NOTA_EXPERIMENTO.md`](NOTA_EXPERIMENTO.md) y [`EVAL.md`](EVAL.md); si algo no coincide, mandan esos archivos.
 
 > **Aviso de madurez:** es un experimento de hackathon, construido en un día y medio. Es una nota de laboratorio, no un paper.
+>
+> **Estado:** experimento terminado (nov 2026). No habrá corridas nuevas en este repo; las cifras de esta página son las finales.
 
 ## La línea de resultado
 
@@ -28,6 +30,7 @@ La empresa del caso, **Válvulas y Bombas Ejemplo del Bajío, S.A. de C.V.**, y 
 
 | Qué | Dónde |
 | --- | --- |
+| La historia, en un cartel (resumen visual para no expertos) | https://carlossoto92.github.io/scribe-recovery-openai/historia/ |
 | Demo «Corrige una vez» | https://carlossoto92.github.io/scribe-recovery-openai/corrige/ |
 | Demo del hackathon (domingo 9 de nov) | https://carlossoto92.github.io/scribe-recovery-openai/demo/ |
 | Nota del experimento (resultados y límites) | [`NOTA_EXPERIMENTO.md`](NOTA_EXPERIMENTO.md) |
@@ -61,7 +64,9 @@ El segundo comando reescribe `docs/EVAL.md` y el JSON de resultados en tu copia 
 
 ## Cómo citarlo
 
-> Soto Santis, C. (2026). *Scribe/Recovery · «Corrige una vez»: nota de laboratorio de un experimento de hackathon.* Repositorio de código abierto (MIT). https://github.com/CarlosSoto92/scribe-recovery-openai. Commit `7198164`, 10 de noviembre de 2026.
+> Soto Santis, C. (2026). *Scribe/Recovery · «Corrige una vez»: nota de laboratorio de un experimento de hackathon.* Repositorio de código abierto (MIT). https://github.com/CarlosSoto92/scribe-recovery-openai. Commit `c76a929`, 11 de noviembre de 2026.
+
+Las cifras no cambian desde el commit `7198164` (10 de noviembre); los commits posteriores solo agregan el cartel y documentación.
 
 Si citas una cifra, di de qué revisor es (estricto o tolerante), que el caso es sintético y que solo se midió Codex.
 
